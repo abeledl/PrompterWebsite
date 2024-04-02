@@ -591,17 +591,6 @@
             //print delaysArray
             console.log(delaysArray);
         });
-
-        function playAudio() {
-            // Create an Audio object
-            const audio = new Audio('audio.mp3');
-            const audio2 = new Audio('Adventure-320bit(chosic.com).mp3');
-            audio.currentTime = 0.96;
-            audio2.volume = 0.08;
-            // Play the audio
-            audio.play();
-            audio2.play();
-        }
         const highlighter = document.getElementById("englishHighlighter");
 
 
@@ -778,7 +767,10 @@
                     }, executionDelay);
                 }
             }
-            update();
+            
+            audio.addEventListener('play', () => {
+                update();
+            });
         }
 
         function adjustFontSize(span) {

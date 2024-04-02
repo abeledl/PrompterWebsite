@@ -583,9 +583,9 @@
             console.log(secondsArray);
             for (let index = 0; index < secondsArray.length; index++) {
                 if (index == 0) {
-                    delaysArray.push((secondsArray[index+1]) * 1000);
+                    delaysArray.push(((secondsArray[index+1]) * 1000+ 10));
                 } else {
-                    delaysArray.push((secondsArray[index+1] - secondsArray[index]) * 1000);
+                    delaysArray.push(((secondsArray[index+1] - secondsArray[index]) * 1000) - 10);
                 }
             }
             //print delaysArray

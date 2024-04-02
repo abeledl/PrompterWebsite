@@ -567,7 +567,7 @@
         // Function to fetch JSON data from the local server
         async function fetchData() {
             try {
-                const response = await fetch('http://localhost:5500/transcript.json');  // Adjust the URL based on your server's port and file location
+                const response = await fetch('transcript.json');  // Adjust the URL based on your server's port and file location
                 const jsonData = await response.json();
                 return jsonData;
             } catch (error) {

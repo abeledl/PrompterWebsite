@@ -441,7 +441,7 @@
             width: 0;
             height: 30px;
             background-color: #4CAF50;
-            transition: width 6s linear;
+            transition: width 0.95s linear;
         }
 
 
@@ -581,7 +581,7 @@
             secondsArray = extractStartNumbers(jsonData);
             for (let index = 0; index < secondsArray.length; index++) {
                 if (index == 0) {
-                    delaysArray.push(((secondsArray[index+1]) * 1000+ 300));
+                    delaysArray.push(((secondsArray[index+1]) * 1000+ 500));
                 } else {
                     delaysArray.push(((secondsArray[index+1] - secondsArray[index]) * 1000) - 10);
                 }
@@ -600,8 +600,6 @@
             currentWordIndex = 0;
             // Split the input text into words, considering words within parentheses as a single word
             const words = inputText.match(/(\([^)]+\))|\S+/g) || [];
-
-
 
             var phoInput = document.getElementById('phoInput').value;
             var phoWords = phoInput.match(/(?:\([^)]+\)|\S+)/g);
@@ -683,8 +681,6 @@
 
                 span.className = "aspan";
                 let cleanPho = phoWords[currentWordIndex].replace(/_/g, '\u00A0');
-                //cleanPho = cleanPho.replace(/\(/g, '\u00A0');
-                //cleanPho = cleanPho.replace(/\)/g, '\u00A0');
                 span.setAttribute("data-before-content", cleanPho);
 
                 var parentSpan = document.createElement("span");

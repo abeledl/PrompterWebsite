@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Highlighter</title>
+    <style>
+        body {
+            background-color: rgb(135, 135, 135);
+            margin-left: 100px;
+        }
+
+        :root {
+            --color-bg1: rgb(108, 0, 162);
+            --color-bg2: rgb(0, 17, 82);
+            --color1: 18, 113, 255;
+            --color2: 221, 74, 255;
+            --color3: 100, 220, 255;
+            --color4: 200, 50, 50;
+            --color5: 180, 180, 50;
+            --color-interactive: 140, 100, 255;
+            --circle-size: 80%;
+            --blending: hard-light;
+        }
+
+        @keyframes moveInCircle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(180deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes moveVertical {
+            0% {
+                transform: translateY(-50%);
+            }
+
+            50% {
+                transform: translateY(50%);
+            }
+
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+
+        @keyframes moveHorizontal {
+            0% {
+                transform: translateX(-50%) translateY(-10%);
+            }
+
+            50% {
+                transform: translateX(50%) translateY(10%);
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(-10%);
+            }
+        }
+
+        gradient-bg {
+
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
+            top: 0;
+            left: 0;
+        }
+
+
+
+        #backcolorcontainer {
+            
+            z-index: -1;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            overflow: hidden;
+            filter: drop-shadow(0px 5px 10px rgb(255, 255, 255))
+                    drop-shadow(0px 10px 15px rgb(139, 139, 139))
+                    drop-shadow(0px 15px 20px rgb(182, 182, 182));
+        }
+
+        svg {
+            display: none;
+        }
+
+        .gradients-container {
+            filter: url(#goo);
+            -webkit-filter: url(#goo);
+            width: 100%;
+            height: 100%;
+            z-index: -9;
+            
+        }
+
+        .g1 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color1), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2);
+            left: calc(50% - var(--circle-size) / 2);
+            transform-origin: center center;
+            animation: moveVertical 30s ease infinite;
+            opacity: 1;
+        }
+
+        .g2 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color2), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2);
+            left: calc(50% - var(--circle-size) / 2);
+            transform-origin: calc(50% - 400px);
+            animation: moveInCircle 20s reverse infinite;
+            opacity: 1;
+        }
+
+        .g3 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color3), 0.8) 0, rgba(var(--color3), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2 + 200px);
+            left: calc(50% - var(--circle-size) / 2 - 500px);
+            transform-origin: calc(50% + 400px);
+            animation: moveInCircle 40s linear infinite;
+            opacity: 1;
+        }
+
+        .g4 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color4), 0.8) 0, rgba(var(--color4), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2);
+            left: calc(50% - var(--circle-size) / 2);
+            transform-origin: calc(50% - 200px);
+            animation: moveHorizontal 40s ease infinite;
+            opacity: 0.7;
+        }
+
+        .g5 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color5), 0.8) 0, rgba(var(--color5), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: calc(var(--circle-size) * 2);
+            height: calc(var(--circle-size) * 2);
+            top: calc(50% - var(--circle-size));
+            left: calc(50% - var(--circle-size));
+            transform-origin: calc(50% - 800px) calc(50% + 200px);
+            animation: moveInCircle 20s ease infinite;
+            opacity: 1;
+        }
+
+        .interactive {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color-interactive), 0.8) 0, rgba(var(--color-interactive), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: 100%;
+            height: 100%;
+            top: -100%;
+            left: -70%;
+            opacity: 0.7;
+        }
+
+
+
+
+
+
+        #englishHighlighter {
+            display: block;
+
+            transition: transform 0.4s ease-in-out;
+            position: absolute;
+
+            background: linear-gradient(45deg, #ee7752, #e73c7e, rgb(18, 41, 188));
+            border-radius: 0.5em;
+            background-size: 400% 400%;
+            animation: spiral 3s ease infinite;
+        }
+
+        @keyframes spiral {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #allTextContainer {
+            /*background-image: url(sherlockbg.jpeg);*/
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            font-size: 3em;
+            width: 1024px;
+            height: 920px;
+        }
+
+
+        #blurbg {
+            z-index: 0;
+            position: absolute;
+      
+            background-color: rgba(144, 29, 29, 0.135);
+
+
+            
+            border: 2px solid rgb(178, 216, 229);
+            /* Border color for the post-it note */
+            box-shadow: 0px 30px 10px 1px rgba(0, 0, 0, 60%);
+            /* Add a subtle shadow for depth */
+        }
+
+        #OutputTextTobeHightlighted {
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(50px);
+            width: 960px;
+            height: 420px;
+            color: white;
+            text-align: center;
+            transition: height 0.1s ease;
+
+        }
+
+        #outputTextWrapper {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 950px;
+            height: 400px;
+            overflow: hidden;
+
+        }
+
+        #outputText {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            margin: 0;
+            text-align: center;
+            width: 950px;
+            line-height: 130px;
+            font-size: 1.75em;
+            font-family: "Work Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            text-shadow:
+                -1px -1px 0 black,
+                1px -1px 0 black,
+                -1px 1px 0 black,
+                1px 1px 0 black;
+        }
+
+        #phoneticVersion {
+            margin: 0;
+            text-align: center;
+            color: white;
+        }
+
+        #output {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            margin: 0;
+            text-align: center;
+            width: 950px;
+            line-height: 130px;
+            font-size: 1.75em;
+            font-family: "Work Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            text-shadow:
+                -1px -1px 0 black,
+                1px -1px 0 black,
+                -1px 1px 0 black,
+                1px 1px 0 black;
+        }
+
+        #bgcontainer {
+            position: relative;
+            width: 1024px;
+            height: 920px;
+            overflow: hidden;
+        }
+
+        #all-wrapper {
+            display: flex;
+            height: 920px;
+        }
+
+        #menu {
+            width: 500px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        #menu div {
+            margin-right: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        textarea {
+
+            padding: 8px;
+            margin-bottom: 10px;
+
+            font-size: 2em;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 5em;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+
+
+
+        #videos-container-left {
+            position: absolute;
+            height: 110%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .video-left {
+            position: absolute;
+            height: 100%;
+
+        }
+
+        .showing {
+            opacity: 1;
+            z-index: -1;
+            transition: none;
+        }
+
+        .aspan {
+            height: 94.4px;
+            position: relative;
+        }
+
+        .aspan::before {
+            position: absolute;
+            text-align: center;
+            content: attr(data-before-content);
+            font-size: 40px;
+            width: 100%;
+            top: 35px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            color: #f8ff9ceb;
+            text-shadow:
+                -1px -1px 0 rgba(0, 0, 0, 0.066),
+                1px -1px 0 rgba(0, 0, 0, 0.066),
+                -1px 1px 0 rgba(0, 0, 0, 0.066),
+                1px 1px 0 rgba(0, 0, 0, 0.066);
+            /* You can customize the border style and color */
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .aspan.newStyle::before {
+            position: absolute;
+            text-align: center;
+            content: attr(data-before-content);
+            font-size: 0.3em;
+            width: 100%;
+            top: 35px;
+            left: -35px;
+            right: 0;
+            bottom: 0;
+            color: #f8ff9ceb;
+            text-shadow:
+                -1px -1px 0 rgba(0, 0, 0, 0.066),
+                1px -1px 0 rgba(0, 0, 0, 0.066),
+                -1px 1px 0 rgba(0, 0, 0, 0.066),
+                1px 1px 0 rgba(0, 0, 0, 0.066);
+            /* You can customize the border style and color */
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #progress-container {
+            width: 100%;
+            background-color: #ff3838;
+        }
+
+        #progress-bar {
+            width: 0;
+            height: 30px;
+            background-color: #4CAF50;
+            transition: width 6s linear;
+        }
+
+
+        #fps-display {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 50px;
+            color: white;
+            background-color: black;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p id="tempOutput"></p>
+    </div>
+    <div id="all-wrapper">
+        <div id="bgcontainer">
+            <!--
+            <div id="videos-container-left">
+                <video class="showing video-left" autoplay muted loop>
+                    <source src="video1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <video class="video-left" autoplay muted loop>
+                    <source src="video3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        -->
+            <div id="videos-container-left">
+                <video class="video-left" autoplay muted loop>
+                    <source src="video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div id="allTextContainer">
+                <div id="blurbg">
+
+                    <div id="OutputTextTobeHightlighted">
+                        <div id="outputTextWrapper">
+                            <p id="outputText">
+                            <div id="englishHighlighter"></div>
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div id="backcolorcontainer">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="goo">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                                    <feColorMatrix in="blur" mode="matrix"
+                                        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+                                    <feBlend in="SourceGraphic" in2="goo" />
+                                </filter>
+                            </defs>
+                        </svg>
+                        <div class="gradients-container">
+                            <div class="g1"></div>
+                            <div class="g2"></div>
+                            <div class="g3"></div>
+                            <div class="g4"></div>
+                            <div class="g5"></div>
+                            <div class="interactive"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div id="menu">
+            <div>
+                <label for="inputText">Enter text:</label>
+                <textarea id="inputText" placeholder="English Version"></textarea>
+                <textarea id="phoInput" placeholder="Phonetic Version"></textarea>
+            </div>
+
+            <div>
+                <button onclick="highlightAndDisplay()">Highlight and Display</button>
+            </div>
+
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div id="fps-display">FPS: <span id="fps">0</span></div>
+        </div>
+    </div>
+
+
+    <script>
+        const EnglishPositions = [];
+        const SpanishPositions = [];
+        let currentIndexEnglish = 0;
+        let currentIndexSpanish = 0;
+        let currentWIndex = 0;
+        let secondsArray = [];
+        let delaysArray = [];
+        const scale = 7;
+        const switchVideoLeftTimes = [18500];
+        const switchVideoRightTimes = [30500];
+
+        function extractStartNumbers(jsonData) {
+            const startNumbers = [];
+            const words = jsonData.results.channels[0].alternatives[0].words;
+
+            for (const wordInfo of words) {
+                startNumbers.push(wordInfo.start);
+            }
+
+            return startNumbers;
+        }
+
+        // Function to fetch JSON data from the local server
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:5500/transcript.json');  // Adjust the URL based on your server's port and file location
+                const jsonData = await response.json();
+                return jsonData;
+            } catch (error) {
+                console.error('Error fetching JSON data:', error);
+            }
+        }
+
+        fetchData().then((jsonData) => {
+            secondsArray = extractStartNumbers(jsonData);
+            //print secondsArray
+            console.log(secondsArray);
+            for (let index = 0; index < secondsArray.length; index++) {
+                if (index == 0) {
+                    delaysArray.push((secondsArray[index+1]) * 1000 - 10);
+                } else {
+                    delaysArray.push((secondsArray[index+1] - secondsArray[index]) * 1000 - 10);
+                }
+            }
+            //print delaysArray
+            console.log(delaysArray);
+        });
+
+        function playAudio() {
+            // Create an Audio object
+            const audio = new Audio('audio.mp3');
+            const audio2 = new Audio('Adventure-320bit(chosic.com).mp3');
+            audio.currentTime = 0.96;
+            audio2.volume = 0.08;
+            // Play the audio
+            audio.play();
+            audio2.play();
+        }
+        const highlighter = document.getElementById("englishHighlighter");
+
+
+        function englishWords() {
+            const inputText = document.getElementById("inputText").value;
+            const outputText = document.getElementById("outputText");
+            const highlighter = document.getElementById("englishHighlighter");
+            outputText.innerHTML = ""; // Clear previous content
+            EnglishPositions.length = 0; // Clear previous positions
+            currentIndexEnglish = 0; // Reset index
+            currentWordIndex = 0;
+            // Split the input text into words, considering words within parentheses as a single word
+            const words = inputText.match(/(\([^)]+\))|\S+/g) || [];
+
+
+
+            var phoInput = document.getElementById('phoInput').value;
+            var phoWords = phoInput.match(/(?:\([^)]+\)|\S+)/g);
+            // Create a span element for each word and append it to the outputText
+            words.forEach((word, index) => {
+
+                const span = document.createElement("span");
+
+                // Remove underscores from the word
+                const cleanWord = word.replace(/_/g, '\u00A0');
+
+                // Update the content of the current line
+
+                // Check if the word is within parentheses and apply green color
+                if (word.startsWith("(") && word.endsWith(")")) {
+                    span.innerHTML = `<span style="color: #90ff90">${cleanWord}</span> `;
+
+                    var text = span.textContent;
+
+                    // Apply yellow color to text after '*'
+                    text = text.replace(/\*([a-zA-Z\d_ÁÉÍÓÚáéíóúñÑ']+)/g, '<span style="color: yellow;">$1</span>');
+
+                    // Apply blue color to text after '@'
+                    text = text.replace(/@([a-zA-Z\d_ÁÉÍÓÚáéíóúñÑ']+)/g, '<span style="color: #7fc9ff;">$1</span>');
+
+                    // Apply green color to text after '&'
+                    text = text.replace(/\&([a-zA-Z\d_ÁÉÍÓÚáéíóúñÑ']+)/g, '<span style="color: #77ff4f;">$1</span>');
+
+                    // Update the content of the span
+                    span.innerHTML = text + "<br>";
+
+                    if (!outputText.children[currentWordIndex - 1].children[0].innerHTML.includes("<br>")) {
+                        outputText.children[currentWordIndex - 1].children[0].innerHTML = outputText.children[currentWordIndex - 1].children[0].innerHTML + "<br>";
+                    }
+
+                } else if (cleanWord.endsWith(".")) {
+                    span.innerHTML = `${cleanWord}<br>`;
+                } else if (cleanWord.endsWith("^")) {
+                    span.innerHTML = `<span style="color: #90ff90">${cleanWord}</span> `;
+                    var text = span.textContent;
+                    text = text.replace(/\^/g, '')
+                    span.innerHTML = text + "<br>";
+
+                } else {
+                    // Check if the total characters exceed 19
+                    spanModified = false;
+                    let totalCharacters = cleanWord.length + 1;
+                    let loopIteration = 1;
+                    for (let index = currentWordIndex; index >= 0; index--) {
+                        if (!outputText.children[index - 1]) {
+                            break;
+                        }
+
+                        if (outputText.children[index - 1].children[0].innerHTML.includes("<br>") && (totalCharacters > 18)) {
+                            outputText.children[currentWordIndex - 1].children[0].innerHTML = outputText.children[currentWordIndex - 1].children[0].innerHTML + "<br>";
+                            span.textContent = cleanWord + " ";
+                            spanModified = true;
+                            break;
+                        } else if (outputText.children[index - 1].children[0].innerHTML.includes("<br>") && (totalCharacters < 18)) {
+                            span.textContent = cleanWord + " ";
+                            spanModified = true;
+                            break;
+                        } else if (totalCharacters == 18) {
+                            outputText.children[currentWordIndex - 1].children[0].innerHTML = outputText.children[currentWordIndex - 1].children[0].innerHTML + "<br>";
+                            span.textContent = cleanWord + " ";
+                            //span.innerHTML = `${cleanWord}<br>`;
+                            spanModified = true;
+                            break;
+                        }
+
+
+                        totalCharacters += outputText.children[currentWordIndex - loopIteration].children[0].innerText.length;
+                        loopIteration++;
+                    }
+                    if (!spanModified) {
+                        span.textContent = cleanWord + " ";
+                    }
+                }
+
+                span.className = "aspan";
+                let cleanPho = phoWords[currentWordIndex].replace(/_/g, '\u00A0');
+                //cleanPho = cleanPho.replace(/\(/g, '\u00A0');
+                //cleanPho = cleanPho.replace(/\)/g, '\u00A0');
+                span.setAttribute("data-before-content", cleanPho);
+
+                var parentSpan = document.createElement("span");
+
+                parentSpan.appendChild(span);
+                outputText.appendChild(parentSpan);
+                currentWordIndex++;
+            });
+        }
+
+        async function highlightEnglishWord(span, index, executionDelay, oTLength) {
+            return new Promise(resolve => {
+                const rect = span.getBoundingClientRect();
+                const parentRect = outputTextWrapper.getBoundingClientRect();
+
+                if (span.innerHTML.endsWith(' ') && !span.innerHTML.includes("<br>") && index < oTLength - 1) {
+                    highlighter.style.transition = "all 0.1s"; // Add transition
+                    highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top - parentRect.top + outputTextWrapper.scrollTop}px)`;
+                    highlighter.style.width = `${rect.width - 10}px`;
+                    highlighter.style.height = `${rect.height + scale * 5}px`;
+                } else {
+                    highlighter.style.transition = "all 0.1s"; // Add transition
+                    highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top - parentRect.top + outputTextWrapper.scrollTop}px)`;
+                    highlighter.style.width = `${rect.width + scale * 2}px`;
+                    highlighter.style.height = `${rect.height + scale * 5}px`;
+                }
+
+                EnglishPositions[index] = { left: rect.left - parentRect.left, top: rect.top - parentRect.top + outputTextWrapper.scrollTop, width: rect.width, height: rect.height };
+
+                // Check if the highlighted word is out of the visible area
+                const isOutOfViewport = rect.bottom < outputTextWrapper.scrollTop || rect.top > parentRect.height + outputTextWrapper.scrollTop;
+
+                // Scroll the outputTextWrapper if needed
+                const wrapperHeight = outputTextWrapper.clientHeight;
+                const spanTop = EnglishPositions[index].top;
+                const spanHeight = EnglishPositions[index].height;
+
+
+                const scrollTo = spanTop + (spanHeight / 2 - wrapperHeight / 2);
+
+                if (index < preLastWordIndex) {
+                    outputTextWrapper.scrollTo({
+                        top: scrollTo,
+                        behavior: 'smooth'
+                    });
+
+                }
+
+                if (span.offsetHeight > 200) {
+                    var div = document.getElementById("OutputTextTobeHightlighted")
+                    div.style.height = "260px";
+                    setTimeout(() => {
+                        div.style.height = "420px";
+                    }, executionDelay);
+                }
+                setTimeout(() => {
+                    resolve();
+                }, 0);
+            });
+
+        }
+
+        async function startUpdate() {
+            //playAudio();
+            const audio = new Audio('audio.mp3');
+            const audio2 = new Audio('Adventure-320bit(chosic.com).mp3');
+            //audio.currentTime = 0.96;
+            audio2.volume = 0.08;
+            // Play the audio
+            audio.play();
+
+            audio2.play();
+            //let startTime = performance.now();
+
+            let totalAdded = 0;
+            async function update() {
+                let oTLength = outputText.children.length;
+                if (currentWIndex < oTLength) {
+
+                    let span = outputText.children[currentWIndex].children[0];
+                    let executionDelay = delaysArray[currentWIndex];
+                    //let now = performance.now();
+                    //let timeElapsed = now - startTime;
+                    //let executionDelay = -1*((now - startTime) - (secondsArray[currentWIndex+1] * 1000));
+
+                    await Promise.all([
+                        highlightEnglishWord(span, currentWIndex, executionDelay, oTLength)
+                    ]);
+                    currentWIndex++;
+                    setTimeout(() => {
+
+                        update();
+                    }, executionDelay);
+                }
+            }
+            audio.addEventListener('play', () => {
+                update();
+            });
+        }
+
+        function adjustFontSize(span) {
+            const maxFontSize = 2.5; // Maximum font size in em units
+            const spanWidth = span.offsetWidth;
+            const parentWidth = outputTextWrapper.offsetWidth;
+
+            if (spanWidth > parentWidth) {
+                span.style.fontSize = 0.9 + "em";
+            }
+        }
+
+
+        let preLastWordIndex = 0;
+        function highlightAndDisplay() {
+            englishWords();
+            startProgress();
+            setTimeout(() => {
+                setTimeout(() => {
+                    const englishWords = document.getElementById("outputText");
+
+                    setTimeout(() => {
+                        //get the index of the pre last word with a <br> tag
+                        let lag = 0;
+                        for (let index = 0; index < englishWords.children.length; index++) {
+                            if (englishWords.children[index].children[0].innerHTML.includes("<br>")) {
+                                lag = preLastWordIndex;
+                                preLastWordIndex = index;
+                            }
+                        }
+
+                        preLastWordIndex = lag + 1;
+
+                    }, 500);
+                }, 3000);
+            }, 1000);
+            //spanishWords();
+            setTimeout(() => {
+
+
+                startUpdate();
+
+
+                for (let i = 0; i < switchVideoLeftTimes.length; i++) {
+                    setTimeout(() => {
+                        //playNextLeftVideo();
+                    }, switchVideoLeftTimes[i]);
+                }
+            }, 6000);
+        }
+
+        let videoLeft = document.querySelectorAll('.video-left');
+        let videoLeftIndex = 0;
+        function playNextLeftVideo() {
+            videoLeft[videoLeftIndex].classList.remove('showing');
+
+            videoLeftIndex++;
+            if (videoLeftIndex >= videoLeft.length) {
+                videoLeftIndex = 0;
+            }
+            videoLeft[videoLeftIndex].classList.add('showing');
+        }
+
+
+        function startProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '100%';
+        }
+
+        const fpsElement = document.getElementById('fps');
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        function updateFps() {
+            const currentTime = performance.now();
+            const deltaTime = currentTime - lastTime;
+
+            if (deltaTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / deltaTime);
+                fpsElement.textContent = fps;
+
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+
+            frameCount++;
+            requestAnimationFrame(updateFps);
+        }
+
+        updateFps();
+
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const interBubble = document.querySelector('.interactive');
+            let curX = 0;
+            let curY = 0;
+            let tgX = 0;
+            let tgY = 0;
+
+            function move() {
+                curX += (tgX - curX) / 20;
+                curY += (tgY - curY) / 20;
+                interBubble.style.transform = 'translate(' + Math.round(curX) + 'px, ' + Math.round(curY) + 'px)';
+                requestAnimationFrame(function () {
+                    move();
+                });
+            }
+
+            window.addEventListener('mousemove', function (event) {
+                tgX = event.clientX;
+                tgY = event.clientY;
+            });
+
+            move();
+        });
+    </script>
+</body>
+
+</html>
+

@@ -1,0 +1,445 @@
+   
+{    
+  "metadata": {
+    "transaction_key": "deprecated",
+    "request_id": "ce4cfb4e-2ad2-4421-abd2-87d805ec22eb",
+    "sha256": "e3d1795705b4f83b1b1df71acecfbcba5c288d3826e1d496c01f4cc6bbad30c9",
+    "created": "2024-04-01T21:37:11.374Z",
+    "duration": 42.504,
+    "channels": 1,
+    "models": [
+      "c6481769-89cd-447f-be27-1e6e9dac3616"
+    ],
+    "model_info": {
+      "c6481769-89cd-447f-be27-1e6e9dac3616": {
+        "name": "medium-whisper",
+        "version": "2022-09-21.5",
+        "arch": "whisper"
+      }
+    }
+  },
+  "results": {
+    "channels": [
+      {
+        "alternatives": [
+          {
+            "transcript": "His attire, though new, hinted at a different reality. The cheap gray cap still bore the stiffness of novelty, and his suit, despite its creases, spoke of recent acquisition. A chambray shirt, rigid with filler, clung to him, its coat and trousers, too big and too short, respectively. New tan shoes, the Army last kind, completed the ensemble, their edges protected by horseshoe-like half-circles.",
+            "confidence": 0.97294044,
+            "words": [
+              {
+                "word": "his",
+                "start": 0.82,
+                "end": 1.0799999,
+                "confidence": 0.99887925,
+                "punctuated_word": "His"
+              },
+              {
+                "word": "attire",
+                "start": 1.0799999,
+                "end": 1.5799999,
+                "confidence": 0.9105259,
+                "punctuated_word": "attire,"
+              },
+              {
+                "word": "though",
+                "start": 1.86,
+                "end": 2.1599998,
+                "confidence": 0.99352634,
+                "punctuated_word": "though"
+              },
+              {
+                "word": "new",
+                "start": 2.1599998,
+                "end": 2.6599998,
+                "confidence": 0.9970137,
+                "punctuated_word": "new,"
+              },
+              {
+                "word": "hinted",
+                "start": 3.28,
+                "end": 3.78,
+                "confidence": 0.99566674,
+                "punctuated_word": "hinted"
+              },
+              {
+                "word": "at",
+                "start": 3.8799999,
+                "end": 4.06,
+                "confidence": 0.99787676,
+                "punctuated_word": "at"
+              },
+              {
+                "word": "different",
+                "start": 4.2599998,
+                "end": 4.7599998,
+                "confidence": 0.9460241,
+                "punctuated_word": "different"
+              },
+              {
+                "word": "the",
+                "start": 5.7599998,
+                "end": 5.94,
+                "confidence": 0.6576739,
+                "punctuated_word": "The"
+              },
+              {
+                "word": "cheap",
+                "start": 5.94,
+                "end": 6.44,
+                "confidence": 0.9917922,
+                "punctuated_word": "cheap"
+              },
+              {
+                "word": "still",
+                "start": 7.54,
+                "end": 7.96,
+                "confidence": 0.9854036,
+                "punctuated_word": "still"
+              },
+              {
+                "word": "bore",
+                "start": 7.96,
+                "end": 8.44,
+                "confidence": 0.22629091,
+                "punctuated_word": "bore"
+              },
+              {
+                "word": "the",
+                "start": 8.44,
+                "end": 8.72,
+                "confidence": 0.99865866,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "stiffness",
+                "start": 8.72,
+                "end": 9.22,
+                "confidence": 0.99887687,
+                "punctuated_word": "stiffness"
+              },
+              {
+                "word": "of",
+                "start": 9.46,
+                "end": 9.679999,
+                "confidence": 0.83336,
+                "punctuated_word": "of"
+              },
+              {
+                "word": "novelty",
+                "start": 9.679999,
+                "end": 10.179999,
+                "confidence": 0.9904411,
+                "punctuated_word": "novelty,"
+              },
+              {
+                "word": "and",
+                "start": 11.559999,
+                "end": 11.78,
+                "confidence": 0.9973455,
+                "punctuated_word": "and"
+              },
+              {
+                "word": "his",
+                "start": 11.78,
+                "end": 12.04,
+                "confidence": 0.9486797,
+                "punctuated_word": "his"
+              },
+              {
+                "word": "suit",
+                "start": 12.04,
+                "end": 12.54,
+                "confidence": 0.9980311,
+                "punctuated_word": "suit,"
+              },
+              {
+                "word": "despite",
+                "start": 12.78,
+                "end": 13.28,
+                "confidence": 0.9984623,
+                "punctuated_word": "despite"
+              },
+              {
+                "word": "its",
+                "start": 13.38,
+                "end": 13.679999,
+                "confidence": 0.9996941,
+                "punctuated_word": "its"
+              },
+              {
+                "word": "creases",
+                "start": 13.679999,
+                "end": 14.179999,
+                "confidence": 0.99571735,
+                "punctuated_word": "creases,"
+              },
+              {
+                "word": "spoke",
+                "start": 15.2,
+                "end": 15.7,
+                "confidence": 0.99033093,
+                "punctuated_word": "spoke"
+              },
+              {
+                "word": "of",
+                "start": 15.82,
+                "end": 16.14,
+                "confidence": 0.9790029,
+                "punctuated_word": "of"
+              },
+              {
+                "word": "recent",
+                "start": 16.14,
+                "end": 16.64,
+                "confidence": 0.6950678,
+                "punctuated_word": "recent"
+              },
+              {
+                "word": "a",
+                "start": 18.16,
+                "end": 18.36,
+                "confidence": 0.97757304,
+                "punctuated_word": "A"
+              },
+              {
+                "word": "chambray",
+                "start": 18.36,
+                "end": 18.86,
+                "confidence": 0.8891744,
+                "punctuated_word": "chambray"
+              },
+              {
+                "word": "rigid",
+                "start": 19.94,
+                "end": 20.44,
+                "confidence": 0.9777574,
+                "punctuated_word": "rigid"
+              },
+              {
+                "word": "with",
+                "start": 20.54,
+                "end": 20.82,
+                "confidence": 0.9551447,
+                "punctuated_word": "with"
+              },
+              {
+                "word": "filler",
+                "start": 20.82,
+                "end": 21.32,
+                "confidence": 0.8502598,
+                "punctuated_word": "filler,"
+              },
+              {
+                "word": "clung",
+                "start": 22.1,
+                "end": 22.48,
+                "confidence": 0.9908228,
+                "punctuated_word": "clung"
+              },
+              {
+                "word": "its",
+                "start": 23.42,
+                "end": 23.720001,
+                "confidence": 0.7672581,
+                "punctuated_word": "its"
+              },
+              {
+                "word": "coat",
+                "start": 23.720001,
+                "end": 24.14,
+                "confidence": 0.55195755,
+                "punctuated_word": "coat"
+              },
+              {
+                "word": "and",
+                "start": 24.14,
+                "end": 24.4,
+                "confidence": 0.99907315,
+                "punctuated_word": "and"
+              },
+              {
+                "word": "trousers",
+                "start": 24.4,
+                "end": 24.9,
+                "confidence": 0.9784636,
+                "punctuated_word": "trousers,"
+              },
+              {
+                "word": "too",
+                "start": 25.8,
+                "end": 26.099998,
+                "confidence": 0.9723914,
+                "punctuated_word": "too"
+              },
+              {
+                "word": "big",
+                "start": 26.099998,
+                "end": 26.599998,
+                "confidence": 0.99655664,
+                "punctuated_word": "big"
+              },
+              {
+                "word": "and",
+                "start": 26.68,
+                "end": 26.96,
+                "confidence": 0.9992005,
+                "punctuated_word": "and"
+              },
+              {
+                "word": "too",
+                "start": 26.96,
+                "end": 27.32,
+                "confidence": 0.90686107,
+                "punctuated_word": "too"
+              },
+              {
+                "word": "short",
+                "start": 27.32,
+                "end": 27.82,
+                "confidence": 0.99580646,
+                "punctuated_word": "short,"
+              },
+              {
+                "word": "respectively",
+                "start": 28.439999,
+                "end": 28.939999,
+                "confidence": 0.96650887,
+                "punctuated_word": "respectively."
+              },
+              {
+                "word": "new",
+                "start": 30.06,
+                "end": 30.3,
+                "confidence": 0.9898291,
+                "punctuated_word": "New"
+              },
+              {
+                "word": "tan",
+                "start": 30.3,
+                "end": 30.8,
+                "confidence": 0.3967689,
+                "punctuated_word": "tan"
+              },
+              {
+                "word": "shoes",
+                "start": 30.86,
+                "end": 31.36,
+                "confidence": 0.89423525,
+                "punctuated_word": "shoes,"
+              },
+              {
+                "word": "the",
+                "start": 32.14,
+                "end": 32.44,
+                "confidence": 0.71626484,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "army",
+                "start": 32.44,
+                "end": 32.84,
+                "confidence": 0.98113096,
+                "punctuated_word": "Army"
+              },
+              {
+                "word": "kind",
+                "start": 33.58,
+                "end": 34.08,
+                "confidence": 0.9253815,
+                "punctuated_word": "kind,"
+              },
+              {
+                "word": "completed",
+                "start": 34.82,
+                "end": 35.32,
+                "confidence": 0.8889228,
+                "punctuated_word": "completed"
+              },
+              {
+                "word": "the",
+                "start": 35.5,
+                "end": 35.76,
+                "confidence": 0.9071465,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "ensemble",
+                "start": 35.76,
+                "end": 36.26,
+                "confidence": 0.88109225,
+                "punctuated_word": "ensemble,"
+              },
+              {
+                "word": "their",
+                "start": 37.42,
+                "end": 37.66,
+                "confidence": 0.93947446,
+                "punctuated_word": "their"
+              },
+              {
+                "word": "edges",
+                "start": 37.66,
+                "end": 38.16,
+                "confidence": 0.97294044,
+                "punctuated_word": "edges"
+              },
+              {
+                "word": "protected",
+                "start": 38.36,
+                "end": 38.86,
+                "confidence": 0.8692862,
+                "punctuated_word": "protected"
+              },
+              {
+                "word": "by",
+                "start": 39.28,
+                "end": 39.559998,
+                "confidence": 0.99762493,
+                "punctuated_word": "by"
+              },
+              {
+                "word": "horseshoe-like",
+                "start": 39.559998,
+                "end": 40.059998,
+                "confidence": 0.8502647,
+                "punctuated_word": "horseshoe-like"
+              }
+            ],
+            "paragraphs": {
+              "transcript": "\nHis attire, though new, hinted at a different reality. The cheap gray cap still bore the stiffness of novelty, and his suit, despite its creases, spoke of recent acquisition. A chambray shirt, rigid with filler, clung to him, its coat and trousers, too big and too short, respectively. New tan shoes, the Army last kind, completed the ensemble, their edges protected by horseshoe-like half-circles.",
+              "paragraphs": [
+                {
+                  "sentences": [
+                    {
+                      "text": "His attire, though new, hinted at a different reality.",
+                      "start": 0.82,
+                      "end": 5.2799997
+                    },
+                    {
+                      "text": "The cheap gray cap still bore the stiffness of novelty, and his suit, despite its creases, spoke of recent acquisition.",
+                      "start": 5.7599998,
+                      "end": 17.4
+                    },
+                    {
+                      "text": "A chambray shirt, rigid with filler, clung to him, its coat and trousers, too big and too short, respectively.",
+                      "start": 18.16,
+                      "end": 28.939999
+                    },
+                    {
+                      "text": "New tan shoes, the Army last kind, completed the ensemble, their edges protected by horseshoe-like half-circles.",
+                      "start": 30.06,
+                      "end": 41.260002
+                    }
+                  ],
+                  "num_words": 64,
+                  "start": 0.82,
+                  "end": 41.260002
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -604,11 +604,9 @@
             words.forEach((word, index) => {
                 let parentSpan = document.createElement("span");
                 let cleanWord = word.replace(/_/g, '\u00A0');
-                var cleanPho = phoWords[currentWordIndex].replace(/_/g, '\u00A0');
-
-
-
-
+                var cleanPho = cleanPho.replace(/\s/g, '');
+                cleanPho = phoWords[currentWordIndex].replace(/_/g, '\u00A0');
+                
                 if (word.includes("#")) {
                     let newParentSpan = document.createElement("span");
                     var textParts = cleanWord.split("#");

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Highlighter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: rgb(135, 135, 135);
@@ -275,13 +276,18 @@
             width: 950px;
             line-height: 130px;
             font-size: 1.75em;
-            font-family: "Work Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-            font-weight: 600;
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: rgb(44,44,44);
+            font-family: 'Concert One', sans-serif;
+            font-weight: 900;
             text-shadow:
-                -1px -1px 0 black,
-                1px -1px 0 black,
-                -1px 1px 0 black,
-                1px 1px 0 black;
+                2px 2px 0 white,
+                -2px 2px 0 white,
+                -2px -2px 0 white,
+                2px -2px 0 white;
+            filter: drop-shadow(0 3px 2px rgb(1,1,1,0.6));
+            letter-spacing: -4px;
+            
         }
 
         #phoneticVersion {

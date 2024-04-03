@@ -78,16 +78,14 @@
 
 
         #backcolorcontainer {
-            
+
             z-index: -1;
             position: absolute;
             width: 100%;
             height: 100%;
             top: 0;
             overflow: hidden;
-            filter: drop-shadow(0px 5px 10px rgb(255, 255, 255))
-                    drop-shadow(0px 10px 15px rgb(139, 139, 139))
-                    drop-shadow(0px 15px 20px rgb(182, 182, 182));
+            filter: drop-shadow(0px 5px 10px rgb(255, 255, 255)) drop-shadow(0px 10px 15px rgb(139, 139, 139)) drop-shadow(0px 15px 20px rgb(182, 182, 182));
         }
 
         svg {
@@ -100,7 +98,7 @@
             width: 100%;
             height: 100%;
             z-index: -9;
-            
+
         }
 
         .g1 {
@@ -234,11 +232,11 @@
         #blurbg {
             z-index: 0;
             position: absolute;
-      
+
             background-color: rgba(144, 29, 29, 0.135);
 
 
-            
+
             border: 2px solid rgb(178, 216, 229);
             /* Border color for the post-it note */
             box-shadow: 0px 30px 10px 1px rgba(0, 0, 0, 60%);
@@ -581,9 +579,9 @@
             secondsArray = extractStartNumbers(jsonData);
             for (let index = 0; index < secondsArray.length; index++) {
                 if (index == 0) {
-                    delaysArray.push(((secondsArray[index+1]) * 1000+ 500));
+                    delaysArray.push(((secondsArray[index + 1]) * 1000 + 500));
                 } else {
-                    delaysArray.push(((secondsArray[index+1] - secondsArray[index]) * 1000) - 10);
+                    delaysArray.push(((secondsArray[index + 1] - secondsArray[index]) * 1000) - 10);
                 }
             }
         });
@@ -598,20 +596,29 @@
             EnglishPositions.length = 0; // Clear previous positions
             currentIndexEnglish = 0; // Reset index
             currentWordIndex = 0;
-            // Split the input text into words, considering words within parentheses as a single word
-            const words = inputText.match(/(\([^)]+\))|\S+/g) || [];
+
+            const words = splitTextAndPreserveNewlines(inputText);
+            //print words
 
             var phoInput = document.getElementById('phoInput').value;
             var phoWords = phoInput.match(/(?:\([^)]+\)|\S+)/g);
             // Create a span element for each word and append it to the outputText
             words.forEach((word, index) => {
-
+                console.log(word + hasNewline(word));
                 const span = document.createElement("span");
 
                 // Remove underscores from the word
                 const cleanWord = word.replace(/_/g, '\u00A0');
 
                 // Update the content of the current line
+                if (hasNewline(word)) {
+                    span.innerHTML = `${cleanWord}<br>`;
+                } else {
+                    span.innerHTML = `${cleanWord}`;
+                }
+
+
+
 
                 // Check if the word is within parentheses and apply green color
                 if (word.startsWith("(") && word.endsWith(")")) {
@@ -644,8 +651,7 @@
                     span.innerHTML = text + "<br>";
 
                 } else {
-                    // Check if the total characters exceed 19
-                    spanModified = false;
+                    /*spanModified = false;
                     let totalCharacters = cleanWord.length + 1;
                     let loopIteration = 1;
                     for (let index = currentWordIndex; index >= 0; index--) {
@@ -677,7 +683,9 @@
                     if (!spanModified) {
                         span.textContent = cleanWord + " ";
                     }
+                    */
                 }
+
 
                 span.className = "aspan";
                 let cleanPho = phoWords[currentWordIndex].replace(/_/g, '\u00A0');
@@ -690,51 +698,87 @@
                 currentWordIndex++;
             });
         }
+        function hasNewline(word) {
+            return /[\r\n]/.test(word);
+        }
+        function splitTextAndPreserveNewlines(inputText) {
+            // Split the text by whitespace and keep the delimiters
+            const parts = inputText.split(/(\s+)/);
 
-        function highlightEnglishWord(span, index, executionDelay, oTLength) {
-                const rect = span.getBoundingClientRect();
-                const parentRect = outputTextWrapper.getBoundingClientRect();
+            // Initialize an array to hold words with newlines added back
+            let wordsWithNewlines = [];
+            let currentWord = '';
 
-                if (span.innerHTML.endsWith(' ') && !span.innerHTML.includes("<br>") && index < oTLength - 1) {
-                    highlighter.style.transition = "all 0.1s"; // Add transition
-                    highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top - parentRect.top + outputTextWrapper.scrollTop}px)`;
-                    highlighter.style.width = `${rect.width - 10}px`;
-                    highlighter.style.height = `${rect.height + scale * 5}px`;
+            // Iterate over the parts and reconstruct words with newlines
+            parts.forEach(part => {
+                if (part.match(/[\r\n]/)) {
+                    // If the part is a newline, add it to the current word
+                    currentWord += part;
+                    wordsWithNewlines.push(currentWord);
+                    currentWord = ''; // Reset current word
+                } else if (part.trim() === '') {
+                    // If the part is whitespace other than newlines, ignore it
+                    currentWord += part;
                 } else {
-                    highlighter.style.transition = "all 0.1s"; // Add transition
-                    highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top - parentRect.top + outputTextWrapper.scrollTop}px)`;
-                    highlighter.style.width = `${rect.width + scale * 2}px`;
-                    highlighter.style.height = `${rect.height + scale * 5}px`;
+                    // If the part is a word, start building the next word
+                    if (currentWord !== '') {
+                        wordsWithNewlines.push(currentWord);
+                    }
+                    currentWord = part;
                 }
+            });
 
-                EnglishPositions[index] = { left: rect.left - parentRect.left, top: rect.top - parentRect.top + outputTextWrapper.scrollTop, width: rect.width, height: rect.height };
+            // Add the last word if it's not empty
+            if (currentWord !== '') {
+                wordsWithNewlines.push(currentWord);
+            }
 
-                // Check if the highlighted word is out of the visible area
-                const isOutOfViewport = rect.bottom < outputTextWrapper.scrollTop || rect.top > parentRect.height + outputTextWrapper.scrollTop;
+            return wordsWithNewlines;
+        }
+        function highlightEnglishWord(span, index, executionDelay, oTLength) {
+            const rect = span.getBoundingClientRect();
+            const parentRect = outputTextWrapper.getBoundingClientRect();
 
-                // Scroll the outputTextWrapper if needed
-                const wrapperHeight = outputTextWrapper.clientHeight;
-                const spanTop = EnglishPositions[index].top;
-                const spanHeight = EnglishPositions[index].height;
+            if (span.innerHTML.endsWith(' ') && !span.innerHTML.includes("<br>") && index < oTLength - 1) {
+                highlighter.style.transition = "all 0.1s"; // Add transition
+                highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top - parentRect.top + outputTextWrapper.scrollTop}px)`;
+                highlighter.style.width = `${rect.width - 10}px`;
+                highlighter.style.height = `${rect.height + scale * 5}px`;
+            } else {
+                highlighter.style.transition = "all 0.1s"; // Add transition
+                highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top - parentRect.top + outputTextWrapper.scrollTop}px)`;
+                highlighter.style.width = `${rect.width + scale * 2}px`;
+                highlighter.style.height = `${rect.height + scale * 5}px`;
+            }
+
+            EnglishPositions[index] = { left: rect.left - parentRect.left, top: rect.top - parentRect.top + outputTextWrapper.scrollTop, width: rect.width, height: rect.height };
+
+            // Check if the highlighted word is out of the visible area
+            const isOutOfViewport = rect.bottom < outputTextWrapper.scrollTop || rect.top > parentRect.height + outputTextWrapper.scrollTop;
+
+            // Scroll the outputTextWrapper if needed
+            const wrapperHeight = outputTextWrapper.clientHeight;
+            const spanTop = EnglishPositions[index].top;
+            const spanHeight = EnglishPositions[index].height;
 
 
-                const scrollTo = spanTop + (spanHeight / 2 - wrapperHeight / 2);
+            const scrollTo = spanTop + (spanHeight / 2 - wrapperHeight / 2);
 
-                if (index < preLastWordIndex) {
-                    outputTextWrapper.scrollTo({
-                        top: scrollTo,
-                        behavior: 'smooth'
-                    });
+            if (index < preLastWordIndex) {
+                outputTextWrapper.scrollTo({
+                    top: scrollTo,
+                    behavior: 'smooth'
+                });
 
-                }
+            }
 
-                if (span.offsetHeight > 200) {
-                    var div = document.getElementById("OutputTextTobeHightlighted")
-                    div.style.height = "260px";
-                    setTimeout(() => {
-                        div.style.height = "420px";
-                    }, executionDelay);
-                }
+            if (span.offsetHeight > 200) {
+                var div = document.getElementById("OutputTextTobeHightlighted")
+                div.style.height = "260px";
+                setTimeout(() => {
+                    div.style.height = "420px";
+                }, executionDelay);
+            }
         }
 
         function startUpdate() {
@@ -746,7 +790,7 @@
             let totalAdded = 0;
             let oTLength = outputText.children.length;
             function update() {
-                
+
                 if (currentWIndex < oTLength) {
 
                     let span = outputText.children[currentWIndex].children[0];
@@ -759,7 +803,7 @@
                     }, executionDelay);
                 }
             }
-            
+
             audio.addEventListener('play', () => {
                 update();
             });
@@ -782,6 +826,7 @@
             startProgress();
             setTimeout(() => {
                 setTimeout(() => {
+                    
                     const englishWords = document.getElementById("outputText");
 
                     setTimeout(() => {
@@ -883,4 +928,3 @@
 </body>
 
 </html>
-

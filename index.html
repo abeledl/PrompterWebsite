@@ -7,6 +7,11 @@
     <title>Text Highlighter</title>
     <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Stickerbold';
+            src: url('Menlo-Regular.ttf') format('truetype');
+        }
+
         body {
             background-color: rgb(135, 135, 135);
             margin-left: 100px;
@@ -274,14 +279,14 @@
             -webkit-text-stroke-width: 2px;
             -webkit-text-stroke-color: rgb(44, 44, 44);
             font-family: 'Concert One', sans-serif;
-            font-weight: 900;
+            font-weight: 500;
             text-shadow:
                 2px 2px 0 white,
                 -2px 2px 0 white,
                 -2px -2px 0 white,
                 2px -2px 0 white;
-            filter: drop-shadow(0 3px 2px rgb(1, 1, 1, 0.6));
-            -webkit-filter: drop-shadow(0 3px 2px rgb(1, 1, 1, 0.6));
+            filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
+            -webkit-filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
             letter-spacing: -4px;
             line-height: 155px;
 
@@ -381,21 +386,29 @@
             position: absolute;
             text-align: center;
             content: attr(data-before-content);
-            font-size: 40px;
+            font-size: 50px;
             width: 100%;
             top: 35px;
             left: 0;
             right: 0;
             bottom: 0;
-            color: #f8ff9ceb;
+            color: #ffffffeb;
             text-shadow:
-                -1px -1px 0 rgba(0, 0, 0, 0.066),
-                1px -1px 0 rgba(0, 0, 0, 0.066),
-                -1px 1px 0 rgba(0, 0, 0, 0.066),
-                1px 1px 0 rgba(0, 0, 0, 0.066);
+                -1px -1px 0 rgb(0, 0, 0),
+                1px -1px 0 rgb(0, 0, 0),
+                -1px 1px 0 rgb(0, 0, 0),
+                1px 1px 0 rgb(0, 0, 0);
             /* You can customize the border style and color */
             pointer-events: none;
             z-index: -2;
+            font-family: 'Concer One', sans-serif;
+
+
+            -webkit-text-stroke-width: 0px;
+            letter-spacing: -2px;
+            font-weight: 100;
+
+
         }
 
         .aspan.newStyle::before {
@@ -527,7 +540,7 @@
 
 
         </div>
-        <div id="fps-display">FPS: 
+        <div id="fps-display">FPS:
             <span id="fps">0</span> <br>
             <a href="fonts.html">Fonts Page</a>
         </div>
@@ -592,48 +605,58 @@
             // Create a span element for each word and append it to the outputText
             words.forEach((word, index) => {
                 let parentSpan = document.createElement("span");
-                let cleanWord = word.replace(/_/g, '\u00A0');
                 var cleanPho = phoWords[currentWordIndex].replace(/\s/g, '');
-                cleanPho = cleanPho.replace(/_/g, '\u00A0');
+                cleanPho = cleanPho.replace(/_/g, '\u00A0\u00A0\u00A0');
+                if ((word.includes("@") || word.includes("^")) && !word.includes("#")) {
+                    let wordSpan = colorizeText(word);
+                    var newSpan = document.createElement("span");
+                    newSpan.className = "aspan";
+                    newSpan.setAttribute("data-before-content", cleanPho);
+                    newSpan.appendChild(wordSpan);
+                    parentSpan.appendChild(newSpan);
+                }
+                else {
+                    let cleanWord = word.replace(/_/g, '\u00A0');
+                    if (word.includes("#")) {
+                        let newParentSpan = document.createElement("span");
+                        var textParts = cleanWord.split("#");
+                        var phoParts = cleanPho.split("#");
 
-                if (word.includes("#")) {
-                    let newParentSpan = document.createElement("span");
-                    var textParts = cleanWord.split("#");
-                    var phoParts = cleanPho.split("#");
+                        // Create new span elements for each part of the split text
+                        textParts.forEach((part, index) => {
+                            let wordSpan2 = colorizeText(part);
+                            var newSpan = document.createElement("span");
+                            newSpan.className = "aspan";
+                            newSpan.setAttribute("data-before-content", phoParts[index]);
+                            newSpan.appendChild(wordSpan2);
+                            newParentSpan.appendChild(newSpan);
+                            parentSpan.appendChild(newParentSpan);
+                        });
 
-                    // Create new span elements for each part of the split text
-                    textParts.forEach((part, index) => {
-                        var newSpan = document.createElement("span");
-                        newSpan.className = "aspan";
-                        newSpan.setAttribute("data-before-content", phoParts[index]);
-                        newSpan.innerHTML = `${part}<br>`;
-                        newParentSpan.appendChild(newSpan);
-                        parentSpan.appendChild(newParentSpan);
-                    });
+                        // Remove the last <br> from the last new span
+                        var lastNewSpan = newParentSpan.lastChild;
+                        if (lastNewSpan.tagName === "SPAN" && lastNewSpan.innerHTML.endsWith("<br>")) {
+                            lastNewSpan.innerHTML = lastNewSpan.innerHTML.slice(0, -4); // Remove last <br>
+                        }
 
-                    // Remove the last <br> from the last new span
-                    var lastNewSpan = newParentSpan.lastChild;
-                    if (lastNewSpan.tagName === "SPAN" && lastNewSpan.innerHTML.endsWith("<br>")) {
-                        lastNewSpan.innerHTML = lastNewSpan.innerHTML.slice(0, -4); // Remove last <br>
-                    }
-
-                    // Append the <br> at the end of the newParentSpan
-                    newParentSpan.innerHTML += "<br>";
+                        // Append the <br> at the end of the newParentSpan
+                        newParentSpan.innerHTML += "<br>";
 
 
-                } else {
-                    if (hasNewline(word)) {
-                        var newSpan = document.createElement("span");
-                        newSpan.className = "aspan";
-                        newSpan.setAttribute("data-before-content", cleanPho);
-                        newSpan.innerHTML = `${cleanWord}<br>`;
-                        parentSpan.appendChild(newSpan);
                     } else {
-                        var newSpan = document.createElement("span");
-                        newSpan.className = "aspan";
-                        newSpan.setAttribute("data-before-content", cleanPho);
-                        newSpan.innerHTML = `${cleanWord} `;
-                        parentSpan.appendChild(newSpan);
+                        if (hasNewline(word)) {
+                            var newSpan = document.createElement("span");
+                            newSpan.className = "aspan";
+                            newSpan.setAttribute("data-before-content", cleanPho);
+                            newSpan.innerHTML = `${cleanWord}<br>`;
+                            parentSpan.appendChild(newSpan);
+                        } else {
+                            var newSpan = document.createElement("span");
+                            newSpan.className = "aspan";
+                            newSpan.setAttribute("data-before-content", cleanPho);
+                            newSpan.innerHTML = `${cleanWord} `;
+                            parentSpan.appendChild(newSpan);
+                        }
                     }
                 }
 
@@ -645,6 +668,22 @@
         function hasNewline(word) {
             return /[\r\n]/.test(word);
         }
+        function colorizeText(text) {
+            // Create a new div element to hold the processed text
+            const span = document.createElement('span');
+
+            // Replace the patterns with span elements with the appropriate color
+            // Updated regex to include hyphenated words
+            text = text.replace(/@([^\s\W]+(?:-\w+)*)(\s|\W|$)/g, (match, p1, p2) => `<span style="color:#5bcf5b;">${p1}</span>${p2}`);
+            text = text.replace(/\^([^\s\W]+(?:-\w+)*)(\s|\W|$)/g, (match, p1, p2) => `<span style="color: yellow;">${p1}</span>${p2}`);
+            // Set the innerHTML of the div to the processed text
+            let cleanWord = text.replace(/_/g, '\u00A0');
+            span.innerHTML = `${cleanWord}<br>`;
+
+            // Return the div element
+            return span;
+        }
+
         function splitTextAndPreserveNewlines(inputText) {
             // Split the text by whitespace and keep the delimiters
             const parts = inputText.split(/(\s+)/);

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            grid-template-rows: repeat(60, 1fr);
+            gap: 4px;
+        }
+
+        .grid-item {
+            width: 256px;
+            height: 275px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 200px;
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: rgb(44, 44, 44);
+            font-family: 'Concert One', sans-serif;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Generate the grid items with letters using JavaScript -->
+    </div>
+
+    <script>
+        const gridContainer = document.querySelector('.grid-container');
+
+        // Generate the grid items with letters
+        for (let i = 0; i < 60; i++) {
+            const gridItem = document.createElement('div');
+            gridItem.classList.add('grid-item');
+            gridItem.textContent = String.fromCharCode(65 + i); // Letters from A to Z
+            gridContainer.appendChild(gridItem);
+        }
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
     <style>
@@ -31,6 +32,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="grid-container">
         <!-- Generate the grid items with letters using JavaScript -->
@@ -40,12 +42,19 @@
         const gridContainer = document.querySelector('.grid-container');
 
         // Generate the grid items with letters
+        // The letters are from A to Z array
+        let letters = [
+            '!', '"', "'", ',', '.', ':', ';', '?',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+        ];
         for (let i = 0; i < 60; i++) {
             const gridItem = document.createElement('div');
             gridItem.classList.add('grid-item');
-            gridItem.textContent = String.fromCharCode(65 + i); // Letters from A to Z
+            gridItem.textContent = letters[i];
             gridContainer.appendChild(gridItem);
         }
     </script>
 </body>
+
 </html>

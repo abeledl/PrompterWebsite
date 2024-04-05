@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Highlighter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Stickerbold';
+            src: url('Menlo-Regular.ttf') format('truetype');
+        }
+
+        body {
+            background-color: rgb(135, 135, 135);
+            margin-left: 100px;
+        }
+
+        :root {
+            --color-bg1: rgb(108, 0, 162);
+            --color-bg2: rgb(0, 17, 82);
+            --color1: 18, 113, 255;
+            --color2: 221, 74, 255;
+            --color3: 100, 220, 255;
+            --color4: 200, 50, 50;
+            --color5: 180, 180, 50;
+            --color-interactive: 140, 100, 255;
+            --circle-size: 80%;
+            --blending: hard-light;
+        }
+
+        @keyframes moveInCircle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(180deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes moveVertical {
+            0% {
+                transform: translateY(-50%);
+            }
+
+            50% {
+                transform: translateY(50%);
+            }
+
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+
+        @keyframes moveHorizontal {
+            0% {
+                transform: translateX(-50%) translateY(-10%);
+            }
+
+            50% {
+                transform: translateX(50%) translateY(10%);
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(-10%);
+            }
+        }
+
+        gradient-bg {
+
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
+            top: 0;
+            left: 0;
+        }
+
+
+
+        #backcolorcontainer {
+
+            z-index: -1;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            overflow: hidden;
+            filter: drop-shadow(0px 5px 10px rgb(255, 255, 255)) drop-shadow(0px 10px 15px rgb(139, 139, 139)) drop-shadow(0px 15px 20px rgb(182, 182, 182));
+            -webkit-filter: drop-shadow(0px 5px 10px rgb(255, 255, 255)) drop-shadow(0px 10px 15px rgb(139, 139, 139)) drop-shadow(0px 15px 20px rgb(182, 182, 182));
+        }
+
+        svg {
+            display: none;
+        }
+
+        .gradients-container {
+            filter: url(#goo);
+            -webkit-filter: url(#goo);
+            width: 100%;
+            height: 100%;
+            z-index: -9;
+
+        }
+
+        .g1 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color1), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2);
+            left: calc(50% - var(--circle-size) / 2);
+            transform-origin: center center;
+            animation: moveVertical 30s ease infinite;
+            opacity: 1;
+        }
+
+        .g2 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color2), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2);
+            left: calc(50% - var(--circle-size) / 2);
+            transform-origin: calc(50% - 400px);
+            animation: moveInCircle 20s reverse infinite;
+            opacity: 1;
+        }
+
+        .g3 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color3), 0.8) 0, rgba(var(--color3), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2 + 200px);
+            left: calc(50% - var(--circle-size) / 2 - 500px);
+            transform-origin: calc(50% + 400px);
+            animation: moveInCircle 40s linear infinite;
+            opacity: 1;
+        }
+
+        .g4 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color4), 0.8) 0, rgba(var(--color4), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: var(--circle-size);
+            height: var(--circle-size);
+            top: calc(50% - var(--circle-size) / 2);
+            left: calc(50% - var(--circle-size) / 2);
+            transform-origin: calc(50% - 200px);
+            animation: moveHorizontal 40s ease infinite;
+            opacity: 0.7;
+        }
+
+        .g5 {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color5), 0.8) 0, rgba(var(--color5), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: calc(var(--circle-size) * 2);
+            height: calc(var(--circle-size) * 2);
+            top: calc(50% - var(--circle-size));
+            left: calc(50% - var(--circle-size));
+            transform-origin: calc(50% - 800px) calc(50% + 200px);
+            animation: moveInCircle 20s ease infinite;
+            opacity: 1;
+        }
+
+        .interactive {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--color-interactive), 0.8) 0, rgba(var(--color-interactive), 0) 50%) no-repeat;
+            mix-blend-mode: var(--blending);
+            width: 100%;
+            height: 100%;
+            top: -100%;
+            left: -70%;
+            opacity: 0.7;
+        }
+
+        #englishHighlighter {
+            display: block;
+
+            transition: transform 0.4s ease-in-out;
+            position: absolute;
+
+            background: linear-gradient(45deg, #ee7752, #e73c7e, rgb(18, 41, 188));
+            border-radius: 0.5em;
+            background-size: 400% 400%;
+            animation: spiral 3s ease infinite;
+        }
+
+        @keyframes spiral {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #allTextContainer {
+            /*background-image: url(sherlockbg.jpeg);*/
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            font-size: 3em;
+            width: 1024px;
+            height: 900px;
+        }
+
+
+        #blurbg {
+            top: 35%;
+            z-index: 0;
+            position: absolute;
+            background-color: rgba(144, 29, 29, 0);
+            border: 1px solid rgb(178, 216, 229);
+            backdrop-filter: blur(25px) brightness(100%);
+            border-radius: 25px;
+            overflow: hidden;
+            filter: drop-shadow(0 15px 30px rgb(255, 255, 255)) drop-shadow(0 20px 45px rgba(0, 49, 99, 0.4)) drop-shadow(0 25px 50px rgba(0, 0, 0, 0.3));
+            -webkit-box-filter: drop-shadow(0 15px 30px rgb(255, 255, 255)) drop-shadow(0 20px 50px rgba(89, 90, 89, 0.4)) drop-shadow(0 30px 80px rgba(0, 0, 0, 0.3));
+        
+        }
+
+        #OutputTextTobeHightlighted {
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(25px) brightness(100%);
+            -webkit-backdrop-filter: blur(25px) brightness(100%);
+            width: 960px;
+            height: 490px;
+            color: white;
+            text-align: center;
+            transition: height 0.1s ease;
+
+        }
+
+        #outputTextWrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 950px;
+            height: 500px;
+            overflow: hidden;
+
+        }
+
+        #outputText {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            margin: 0;
+            text-align: center;
+            width: 950px;
+            font-size: 80px;
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: rgb(44, 44, 44);
+            font-family: 'Concert One', sans-serif;
+            font-weight: 500;
+            text-shadow:
+                2px 2px 0 white,
+                -2px 2px 0 white,
+                -2px -2px 0 white,
+                2px -2px 0 white;
+            filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
+            -webkit-filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
+            letter-spacing: -4px;
+            line-height: 155px;
+
+
+
+        }
+
+        #phoneticVersion {
+            margin: 0;
+            text-align: center;
+            color: white;
+        }
+
+
+
+        #bgcontainer {
+            position: relative;
+            width: 1024px;
+            height: 900px;
+            overflow: hidden;
+        }
+
+        #all-wrapper {
+            display: flex;
+        }
+
+        #menu {
+            position: fixed;
+            width: 500px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        #menu div {
+            margin-right: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        textarea {
+
+            padding: 8px;
+            margin-bottom: 10px;
+
+            font-size: 2em;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 5em;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+
+
+
+        #videos-container-left {
+            position: absolute;
+            
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .video-left {
+            position: absolute;
+            height: 100%;
+
+        }
+
+        .showing {
+            opacity: 1;
+            z-index: -1;
+            transition: none;
+        }
+
+        .aspan {
+            height: 94.4px;
+            position: relative;
+        }
+
+        .aspan::before {
+            position: absolute;
+            text-align: center;
+            content: attr(data-before-content);
+            font-size: 50px;
+            width: 100%;
+            top: 35px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            color: #ffffffeb;
+            text-shadow:
+                -1px -1px 0 rgb(0, 0, 0),
+                1px -1px 0 rgb(0, 0, 0),
+                -1px 1px 0 rgb(0, 0, 0),
+                1px 1px 0 rgb(0, 0, 0);
+            /* You can customize the border style and color */
+            pointer-events: none;
+            z-index: -2;
+            font-family: 'Concer One', sans-serif;
+
+
+            -webkit-text-stroke-width: 0px;
+            letter-spacing: -2px;
+            font-weight: 100;
+
+
+        }
+
+        .aspan.newStyle::before {
+            position: absolute;
+            text-align: center;
+            content: attr(data-before-content);
+            font-size: 0.3em;
+            width: 100%;
+            top: 35px;
+            left: -35px;
+            right: 0;
+            bottom: 0;
+            color: #f8ff9ceb;
+            text-shadow:
+                -1px -1px 0 rgba(0, 0, 0, 0.066),
+                1px -1px 0 rgba(0, 0, 0, 0.066),
+                -1px 1px 0 rgba(0, 0, 0, 0.066),
+                1px 1px 0 rgba(0, 0, 0, 0.066);
+            /* You can customize the border style and color */
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #progress-container {
+            width: 100%;
+            background-color: #ff3838;
+        }
+
+        #progress-bar {
+            width: 0;
+            height: 30px;
+            background-color: #4CAF50;
+            transition: width 0.95s linear;
+        }
+
+
+        #fps-display {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 50px;
+            color: white;
+            background-color: black;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p id="tempOutput"></p>
+    </div>
+    <div id="all-wrapper">
+        <div id="bgcontainer">
+            <!--
+            <div id="videos-container-left">
+                <video class="showing video-left" autoplay muted loop>
+                    <source src="video1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <video class="video-left" autoplay muted loop>
+                    <source src="video3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        -->
+            <div id="videos-container-left">
+                <video class="video-left" autoplay muted loop>
+                    <source src="video2.webm" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div id="allTextContainer">
+                <div id="blurbg">
+
+                    <div id="OutputTextTobeHightlighted">
+                        <div id="outputTextWrapper">
+                            <p id="outputText">
+                            <div id="englishHighlighter"></div>
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div id="backcolorcontainer">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="goo">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                                    <feColorMatrix in="blur" mode="matrix"
+                                        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+                                    <feBlend in="SourceGraphic" in2="goo" />
+                                </filter>
+                            </defs>
+                        </svg>
+                        <div class="gradients-container">
+                            <div class="g1"></div>
+                            <div class="g2"></div>
+                            <div class="g3"></div>
+                            <div class="g4"></div>
+                            <div class="g5"></div>
+                            <div class="interactive"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div id="menu">
+            <div>
+                <label for="inputText">Enter text:</label>
+                <textarea id="inputText" placeholder="Spanish Version"></textarea>
+            </div>
+
+            <div>
+                <button onclick="highlightAndDisplay()">Highlight and Display</button>
+            </div>
+
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+
+
+        </div>
+        <div id="fps-display">FPS:
+            <span id="fps">0</span> <br>
+            <a href="index.html">	&#x1F449 English Page</a>
+        </div>
+    </div>
+
+
+    <script>
+        const EnglishPositions = [];
+        let currentIndexEnglish = 0;
+        let currentIndexSpanish = 0;
+        let currentWIndex = 0;
+        let secondsArray = [];
+        let delaysArray = [];
+        const scale = 7;
+        const switchVideoLeftTimes = [18500];
+        const switchVideoRightTimes = [30500];
+        const highlighter = document.getElementById("englishHighlighter");
+        let preLastWordIndex = 0;
+        function extractStartNumbers(jsonData) {
+            const startNumbers = [];
+            const words = jsonData.results.channels[0].alternatives[0].words;
+
+            for (const wordInfo of words) {
+                startNumbers.push(wordInfo.start);
+            }
+
+            return startNumbers;
+        }
+        async function fetchData() {
+            try {
+                const response = await fetch('transcript.json');  // Adjust the URL based on your server's port and file location
+                const jsonData = await response.json();
+                return jsonData;
+            } catch (error) {
+                console.error('Error fetching JSON data:', error);
+            }
+        }
+        fetchData().then((jsonData) => {
+            secondsArray = extractStartNumbers(jsonData);
+            for (let index = 0; index < secondsArray.length; index++) {
+                if (index == 0) {
+                    delaysArray.push(((secondsArray[index + 1]) * 1000 + 500));
+                } else {
+                    delaysArray.push(((secondsArray[index + 1] - secondsArray[index]) * 1000) - 10);
+                }
+            }
+        });
+        function englishWords() {
+            const inputText = document.getElementById("inputText").value;
+            const outputText = document.getElementById("outputText");
+            const highlighter = document.getElementById("englishHighlighter");
+            outputText.innerHTML = ""; // Clear previous content
+            EnglishPositions.length = 0; // Clear previous positions
+            currentIndexEnglish = 0; // Reset index
+            currentWordIndex = 0;
+
+            const words = splitTextAndPreserveNewlines(inputText);
+
+            // Create a span element for each word and append it to the outputText
+            words.forEach((word, index) => {
+                let parentSpan = document.createElement("span");
+                if ((word.includes("@") || word.includes("^")) && !word.includes("#")) {
+                    let wordSpan = colorizeText(word);
+                    var newSpan = document.createElement("span");
+                    newSpan.className = "aspan";
+                    newSpan.appendChild(wordSpan);
+                    parentSpan.appendChild(newSpan);
+                }
+                else {
+                    let cleanWord = word.replace(/_/g, '\u00A0');
+                    if (word.includes("#")) {
+                        let newParentSpan = document.createElement("span");
+                        var textParts = cleanWord.split("#");
+
+                        // Create new span elements for each part of the split text
+                        textParts.forEach((part, index) => {
+                            let wordSpan2 = colorizeText(part);
+                            var newSpan = document.createElement("span");
+                            newSpan.className = "aspan";
+                            newSpan.appendChild(wordSpan2);
+                            newParentSpan.appendChild(newSpan);
+                            parentSpan.appendChild(newParentSpan);
+                        });
+
+                        // Remove the last <br> from the last new span
+                        var lastNewSpan = newParentSpan.lastChild;
+                        if (lastNewSpan.tagName === "SPAN" && lastNewSpan.innerHTML.endsWith("<br>")) {
+                            lastNewSpan.innerHTML = lastNewSpan.innerHTML.slice(0, -4); // Remove last <br>
+                        }
+
+                        // Append the <br> at the end of the newParentSpan
+                        newParentSpan.innerHTML += "<br>";
+
+
+                    } else {
+                        if (hasNewline(word)) {
+                            var newSpan = document.createElement("span");
+                            newSpan.className = "aspan";
+                            newSpan.innerHTML = `${cleanWord}<br>`;
+                            parentSpan.appendChild(newSpan);
+                        } else {
+                            var newSpan = document.createElement("span");
+                            newSpan.className = "aspan";
+                            newSpan.innerHTML = `${cleanWord} `;
+                            parentSpan.appendChild(newSpan);
+                        }
+                    }
+                }
+
+
+                outputText.appendChild(parentSpan);
+                currentWordIndex++;
+            });
+        }
+        function hasNewline(word) {
+            return /[\r\n]/.test(word);
+        }
+        function colorizeText(text) {
+            // Create a new div element to hold the processed text
+            const span = document.createElement('span');
+
+            // Replace the patterns with span elements with the appropriate color
+            // Updated regex to include hyphenated words
+            text = text.replace(/@([^\s\W]+(?:-\w+)*)(\s|\W|$)/g, (match, p1, p2) => `<span style="color:#5bcf5b;">${p1}</span>${p2}`);
+            text = text.replace(/\^([^\s\W]+(?:-\w+)*)(\s|\W|$)/g, (match, p1, p2) => `<span style="color: yellow;">${p1}</span>${p2}`);
+            text = text.replace(/\*([^\s\W]+(?:-\w+)*)(\s|\W|$)/g, (match, p1, p2) => `<span style="color: white;">${p1}</span>${p2}`);
+            
+            // Set the innerHTML of the div to the processed text
+            let cleanWord = text.replace(/_/g, '\u00A0');
+            span.innerHTML = `${cleanWord}<br>`;
+
+            // Return the div element
+            return span;
+        }
+
+        function splitTextAndPreserveNewlines(inputText) {
+            // Split the text by whitespace and keep the delimiters
+            const parts = inputText.split(/(\s+)/);
+
+            // Initialize an array to hold words with newlines added back
+            let wordsWithNewlines = [];
+            let currentWord = '';
+
+            // Iterate over the parts and reconstruct words with newlines
+            parts.forEach(part => {
+                if (part.match(/[\r\n]/)) {
+                    // If the part is a newline, add it to the current word
+                    currentWord += part;
+                    wordsWithNewlines.push(currentWord);
+                    currentWord = ''; // Reset current word
+                } else if (part.trim() === '') {
+                    // If the part is whitespace other than newlines, ignore it
+                    currentWord += part;
+                } else {
+                    // If the part is a word, start building the next word
+                    if (currentWord !== '') {
+                        wordsWithNewlines.push(currentWord);
+                    }
+                    currentWord = part;
+                }
+            });
+
+            // Add the last word if it's not empty
+            if (currentWord !== '') {
+                wordsWithNewlines.push(currentWord);
+            }
+
+            return wordsWithNewlines;
+        }
+        //bool has encountered a new line
+        let numberOfNewLines = 0;
+        let isNewLine = false;
+        let isFirstRowDouble = false;
+        let isLastRowDouble = false;
+        function highlightEnglishWord(span, index, executionDelay, oTLength) {
+            const rect = span.getBoundingClientRect();
+            const parentRect = outputTextWrapper.getBoundingClientRect();
+
+            if (span.innerHTML.endsWith(' ') && !span.innerHTML.includes("<br>") && index < oTLength - 1) {
+                isNewLine = false;
+                highlighter.style.transition = "all 0.1s"; // Add transition
+                highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top + 10 - parentRect.top + outputTextWrapper.scrollTop}px)`;
+                highlighter.style.width = `${rect.width - 10}px`;
+                highlighter.style.height = `${rect.height + scale * 5}px`;
+            } else {
+                isNewLine = true;
+                highlighter.style.transition = "all 0.1s"; // Add transition
+                highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top + 10 - parentRect.top + outputTextWrapper.scrollTop}px)`;
+                highlighter.style.width = `${rect.width + scale * 2}px`;
+                highlighter.style.height = `${rect.height + scale * 5}px`;
+            }
+
+            EnglishPositions[index] = { left: rect.left - parentRect.left, top: rect.top - parentRect.top + outputTextWrapper.scrollTop, width: rect.width, height: rect.height };
+
+            const wrapperHeight = outputTextWrapper.clientHeight;
+            const spanTop = EnglishPositions[index].top;
+            const spanHeight = EnglishPositions[index].height + 70;
+
+
+            const scrollTo = spanTop + (spanHeight / 2 - wrapperHeight / 2);
+
+
+            if (numberOfNewLines == 1 && span.offsetHeight > 200) {
+                isFirstRowDouble = true;
+            }
+
+            if (index == preLastWordIndex && span.offsetHeight > 200) {
+
+                console.log("last");
+                isLastRowDouble = true;
+            }
+
+            if (numberOfNewLines > 1 && !isLastRowDouble) {
+                if (index < preLastWordIndex + 1) {
+                    console.log("scrolling to: " + scrollTo);
+                    outputTextWrapper.scrollTo({
+                        top: scrollTo,
+                        behavior: 'smooth'
+                    });
+                }
+
+                if (span.offsetHeight > 200) {
+                    var div = document.getElementById("OutputTextTobeHightlighted")
+                    div.style.height = "350px";
+                    console.log(index + " " + preLastWordIndex);
+                    if (index != preLastWordIndex) {
+                        setTimeout(() => {
+                            div.style.height = "490px";
+                        }, executionDelay);
+                    }
+
+                }
+            }
+
+            if (isLastRowDouble) {
+                outputTextWrapper.scrollTo({
+                    top: scrollTo,
+                    behavior: 'smooth'
+                });
+            }
+
+
+            if (isNewLine) {
+                numberOfNewLines++;
+            }
+        }
+
+        function startUpdate() {
+            const audio = new Audio('audio.mp3');
+            const audio2 = new Audio('Adventure-320bit(chosic.com).mp3');
+            audio2.volume = 0.08;
+            audio.play();
+            audio2.play();
+            let totalAdded = 0;
+            let oTLength = outputText.children.length;
+            function update() {
+
+                if (currentWIndex < oTLength) {
+
+                    let span = outputText.children[currentWIndex].children[0];
+                    let executionDelay = delaysArray[currentWIndex];
+                    highlightEnglishWord(span, currentWIndex, executionDelay, oTLength)
+                    currentWIndex++;
+                    setTimeout(() => {
+
+                        update();
+                    }, executionDelay);
+                }
+            }
+
+            audio.addEventListener('play', () => {
+                update();
+            });
+        }
+
+        function adjustFontSize(span) {
+            const maxFontSize = 2.5; // Maximum font size in em units
+            const spanWidth = span.offsetWidth;
+            const parentWidth = outputTextWrapper.offsetWidth;
+
+            if (spanWidth > parentWidth) {
+                span.style.fontSize = 0.9 + "em";
+            }
+        }
+
+
+
+        function highlightAndDisplay() {
+            englishWords();
+            startProgress();
+            setTimeout(() => {
+                setTimeout(() => {
+
+                    const englishWords = document.getElementById("outputText");
+
+                    setTimeout(() => {
+                        //get the index of the pre last word with a <br> tag
+                        let lag = 0;
+                        for (let index = 0; index < englishWords.children.length; index++) {
+                            if (englishWords.children[index].children[0].innerHTML.includes("<br>")) {
+                                lag = preLastWordIndex;
+                                preLastWordIndex = index;
+                            }
+                        }
+
+                        preLastWordIndex = lag + 1;
+
+                    }, 100);
+                }, 300);
+            }, 500);
+            setTimeout(() => {
+                var menuDiv = document.getElementById("menu");
+                menuDiv.style.display = "none";
+
+                startUpdate();
+
+
+                for (let i = 0; i < switchVideoLeftTimes.length; i++) {
+                    setTimeout(() => {
+                        //playNextLeftVideo();
+                    }, switchVideoLeftTimes[i]);
+                }
+            }, 950);
+        }
+
+        let videoLeft = document.querySelectorAll('.video-left');
+        let videoLeftIndex = 0;
+        function playNextLeftVideo() {
+            videoLeft[videoLeftIndex].classList.remove('showing');
+
+            videoLeftIndex++;
+            if (videoLeftIndex >= videoLeft.length) {
+                videoLeftIndex = 0;
+            }
+            videoLeft[videoLeftIndex].classList.add('showing');
+        }
+
+
+        function startProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '100%';
+        }
+
+        const fpsElement = document.getElementById('fps');
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        function updateFps() {
+            const currentTime = performance.now();
+            const deltaTime = currentTime - lastTime;
+
+            if (deltaTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / deltaTime);
+                fpsElement.textContent = fps;
+
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+
+            frameCount++;
+            requestAnimationFrame(updateFps);
+        }
+        updateFps();
+        document.addEventListener('DOMContentLoaded', function () {
+            const interBubble = document.querySelector('.interactive');
+            let curX = 0;
+            let curY = 0;
+            let tgX = 0;
+            let tgY = 0;
+
+            function move() {
+                curX += (tgX - curX) / 20;
+                curY += (tgY - curY) / 20;
+                interBubble.style.transform = 'translate(' + Math.round(curX) + 'px, ' + Math.round(curY) + 'px)';
+                requestAnimationFrame(function () {
+                    move();
+                });
+            }
+
+            window.addEventListener('mousemove', function (event) {
+                tgX = event.clientX;
+                tgY = event.clientY;
+            });
+
+            move();
+        });
+    </script>
+</body>
+
+</html>

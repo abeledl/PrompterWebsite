@@ -9,7 +9,7 @@
     <style>
         @font-face {
             font-family: 'Stickerbold';
-            src: url('ARLRDBD.TTF') format('truetype');
+            src: url('Menlo-Regular.ttf') format('truetype');
         }
 
         body {
@@ -103,7 +103,7 @@
             filter: url(#goo);
             -webkit-filter: url(#goo);
             width: 100%;
-            height: 100%;
+            height: 234%;
             z-index: -9;
 
         }
@@ -221,24 +221,25 @@
 
         #allTextContainer {
             /*background-image: url(sherlockbg.jpeg);*/
+            background: linear-gradient(to bottom, #0085bc, #007af0);
             position: relative;
             display: grid;
             place-items: center;
             overflow: hidden;
             font-size: 3em;
             width: 1024px;
-            height: 900px;
+            height: 248px;
         }
 
 
         #blurbg {
-            top: 35%;
+            top: 0;
             z-index: 0;
             position: absolute;
             background-color: rgba(144, 29, 29, 0);
             border: 1px solid rgb(178, 216, 229);
             backdrop-filter: blur(25px) brightness(100%);
-            border-radius: 25px;
+
             overflow: hidden;
             filter: drop-shadow(0 15px 30px rgb(255, 255, 255)) drop-shadow(0 20px 45px rgba(0, 49, 99, 0.4)) drop-shadow(0 25px 50px rgba(0, 0, 0, 0.3));
             -webkit-box-filter: drop-shadow(0 15px 30px rgb(255, 255, 255)) drop-shadow(0 20px 50px rgba(89, 90, 89, 0.4)) drop-shadow(0 30px 80px rgba(0, 0, 0, 0.3));
@@ -250,8 +251,8 @@
             overflow: hidden;
             backdrop-filter: blur(25px) brightness(100%);
             -webkit-backdrop-filter: blur(25px) brightness(100%);
-            width: 960px;
-            height: 490px;
+            width: 1024px;
+            height: 246px;
             color: white;
             text-align: center;
             transition: height 0.1s ease;
@@ -263,8 +264,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 950px;
-            height: 500px;
+            width: 1024px;
+            height: 248px;
             overflow: hidden;
 
         }
@@ -276,10 +277,10 @@
             margin: 0;
             text-align: center;
             width: 950px;
-            font-size: 75px;
+            font-size: 80px;
             -webkit-text-stroke-width: 2px;
             -webkit-text-stroke-color: rgb(44, 44, 44);
-            font-family: 'Stickerbold', sans-serif;
+            font-family: 'Concert One', sans-serif;
             font-weight: 500;
             text-shadow:
                 2px 2px 0 white,
@@ -288,8 +289,8 @@
                 2px -2px 0 white;
             filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
             -webkit-filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
-            letter-spacing: 0px;
-            line-height: 155px;
+            letter-spacing: -4px;
+            line-height: 120px;
 
 
 
@@ -306,7 +307,7 @@
         #bgcontainer {
             position: relative;
             width: 1024px;
-            height: 900px;
+            height: 248px;
             overflow: hidden;
         }
 
@@ -522,26 +523,10 @@
 
         </div>
 
-        <div id="menu">
-            <div>
-                <label for="inputText">Enter text:</label>
-                <textarea id="inputText" placeholder="Spanish Version"></textarea>
-            </div>
 
-            <div>
-                <button onclick="highlightAndDisplay()">Highlight and Display</button>
-            </div>
-
-            <div id="progress-container">
-                <div id="progress-bar"></div>
-            </div>
-
-
-        </div>
         <div id="fps-display">FPS:
             <span id="fps">0</span> <br>
             <a href="index.html"> &#x1F449 English Page</a>
-            <a href="footer.html"> &#x1F449 Footer</a>
         </div>
     </div>
 
@@ -552,8 +537,6 @@
         let currentIndexSpanish = 0;
         let currentWIndex = 0;
         let secondsArray = [];
-        let startTimes = [];
-        let newLineStartTimes = [];
         let delaysArray = [];
         const scale = 7;
         const switchVideoLeftTimes = [18500];
@@ -570,6 +553,16 @@
 
             return startNumbers;
         }
+        function extractEndNumber(jsonData) {
+            const endNumbers = [];
+            const words = jsonData.results.channels[0].alternatives[0].words;
+
+            for (const wordInfo of words) {
+                endNumbers.push(wordInfo.end);
+            }
+
+            return endNumbers;
+        }
         async function fetchData() {
             try {
                 const response = await fetch('transcript.json');  // Adjust the URL based on your server's port and file location
@@ -581,81 +574,29 @@
         }
         fetchData().then((jsonData) => {
             secondsArray = extractStartNumbers(jsonData);
-            startTimes = extractStartNumbers(jsonData);
+            const endNumbers = extractEndNumber(jsonData);
+            let endNumbersLength = endNumbers.length;
+            let numberOfWords = jsonData.results.channels[0].alternatives[0].words.length;
+            let totalDuration = endNumbers[endNumbersLength - 1];
 
-            let startNumString = "";
-            for (let index = 0; index < secondsArray.length; index++) {
-                if (index == 0) {
-                    delaysArray.push(((secondsArray[index + 1]) * 1000));
-                } else {
-                    delaysArray.push(((secondsArray[index + 1] - secondsArray[index]) * 1000) - 10);
-                }
-            }
+            //print in outputtextdiv 
+            let outputText = document.getElementById("outputText");
+
+            // Create the full text with appropriate color spans in a single variable
+            let outputTextString = `
+Mas de <span style="color: #ff5959;"> ${numberOfWords} palabras</span> 
+<br>
+en <span style="color: #0089ff;"> ${totalDuration.toFixed(2)} segundos</span>
+`;
+
+            // Clear existing content and set the new text directly using innerHTML
+            outputText.innerHTML = outputTextString;
+
+
         });
         function englishWords() {
             const inputText = document.getElementById("inputText").value;
-            const outputText = document.getElementById("outputText");
-            const highlighter = document.getElementById("englishHighlighter");
-            outputText.innerHTML = ""; // Clear previous content
-            EnglishPositions.length = 0; // Clear previous positions
-            currentIndexEnglish = 0; // Reset index
-            currentWordIndex = 0;
 
-            const words = splitTextAndPreserveNewlines(inputText);
-
-            // Create a span element for each word and append it to the outputText
-            words.forEach((word, index) => {
-                let parentSpan = document.createElement("span");
-                if ((word.includes("@") || word.includes("^")) && !word.includes("#")) {
-                    let wordSpan = colorizeText(word);
-                    var newSpan = document.createElement("span");
-                    newSpan.className = "aspan";
-                    newSpan.appendChild(wordSpan);
-                    parentSpan.appendChild(newSpan);
-                }
-                else {
-                    let cleanWord = word.replace(/_/g, '\u00A0');
-                    if (word.includes("#")) {
-                        let newParentSpan = document.createElement("span");
-                        var textParts = cleanWord.split("#");
-
-                        // Create new span elements for each part of the split text
-                        textParts.forEach((part, index) => {
-                            let wordSpan2 = colorizeText(part);
-                            //if index == 1 remove br
-                            if (wordSpan2.innerHTML.endsWith("<br>") && index == 1) {
-                                wordSpan2.innerHTML = wordSpan2.innerHTML.slice(0, -4); // Remove last <br>
-                            }
-                            var newSpan = document.createElement("span");
-                            newSpan.className = "aspan";
-                            newSpan.appendChild(wordSpan2);
-                            newParentSpan.appendChild(newSpan);
-                            parentSpan.appendChild(newParentSpan);
-                        });
-
-                        // Append the <br> at the end of the newParentSpan
-                        newParentSpan.innerHTML += "<br>";
-
-
-                    } else {
-                        if (hasNewline(word)) {
-                            var newSpan = document.createElement("span");
-                            newSpan.className = "aspan";
-                            newSpan.innerHTML = `${cleanWord}<br>`;
-                            parentSpan.appendChild(newSpan);
-                        } else {
-                            var newSpan = document.createElement("span");
-                            newSpan.className = "aspan";
-                            newSpan.innerHTML = `${cleanWord} `;
-                            parentSpan.appendChild(newSpan);
-                        }
-                    }
-                }
-
-
-                outputText.appendChild(parentSpan);
-                currentWordIndex++;
-            });
         }
         function hasNewline(word) {
             return /[\r\n]/.test(word);
@@ -729,9 +670,6 @@
                 highlighter.style.height = `${rect.height + scale * 5}px`;
             } else {
                 isNewLine = true;
-                if ((index + 1) < startTimes.length) {
-                    newLineStartTimes.push(startTimes[index + 1]);
-                }
                 highlighter.style.transition = "all 0.1s"; // Add transition
                 highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top + 10 - parentRect.top + outputTextWrapper.scrollTop}px)`;
                 highlighter.style.width = `${rect.width + scale * 2}px`;
@@ -803,32 +741,6 @@
             let oTLength = outputText.children.length;
             function update() {
 
-                if (currentWIndex == oTLength) {
-                    let coordinatesString = "";
-                    console.log("Coordinates");
-                    // Loop through each position object
-                    EnglishPositions.forEach((position, index) => {
-                        // Calculate the middle point of the word horizontally
-                        const middleX = position.left + position.width / 2;
-
-                        // Calculate the middle point of the word vertically
-                        const middleY = position.top + position.height / 2;
-
-                        // Append the coordinates to the string
-                        coordinatesString += `[${middleX.toFixed(2)}, ${middleY.toFixed(2)}]`;
-
-                        // Add a comma and space if it's not the last coordinate
-                        if (index < EnglishPositions.length - 1) {
-                            coordinatesString += ", ";
-                        }
-                    });
-
-                    // Print the coordinates string
-                    console.log(coordinatesString);
-
-
-
-                }
                 if (currentWIndex < oTLength) {
 
                     let span = outputText.children[currentWIndex].children[0];
@@ -838,7 +750,7 @@
                     setTimeout(() => {
 
                         update();
-                    }, 100);
+                    }, executionDelay);
                 }
             }
 

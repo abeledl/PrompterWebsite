@@ -45,7 +45,14 @@
                 "end": 1.46,
                 "confidence": 0.99811673,
                 "punctuated_word": "ethereal"
-              },            
+              },
+              {
+                "word": "glow",
+                "start": 1.68,
+                "end": 2.1799998,
+                "confidence": 0.99961543,
+                "punctuated_word": "glow"
+              },
               {
                 "word": "of",
                 "start": 2.24,
@@ -68,11 +75,32 @@
                 "punctuated_word": "yellow"
               },
               {
+                "word": "tiled",
+                "start": 3.12,
+                "end": 3.62,
+                "confidence": 0.97277987,
+                "punctuated_word": "tiled"
+              },
+              {
+                "word": "chamber",
+                "start": 3.6799998,
+                "end": 4.18,
+                "confidence": 0.9977543,
+                "punctuated_word": "chamber,"
+              },
+              {
                 "word": "lime",
                 "start": 5.2799997,
                 "end": 5.7599998,
                 "confidence": 0.9946861,
                 "punctuated_word": "lime"
+              },
+              {
+                "word": "crystals",
+                "start": 5.7599998,
+                "end": 6.2599998,
+                "confidence": 0.87791806,
+                "punctuated_word": "crystals"
               },
               {
                 "word": "sprout",
@@ -117,6 +145,20 @@
                 "punctuated_word": "nature's"
               },
               {
+                "word": "delicate",
+                "start": 9.915,
+                "end": 10.415,
+                "confidence": 0.9997603,
+                "punctuated_word": "delicate"
+              },
+              {
+                "word": "artwork",
+                "start": 10.955,
+                "end": 11.455,
+                "confidence": 0.99798596,
+                "punctuated_word": "artwork."
+              },
+              {
                 "word": "each",
                 "start": 12.155001,
                 "end": 12.555,
@@ -159,6 +201,13 @@
                 "punctuated_word": "otherworldly"
               },
               {
+                "word": "luminescence",
+                "start": 15.675,
+                "end": 16.175,
+                "confidence": 0.9650562,
+                "punctuated_word": "luminescence,"
+              },
+              {
                 "word": "casting",
                 "start": 17.82,
                 "end": 18.32,
@@ -171,6 +220,13 @@
                 "end": 18.960001,
                 "confidence": 0.99954647,
                 "punctuated_word": "dancing"
+              },
+              {
+                "word": "shadows",
+                "start": 19.26,
+                "end": 19.76,
+                "confidence": 0.9998561,
+                "punctuated_word": "shadows"
               },
               {
                 "word": "across",
@@ -243,6 +299,20 @@
                 "punctuated_word": "faint"
               },
               {
+                "word": "sweet",
+                "start": 24.54,
+                "end": 25.04,
+                "confidence": 0.9167635,
+                "punctuated_word": "sweet"
+              },
+              {
+                "word": "fragrance",
+                "start": 25.18,
+                "end": 25.68,
+                "confidence": 0.79254615,
+                "punctuated_word": "fragrance,"
+              },
+              {
                 "word": "as",
                 "start": 26.955,
                 "end": 27.115,
@@ -269,6 +339,13 @@
                 "end": 28.095001,
                 "confidence": 0.9994729,
                 "punctuated_word": "crystals"
+              },
+              {
+                "word": "themselves",
+                "start": 28.235,
+                "end": 28.735,
+                "confidence": 0.99953043,
+                "punctuated_word": "themselves"
               },
               {
                 "word": "exhale",
@@ -313,6 +390,20 @@
                 "punctuated_word": "distant"
               },
               {
+                "word": "verdant",
+                "start": 33.115,
+                "end": 33.615,
+                "confidence": 0.89682055,
+                "punctuated_word": "verdant"
+              },
+              {
+                "word": "forest",
+                "start": 33.835,
+                "end": 34.335,
+                "confidence": 0.96053076,
+                "punctuated_word": "forest."
+              },
+              {
                 "word": "soft",
                 "start": 35.04,
                 "end": 35.440002,
@@ -320,11 +411,25 @@
                 "punctuated_word": "Soft"
               },
               {
+                "word": "whispers",
+                "start": 35.440002,
+                "end": 35.940002,
+                "confidence": 0.9990331,
+                "punctuated_word": "whispers"
+              },
+              {
                 "word": "seem",
                 "start": 36.48,
                 "end": 36.72,
                 "confidence": 0.9719096,
                 "punctuated_word": "seem"
+              },
+              {
+                "word": "to",
+                "start": 36.72,
+                "end": 36.960003,
+                "confidence": 0.99991643,
+                "punctuated_word": "to"
               },
               {
                 "word": "echo",
@@ -418,6 +523,13 @@
                 "punctuated_word": "forgotten"
               },
               {
+                "word": "ages",
+                "start": 43.920002,
+                "end": 44.420002,
+                "confidence": 0.96955633,
+                "punctuated_word": "ages."
+              },
+              {
                 "word": "in",
                 "start": 45.075,
                 "end": 45.235,
@@ -437,6 +549,13 @@
                 "end": 46.135,
                 "confidence": 0.99998546,
                 "punctuated_word": "surreal"
+              },
+              {
+                "word": "sanctuary",
+                "start": 46.434998,
+                "end": 46.934998,
+                "confidence": 0.99706984,
+                "punctuated_word": "sanctuary,"
               },
               {
                 "word": "time",
@@ -530,6 +649,13 @@
                 "punctuated_word": "mesmerizing"
               },
               {
+                "word": "beauty",
+                "start": 55.75,
+                "end": 56.25,
+                "confidence": 0.9998615,
+                "punctuated_word": "beauty"
+              },
+              {
                 "word": "of",
                 "start": 56.71,
                 "end": 56.95,
@@ -549,6 +675,13 @@
                 "end": 57.67,
                 "confidence": 0.97678477,
                 "punctuated_word": "lime"
+              },
+              {
+                "word": "crystals",
+                "start": 57.67,
+                "end": 58.17,
+                "confidence": 0.9624506,
+                "punctuated_word": "crystals,"
               },
               {
                 "word": "losing",

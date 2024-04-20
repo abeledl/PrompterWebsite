@@ -9,7 +9,7 @@
     <style>
         @font-face {
             font-family: 'Stickerbold';
-            src: url('Menlo-Regular.ttf') format('truetype');
+            src: url('ARLRDBD.TTF') format('truetype');
         }
 
         body {
@@ -221,7 +221,7 @@
 
         #allTextContainer {
             /*background-image: url(sherlockbg.jpeg);*/
-           
+
             position: relative;
             display: grid;
             place-items: center;
@@ -276,10 +276,10 @@
             margin: 0;
             text-align: center;
             width: 950px;
-            font-size: 80px;
+            font-size: 105px;
             -webkit-text-stroke-width: 2px;
             -webkit-text-stroke-color: rgb(44, 44, 44);
-            font-family: 'Concert One', sans-serif;
+            font-family: 'Stickerbold', sans-serif;
             font-weight: 500;
             text-shadow:
                 2px 2px 0 white,
@@ -288,9 +288,8 @@
                 2px -2px 0 white;
             filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
             -webkit-filter: drop-shadow(0 5px 3px rgb(1, 1, 1, 0.6));
-            letter-spacing: -4px;
+            letter-spacing: 0px;
             line-height: 155px;
-
 
 
         }
@@ -367,7 +366,7 @@
 
         .video-left {
             position: absolute;
-            
+
 
         }
 
@@ -477,12 +476,12 @@
             </div>
         -->
             <div id="videos-container-left">
-                
+
                 <video class="video-left" autoplay muted loop>
                     <source src="video1.webm" type="video/webm">
                     Your browser does not support the video tag.
                 </video>
-                
+
             </div>
             <div id="allTextContainer">
                 <div id="blurbg">
@@ -553,6 +552,8 @@
         let currentIndexSpanish = 0;
         let currentWIndex = 0;
         let secondsArray = [];
+        let startTimes = [];
+        let newLineStartTimes = [];
         let delaysArray = [];
         const scale = 7;
         const switchVideoLeftTimes = [18500];
@@ -580,9 +581,28 @@
         }
         fetchData().then((jsonData) => {
             secondsArray = extractStartNumbers(jsonData);
+            startTimes = extractStartNumbers(jsonData);
+
+            let startNumString = "";
+            console.log("Start Numbers");
+            // Loop through each position object
+            secondsArray.forEach((startNum, index) => {
+                // Append the coordinates to the string
+                startNumString += `${startNum.toFixed(2)}`;
+
+                // Add a comma and space if it's not the last coordinate
+                if (index < secondsArray.length - 1) {
+                    startNumString += ", ";
+                }
+            });
+
+            // Print the coordinates string
+            console.log(startNumString);
+
+
             for (let index = 0; index < secondsArray.length; index++) {
                 if (index == 0) {
-                    delaysArray.push(((secondsArray[index + 1]) * 1000 + 500));
+                    delaysArray.push(((secondsArray[index + 1]) * 1000));//+500 safari
                 } else {
                     delaysArray.push(((secondsArray[index + 1] - secondsArray[index]) * 1000) - 10);
                 }
@@ -625,6 +645,10 @@
                         // Create new span elements for each part of the split text
                         textParts.forEach((part, index) => {
                             let wordSpan2 = colorizeText(part);
+                            //if index == 1 remove br
+                            if (wordSpan2.innerHTML.endsWith("<br>") && index == 1) {
+                                wordSpan2.innerHTML = wordSpan2.innerHTML.slice(0, -4); // Remove last <br>
+                            }
                             var newSpan = document.createElement("span");
                             newSpan.className = "aspan";
                             newSpan.setAttribute("data-before-content", phoParts[index]);
@@ -632,12 +656,6 @@
                             newParentSpan.appendChild(newSpan);
                             parentSpan.appendChild(newParentSpan);
                         });
-
-                        // Remove the last <br> from the last new span
-                        var lastNewSpan = newParentSpan.lastChild;
-                        if (lastNewSpan.tagName === "SPAN" && lastNewSpan.innerHTML.endsWith("<br>")) {
-                            lastNewSpan.innerHTML = lastNewSpan.innerHTML.slice(0, -4); // Remove last <br>
-                        }
 
                         // Append the <br> at the end of the newParentSpan
                         newParentSpan.innerHTML += "<br>";
@@ -735,6 +753,9 @@
                 highlighter.style.height = `${rect.height + scale * 5}px`;
             } else {
                 isNewLine = true;
+                if ((index + 1) < startTimes.length) {
+                    newLineStartTimes.push(startTimes[index + 1]);
+                }
                 highlighter.style.transition = "all 0.1s"; // Add transition
                 highlighter.style.transform = `translate(${rect.left - parentRect.left - scale}px, ${rect.top + 10 - parentRect.top + outputTextWrapper.scrollTop}px)`;
                 highlighter.style.width = `${rect.width + scale * 2}px`;
@@ -742,6 +763,7 @@
             }
 
             EnglishPositions[index] = { left: rect.left - parentRect.left, top: rect.top - parentRect.top + outputTextWrapper.scrollTop, width: rect.width, height: rect.height };
+
 
             const wrapperHeight = outputTextWrapper.clientHeight;
             const spanTop = EnglishPositions[index].top;
@@ -763,7 +785,6 @@
 
             if (numberOfNewLines > 1 && !isLastRowDouble) {
                 if (index < preLastWordIndex + 1) {
-                    console.log("scrolling to: " + scrollTo);
                     outputTextWrapper.scrollTo({
                         top: scrollTo,
                         behavior: 'smooth'
@@ -773,7 +794,6 @@
                 if (span.offsetHeight > 200) {
                     var div = document.getElementById("OutputTextTobeHightlighted")
                     div.style.height = "350px";
-                    console.log(index + " " + preLastWordIndex);
                     if (index != preLastWordIndex) {
                         setTimeout(() => {
                             div.style.height = "490px";
@@ -799,23 +819,47 @@
         function startUpdate() {
             const audio = new Audio('audio.mp3');
             const audio2 = new Audio('Adventure-320bit(chosic.com).mp3');
-            audio2.volume = 0.08;
+            audio2.volume = 0.05;
             audio.play();
             audio2.play();
             let totalAdded = 0;
             let oTLength = outputText.children.length;
             function update() {
 
-                if (currentWIndex < oTLength) {
+                if (currentWIndex == oTLength) {
+                    let coordinatesString = "";
+                    console.log("Coordinates");
+                    // Loop through each position object
+                    EnglishPositions.forEach((position, index) => {
+                        // Calculate the middle point of the word horizontally
+                        const middleX = position.left + position.width / 2;
 
+                        // Calculate the middle point of the word vertically
+                        const middleY = position.top + position.height / 2;
+
+                        // Append the coordinates to the string
+                        coordinatesString += `[${middleX.toFixed(2)}, ${middleY.toFixed(2)}]`;
+
+                        // Add a comma and space if it's not the last coordinate
+                        if (index < EnglishPositions.length - 1) {
+                            coordinatesString += ", ";
+                        }
+                    });
+
+                    // Print the coordinates string
+                    console.log(coordinatesString);
+
+
+
+                }
+                if (currentWIndex < oTLength) {
                     let span = outputText.children[currentWIndex].children[0];
                     let executionDelay = delaysArray[currentWIndex];
                     highlightEnglishWord(span, currentWIndex, executionDelay, oTLength)
                     currentWIndex++;
                     setTimeout(() => {
-
                         update();
-                    }, executionDelay);
+                    }, 1000); // executionDelay
                 }
             }
 

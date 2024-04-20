@@ -61,7 +61,7 @@ parent_cube.location = (0, 2.25562, 2.41886)
 highlighter_obj = bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(2.8, -17.75, 1.8), scale=(1, 1, 1))
 highlighter_obj = bpy.context.active_object
 highlighter_obj.name = "highlighter_obj_spanish"
-highlighter_obj.scale = (1, 1, 0.52)
+highlighter_obj.scale = (1, 1, 1)
 highlighter_material_spanish = bpy.data.materials.new(name="HighlighterMaterialSpanish")
 highlighter_obj.data.materials.append(highlighter_material_spanish)
 highlighter_obj.active_material.use_nodes = True
@@ -418,8 +418,8 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
 
   #for second in end_times_words_array:
   for second in start_times_array:
-    frame = calculateFrame(second, fps)
-    addKeyFrame(obj, frame, "location")
+    frameT = calculateFrame(second, fps)
+    addKeyFrame(obj, frameT, "location")
     #addKeyFrame(obj, frame, "scale")
     transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
     print("index ", word_obj_idx)
@@ -429,8 +429,10 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
       new_height = width_height_data["height"] + 1.1
     else:
       new_height = width_height_data_first_word["height"] + 1.1
-    changeWidthAndHeight(obj, new_width, new_height, 1.04)
-
+    #changeWidthAndHeight(obj, new_width, new_height, 1.04)
+    transform_node.inputs['Scale'].default_value[0] = new_width/2
+    transform_node.inputs['Scale'].default_value[1] = new_height/2
+    transform_node.inputs['Scale'].default_value[2] = 1.04/2
     coordinate = word_coordinates[word_obj_idx]
 
     new_pos_x = coordinate[0]
@@ -440,11 +442,17 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
       setObjPosition(new_pos_x * 2, (double_row_y_position* 2)+ 2.15562,1.84, obj) 
     else:
       setObjPosition(new_pos_x * 2, (new_pos_y * 2) + 2.55562, 1.84, obj)
-    transition_frames = frame + transition_frame_rate
+    transition_frames = frameT + transition_frame_rate
     addKeyFrame(obj, transition_frames, "location")
-    addKeyFrame(obj, transition_frames, "scale")
+    #addKeyFrame(obj, transition_frames, "scale")
+    transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=transition_frames)
     word_obj_idx += 1
-    
+     #add bevel modifier
+  bpy.ops.object.modifier_add(type='BEVEL')
+  bpy.context.object.modifiers["Bevel"].width = 0.1
+  bpy.context.object.modifiers["Bevel"].segments = 4
+  bpy.ops.object.shade_smooth()
+  bpy.data.objects["highlighter_obj"].select_set(False)
     
 def addOffsetToXAxisDoubleArrayCoordinates(arr, offset_x_percentage, words):
   new_pair_list = []

@@ -1,10 +1,10 @@
 {
   "metadata": {
     "transaction_key": "deprecated",
-    "request_id": "20b0c615-b3d6-48b6-9119-0336ce1e664d",
-    "sha256": "c73954b116a8a8febf73d8904a84b8812b4508aa3f4caece1a9ae9d59c4da8e3",
-    "created": "2024-04-20T00:59:21.983Z",
-    "duration": 64.93869,
+    "request_id": "62a23ddc-a70d-486b-a3a7-286b5c785f91",
+    "sha256": "ad25e6f296a92414107ae00347f41a3c620003f5e7528dff27e512a9454774df",
+    "created": "2024-04-23T00:20:59.631Z",
+    "duration": 46.528,
     "channels": 1,
     "models": [
       "30089e05-99d1-4376-b32e-c263170674af"
@@ -22,751 +22,548 @@
       {
         "alternatives": [
           {
-            "transcript": "In the ethereal glow of a yellow tiled chamber, lime crystals sprout from the walls like nature's delicate artwork. Each crystal gleams with an otherworldly luminescence, casting dancing shadows across the room. The air is filled with a faint sweet fragrance, as if the crystals themselves exhale the essence of a distant verdant forest. Soft whispers seem to echo through the space as if the very walls hold secrets of forgotten ages. In this surreal sanctuary, time feels suspended, and one can't help but be drawn into the mesmerizing beauty of the lime crystals, losing oneself in their captivating allure.",
-            "confidence": 0.99953043,
+            "transcript": "Amidst the golden desert expanse, a solitary road stretched like a lifeline. Its cracked asphalt whispered tales of journeys past, of dreams chased under relentless sunsets. Each tire tread left an imprint, a mark of transient existence in the timeless sands. Dust devils dance their silent waltz, veiling memories in their swirling embrace. At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless path.",
+            "confidence": 0.9975561,
             "words": [
               {
-                "word": "in",
-                "start": 0.39999998,
-                "end": 0.64,
-                "confidence": 0.9983542,
-                "punctuated_word": "In"
+                "word": "amidst",
+                "start": 0.71999997,
+                "end": 1.1999999,
+                "confidence": 0.9220394,
+                "punctuated_word": "Amidst"
               },
               {
                 "word": "the",
-                "start": 0.64,
-                "end": 0.96,
-                "confidence": 0.99981374,
+                "start": 1.1999999,
+                "end": 1.36,
+                "confidence": 0.9993376,
                 "punctuated_word": "the"
               },
               {
-                "word": "ethereal",
-                "start": 0.96,
-                "end": 1.46,
-                "confidence": 0.99811673,
-                "punctuated_word": "ethereal"
+                "word": "golden",
+                "start": 1.36,
+                "end": 1.8399999,
+                "confidence": 0.77416784,
+                "punctuated_word": "golden"
               },
               {
-                "word": "glow",
-                "start": 1.68,
-                "end": 2.1799998,
-                "confidence": 0.99961543,
-                "punctuated_word": "glow"
+                "word": "desert",
+                "start": 1.8399999,
+                "end": 2.34,
+                "confidence": 0.99092823,
+                "punctuated_word": "desert"
               },
               {
-                "word": "of",
-                "start": 2.24,
-                "end": 2.3999999,
-                "confidence": 0.9998658,
-                "punctuated_word": "of"
+                "word": "expanse",
+                "start": 2.3999999,
+                "end": 2.8999999,
+                "confidence": 0.9979663,
+                "punctuated_word": "expanse,"
               },
               {
                 "word": "a",
-                "start": 2.3999999,
-                "end": 2.6399999,
-                "confidence": 0.9997075,
+                "start": 3.9199998,
+                "end": 4.16,
+                "confidence": 0.9965161,
                 "punctuated_word": "a"
               },
               {
-                "word": "yellow",
-                "start": 2.6399999,
-                "end": 3.12,
-                "confidence": 0.9988663,
-                "punctuated_word": "yellow"
+                "word": "solitary",
+                "start": 4.16,
+                "end": 4.66,
+                "confidence": 0.99911875,
+                "punctuated_word": "solitary"
               },
               {
-                "word": "tiled",
-                "start": 3.12,
-                "end": 3.62,
-                "confidence": 0.97277987,
-                "punctuated_word": "tiled"
+                "word": "road",
+                "start": 4.96,
+                "end": 5.46,
+                "confidence": 0.99524564,
+                "punctuated_word": "road"
               },
               {
-                "word": "chamber",
-                "start": 3.6799998,
-                "end": 4.18,
-                "confidence": 0.9977543,
-                "punctuated_word": "chamber,"
-              },
-              {
-                "word": "lime",
-                "start": 5.2799997,
-                "end": 5.7599998,
-                "confidence": 0.9946861,
-                "punctuated_word": "lime"
-              },
-              {
-                "word": "crystals",
-                "start": 5.7599998,
-                "end": 6.2599998,
-                "confidence": 0.87791806,
-                "punctuated_word": "crystals"
-              },
-              {
-                "word": "sprout",
-                "start": 6.56,
-                "end": 7.04,
-                "confidence": 0.99880236,
-                "punctuated_word": "sprout"
-              },
-              {
-                "word": "from",
-                "start": 7.04,
-                "end": 7.2799997,
-                "confidence": 0.99950135,
-                "punctuated_word": "from"
-              },
-              {
-                "word": "the",
-                "start": 7.2799997,
-                "end": 7.52,
-                "confidence": 0.9994104,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "walls",
-                "start": 7.52,
-                "end": 8.02,
-                "confidence": 0.99924636,
-                "punctuated_word": "walls"
+                "word": "stretched",
+                "start": 5.52,
+                "end": 6,
+                "confidence": 0.76815885,
+                "punctuated_word": "stretched"
               },
               {
                 "word": "like",
-                "start": 8.955,
-                "end": 9.195001,
-                "confidence": 0.9997495,
+                "start": 6,
+                "end": 6.24,
+                "confidence": 0.99922454,
                 "punctuated_word": "like"
               },
               {
-                "word": "nature's",
-                "start": 9.195001,
-                "end": 9.695001,
-                "confidence": 0.9983358,
-                "punctuated_word": "nature's"
+                "word": "a",
+                "start": 6.24,
+                "end": 6.3999996,
+                "confidence": 0.9995053,
+                "punctuated_word": "a"
               },
               {
-                "word": "delicate",
-                "start": 9.915,
-                "end": 10.415,
-                "confidence": 0.9997603,
-                "punctuated_word": "delicate"
+                "word": "lifeline",
+                "start": 6.3999996,
+                "end": 6.8999996,
+                "confidence": 0.96106243,
+                "punctuated_word": "lifeline."
               },
               {
-                "word": "artwork",
-                "start": 10.955,
-                "end": 11.455,
-                "confidence": 0.99798596,
-                "punctuated_word": "artwork."
+                "word": "its",
+                "start": 7.695,
+                "end": 7.855,
+                "confidence": 0.8354092,
+                "punctuated_word": "Its"
+              },
+              {
+                "word": "cracked",
+                "start": 7.855,
+                "end": 8.355,
+                "confidence": 0.9882781,
+                "punctuated_word": "cracked"
+              },
+              {
+                "word": "asphalt",
+                "start": 8.575,
+                "end": 9.075,
+                "confidence": 0.9975561,
+                "punctuated_word": "asphalt"
+              },
+              {
+                "word": "whispered",
+                "start": 9.615,
+                "end": 10.115,
+                "confidence": 0.8311665,
+                "punctuated_word": "whispered"
+              },
+              {
+                "word": "tales",
+                "start": 10.255,
+                "end": 10.755,
+                "confidence": 0.9657675,
+                "punctuated_word": "tales"
+              },
+              {
+                "word": "of",
+                "start": 10.815,
+                "end": 11.055,
+                "confidence": 0.99977833,
+                "punctuated_word": "of"
+              },
+              {
+                "word": "journeys",
+                "start": 11.055,
+                "end": 11.555,
+                "confidence": 0.99306774,
+                "punctuated_word": "journeys"
+              },
+              {
+                "word": "past",
+                "start": 11.695,
+                "end": 12.195,
+                "confidence": 0.9273522,
+                "punctuated_word": "past,"
+              },
+              {
+                "word": "of",
+                "start": 13.375,
+                "end": 13.695,
+                "confidence": 0.9991725,
+                "punctuated_word": "of"
+              },
+              {
+                "word": "dreams",
+                "start": 13.695,
+                "end": 14.195,
+                "confidence": 0.9984054,
+                "punctuated_word": "dreams"
+              },
+              {
+                "word": "chased",
+                "start": 14.415,
+                "end": 14.915,
+                "confidence": 0.99154776,
+                "punctuated_word": "chased"
+              },
+              {
+                "word": "under",
+                "start": 15.215,
+                "end": 15.615,
+                "confidence": 0.9980034,
+                "punctuated_word": "under"
+              },
+              {
+                "word": "relentless",
+                "start": 15.615,
+                "end": 16.115,
+                "confidence": 0.99704117,
+                "punctuated_word": "relentless"
+              },
+              {
+                "word": "sunsets",
+                "start": 16.494999,
+                "end": 16.994999,
+                "confidence": 0.98132944,
+                "punctuated_word": "sunsets."
               },
               {
                 "word": "each",
-                "start": 12.155001,
-                "end": 12.555,
-                "confidence": 0.9995208,
+                "start": 17.8,
+                "end": 18.279999,
+                "confidence": 0.9998628,
                 "punctuated_word": "Each"
               },
               {
-                "word": "crystal",
-                "start": 12.555,
-                "end": 13.055,
-                "confidence": 0.99922514,
-                "punctuated_word": "crystal"
+                "word": "tire",
+                "start": 18.279999,
+                "end": 18.68,
+                "confidence": 0.9975115,
+                "punctuated_word": "tire"
               },
               {
-                "word": "gleams",
-                "start": 13.275,
-                "end": 13.775,
-                "confidence": 0.996122,
-                "punctuated_word": "gleams"
+                "word": "tread",
+                "start": 18.68,
+                "end": 19.18,
+                "confidence": 0.9787637,
+                "punctuated_word": "tread"
               },
               {
-                "word": "with",
-                "start": 13.915,
-                "end": 14.155001,
-                "confidence": 0.9982266,
-                "punctuated_word": "with"
+                "word": "left",
+                "start": 19.4,
+                "end": 19.72,
+                "confidence": 0.9982924,
+                "punctuated_word": "left"
               },
               {
                 "word": "an",
-                "start": 14.155001,
-                "end": 14.555,
-                "confidence": 0.99313873,
+                "start": 19.72,
+                "end": 20.039999,
+                "confidence": 0.9989371,
                 "punctuated_word": "an"
               },
               {
-                "word": "otherworldly",
-                "start": 14.555,
-                "end": 15.055,
-                "confidence": 0.9106648,
-                "punctuated_word": "otherworldly"
-              },
-              {
-                "word": "luminescence",
-                "start": 15.675,
-                "end": 16.175,
-                "confidence": 0.9650562,
-                "punctuated_word": "luminescence,"
-              },
-              {
-                "word": "casting",
-                "start": 17.82,
-                "end": 18.32,
-                "confidence": 0.99990153,
-                "punctuated_word": "casting"
-              },
-              {
-                "word": "dancing",
-                "start": 18.460001,
-                "end": 18.960001,
-                "confidence": 0.99954647,
-                "punctuated_word": "dancing"
-              },
-              {
-                "word": "shadows",
-                "start": 19.26,
-                "end": 19.76,
-                "confidence": 0.9998561,
-                "punctuated_word": "shadows"
-              },
-              {
-                "word": "across",
-                "start": 20.14,
-                "end": 20.62,
-                "confidence": 0.99981683,
-                "punctuated_word": "across"
-              },
-              {
-                "word": "the",
-                "start": 20.62,
-                "end": 20.94,
-                "confidence": 0.9999683,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "room",
-                "start": 20.94,
-                "end": 21.44,
-                "confidence": 0.98588294,
-                "punctuated_word": "room."
-              },
-              {
-                "word": "the",
-                "start": 21.82,
-                "end": 22.060001,
-                "confidence": 0.9998223,
-                "punctuated_word": "The"
-              },
-              {
-                "word": "air",
-                "start": 22.060001,
-                "end": 22.380001,
-                "confidence": 0.9999262,
-                "punctuated_word": "air"
-              },
-              {
-                "word": "is",
-                "start": 22.380001,
-                "end": 22.7,
-                "confidence": 0.99880826,
-                "punctuated_word": "is"
-              },
-              {
-                "word": "filled",
-                "start": 22.7,
-                "end": 23.1,
-                "confidence": 0.99994826,
-                "punctuated_word": "filled"
-              },
-              {
-                "word": "with",
-                "start": 23.1,
-                "end": 23.34,
-                "confidence": 0.99996316,
-                "punctuated_word": "with"
+                "word": "imprint",
+                "start": 20.039999,
+                "end": 20.539999,
+                "confidence": 0.9744714,
+                "punctuated_word": "imprint,"
               },
               {
                 "word": "a",
-                "start": 23.34,
-                "end": 23.5,
-                "confidence": 0.9992187,
+                "start": 21.8,
+                "end": 21.96,
+                "confidence": 0.9996257,
                 "punctuated_word": "a"
               },
               {
-                "word": "faint",
-                "start": 23.5,
-                "end": 24,
-                "confidence": 0.99997354,
-                "punctuated_word": "faint"
-              },
-              {
-                "word": "sweet",
-                "start": 24.54,
-                "end": 25.04,
-                "confidence": 0.9167635,
-                "punctuated_word": "sweet"
-              },
-              {
-                "word": "fragrance",
-                "start": 25.18,
-                "end": 25.68,
-                "confidence": 0.79254615,
-                "punctuated_word": "fragrance,"
-              },
-              {
-                "word": "as",
-                "start": 26.955,
-                "end": 27.115,
-                "confidence": 0.99992335,
-                "punctuated_word": "as"
-              },
-              {
-                "word": "if",
-                "start": 27.115,
-                "end": 27.355001,
-                "confidence": 0.9999021,
-                "punctuated_word": "if"
-              },
-              {
-                "word": "the",
-                "start": 27.355001,
-                "end": 27.595001,
-                "confidence": 0.9999591,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "crystals",
-                "start": 27.595001,
-                "end": 28.095001,
-                "confidence": 0.9994729,
-                "punctuated_word": "crystals"
-              },
-              {
-                "word": "themselves",
-                "start": 28.235,
-                "end": 28.735,
-                "confidence": 0.99953043,
-                "punctuated_word": "themselves"
-              },
-              {
-                "word": "exhale",
-                "start": 29.755001,
-                "end": 30.255001,
-                "confidence": 0.9877739,
-                "punctuated_word": "exhale"
-              },
-              {
-                "word": "the",
-                "start": 30.475,
-                "end": 30.715,
-                "confidence": 0.9991103,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "essence",
-                "start": 30.715,
-                "end": 31.215,
-                "confidence": 0.9998356,
-                "punctuated_word": "essence"
+                "word": "mark",
+                "start": 21.96,
+                "end": 22.36,
+                "confidence": 0.9995859,
+                "punctuated_word": "mark"
               },
               {
                 "word": "of",
-                "start": 31.515,
-                "end": 31.675001,
-                "confidence": 0.9999118,
+                "start": 22.36,
+                "end": 22.76,
+                "confidence": 0.99992025,
                 "punctuated_word": "of"
               },
               {
-                "word": "a",
-                "start": 31.675001,
-                "end": 31.915,
-                "confidence": 0.99975735,
-                "punctuated_word": "a"
+                "word": "transient",
+                "start": 22.76,
+                "end": 23.26,
+                "confidence": 0.9989467,
+                "punctuated_word": "transient"
               },
               {
-                "word": "distant",
-                "start": 31.915,
-                "end": 32.415,
-                "confidence": 0.9977544,
-                "punctuated_word": "distant"
-              },
-              {
-                "word": "verdant",
-                "start": 33.115,
-                "end": 33.615,
-                "confidence": 0.89682055,
-                "punctuated_word": "verdant"
-              },
-              {
-                "word": "forest",
-                "start": 33.835,
-                "end": 34.335,
-                "confidence": 0.96053076,
-                "punctuated_word": "forest."
-              },
-              {
-                "word": "soft",
-                "start": 35.04,
-                "end": 35.440002,
-                "confidence": 0.99977297,
-                "punctuated_word": "Soft"
-              },
-              {
-                "word": "whispers",
-                "start": 35.440002,
-                "end": 35.940002,
-                "confidence": 0.9990331,
-                "punctuated_word": "whispers"
-              },
-              {
-                "word": "seem",
-                "start": 36.48,
-                "end": 36.72,
-                "confidence": 0.9719096,
-                "punctuated_word": "seem"
-              },
-              {
-                "word": "to",
-                "start": 36.72,
-                "end": 36.960003,
-                "confidence": 0.99991643,
-                "punctuated_word": "to"
-              },
-              {
-                "word": "echo",
-                "start": 36.960003,
-                "end": 37.460003,
-                "confidence": 0.99971944,
-                "punctuated_word": "echo"
-              },
-              {
-                "word": "through",
-                "start": 37.52,
-                "end": 37.84,
-                "confidence": 0.9997043,
-                "punctuated_word": "through"
-              },
-              {
-                "word": "the",
-                "start": 37.84,
-                "end": 38.08,
-                "confidence": 0.99914396,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "space",
-                "start": 38.08,
-                "end": 38.58,
-                "confidence": 0.9998443,
-                "punctuated_word": "space"
-              },
-              {
-                "word": "as",
-                "start": 39.760002,
-                "end": 40,
-                "confidence": 0.5731405,
-                "punctuated_word": "as"
-              },
-              {
-                "word": "if",
-                "start": 40,
-                "end": 40.24,
-                "confidence": 0.9997191,
-                "punctuated_word": "if"
-              },
-              {
-                "word": "the",
-                "start": 40.24,
-                "end": 40.4,
-                "confidence": 0.9998579,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "very",
-                "start": 40.4,
-                "end": 40.88,
-                "confidence": 0.99981743,
-                "punctuated_word": "very"
-              },
-              {
-                "word": "walls",
-                "start": 40.88,
-                "end": 41.38,
-                "confidence": 0.999846,
-                "punctuated_word": "walls"
-              },
-              {
-                "word": "hold",
-                "start": 41.52,
-                "end": 41.920002,
-                "confidence": 0.998988,
-                "punctuated_word": "hold"
-              },
-              {
-                "word": "secrets",
-                "start": 41.920002,
-                "end": 42.420002,
-                "confidence": 0.9998354,
-                "punctuated_word": "secrets"
-              },
-              {
-                "word": "of",
-                "start": 42.800003,
-                "end": 43.120003,
-                "confidence": 0.999899,
-                "punctuated_word": "of"
-              },
-              {
-                "word": "forgotten",
-                "start": 43.120003,
-                "end": 43.620003,
-                "confidence": 0.99992836,
-                "punctuated_word": "forgotten"
-              },
-              {
-                "word": "ages",
-                "start": 43.920002,
-                "end": 44.420002,
-                "confidence": 0.96955633,
-                "punctuated_word": "ages."
+                "word": "existence",
+                "start": 23.32,
+                "end": 23.82,
+                "confidence": 0.9991366,
+                "punctuated_word": "existence"
               },
               {
                 "word": "in",
-                "start": 45.075,
-                "end": 45.235,
-                "confidence": 0.99953985,
-                "punctuated_word": "In"
-              },
-              {
-                "word": "this",
-                "start": 45.235,
-                "end": 45.635,
-                "confidence": 0.9998907,
-                "punctuated_word": "this"
-              },
-              {
-                "word": "surreal",
-                "start": 45.635,
-                "end": 46.135,
-                "confidence": 0.99998546,
-                "punctuated_word": "surreal"
-              },
-              {
-                "word": "sanctuary",
-                "start": 46.434998,
-                "end": 46.934998,
-                "confidence": 0.99706984,
-                "punctuated_word": "sanctuary,"
-              },
-              {
-                "word": "time",
-                "start": 48.274998,
-                "end": 48.675,
-                "confidence": 0.9992648,
-                "punctuated_word": "time"
-              },
-              {
-                "word": "feels",
-                "start": 48.675,
-                "end": 49.175,
-                "confidence": 0.9991099,
-                "punctuated_word": "feels"
-              },
-              {
-                "word": "suspended",
-                "start": 49.315,
-                "end": 49.815,
-                "confidence": 0.88666654,
-                "punctuated_word": "suspended,"
-              },
-              {
-                "word": "and",
-                "start": 50.915,
-                "end": 51.155,
-                "confidence": 0.99972504,
-                "punctuated_word": "and"
-              },
-              {
-                "word": "one",
-                "start": 51.155,
-                "end": 51.555,
-                "confidence": 0.91329736,
-                "punctuated_word": "one"
-              },
-              {
-                "word": "can't",
-                "start": 51.555,
-                "end": 51.954998,
-                "confidence": 0.9999359,
-                "punctuated_word": "can't"
-              },
-              {
-                "word": "help",
-                "start": 51.954998,
-                "end": 52.434998,
-                "confidence": 0.99994576,
-                "punctuated_word": "help"
-              },
-              {
-                "word": "but",
-                "start": 52.434998,
-                "end": 52.675,
-                "confidence": 0.9906342,
-                "punctuated_word": "but"
-              },
-              {
-                "word": "be",
-                "start": 52.675,
-                "end": 52.915,
-                "confidence": 0.9996092,
-                "punctuated_word": "be"
-              },
-              {
-                "word": "drawn",
-                "start": 52.915,
-                "end": 53.415,
-                "confidence": 0.99998856,
-                "punctuated_word": "drawn"
-              },
-              {
-                "word": "into",
-                "start": 54.07,
-                "end": 54.39,
-                "confidence": 0.9998447,
-                "punctuated_word": "into"
+                "start": 24.76,
+                "end": 25,
+                "confidence": 0.9974865,
+                "punctuated_word": "in"
               },
               {
                 "word": "the",
-                "start": 54.39,
-                "end": 54.55,
-                "confidence": 0.99992895,
+                "start": 25,
+                "end": 25.16,
+                "confidence": 0.9999218,
                 "punctuated_word": "the"
               },
               {
-                "word": "mesmerizing",
-                "start": 54.55,
-                "end": 55.05,
-                "confidence": 0.99939835,
-                "punctuated_word": "mesmerizing"
+                "word": "timeless",
+                "start": 25.16,
+                "end": 25.66,
+                "confidence": 0.99968433,
+                "punctuated_word": "timeless"
               },
               {
-                "word": "beauty",
-                "start": 55.75,
-                "end": 56.25,
-                "confidence": 0.9998615,
-                "punctuated_word": "beauty"
+                "word": "sands",
+                "start": 25.88,
+                "end": 26.38,
+                "confidence": 0.9870327,
+                "punctuated_word": "sands."
               },
               {
-                "word": "of",
-                "start": 56.71,
-                "end": 56.95,
-                "confidence": 0.99994564,
-                "punctuated_word": "of"
+                "word": "dust",
+                "start": 27.074999,
+                "end": 27.314999,
+                "confidence": 0.9980514,
+                "punctuated_word": "Dust"
               },
               {
-                "word": "the",
-                "start": 56.95,
-                "end": 57.19,
-                "confidence": 0.99994636,
-                "punctuated_word": "the"
+                "word": "devils",
+                "start": 27.314999,
+                "end": 27.814999,
+                "confidence": 0.99082446,
+                "punctuated_word": "devils"
               },
               {
-                "word": "lime",
-                "start": 57.19,
-                "end": 57.67,
-                "confidence": 0.97678477,
-                "punctuated_word": "lime"
+                "word": "dance",
+                "start": 28.195,
+                "end": 28.675,
+                "confidence": 0.85314494,
+                "punctuated_word": "dance"
               },
               {
-                "word": "crystals",
-                "start": 57.67,
-                "end": 58.17,
-                "confidence": 0.9624506,
-                "punctuated_word": "crystals,"
+                "word": "their",
+                "start": 28.675,
+                "end": 28.994999,
+                "confidence": 0.9972083,
+                "punctuated_word": "their"
               },
               {
-                "word": "losing",
-                "start": 59.43,
-                "end": 59.91,
-                "confidence": 0.9989391,
-                "punctuated_word": "losing"
+                "word": "silent",
+                "start": 28.994999,
+                "end": 29.494999,
+                "confidence": 0.9984397,
+                "punctuated_word": "silent"
               },
               {
-                "word": "oneself",
-                "start": 59.91,
-                "end": 60.41,
-                "confidence": 0.9954495,
-                "punctuated_word": "oneself"
+                "word": "waltz",
+                "start": 29.554998,
+                "end": 30.054998,
+                "confidence": 0.9407989,
+                "punctuated_word": "waltz,"
+              },
+              {
+                "word": "veiling",
+                "start": 31.074999,
+                "end": 31.554998,
+                "confidence": 0.99775803,
+                "punctuated_word": "veiling"
+              },
+              {
+                "word": "memories",
+                "start": 31.554998,
+                "end": 32.055,
+                "confidence": 0.9987871,
+                "punctuated_word": "memories"
               },
               {
                 "word": "in",
-                "start": 60.79,
-                "end": 61.11,
-                "confidence": 0.9997274,
+                "start": 32.594997,
+                "end": 32.835,
+                "confidence": 0.99005896,
                 "punctuated_word": "in"
               },
               {
                 "word": "their",
-                "start": 61.11,
-                "end": 61.51,
-                "confidence": 0.9993611,
+                "start": 32.835,
+                "end": 33.235,
+                "confidence": 0.9993754,
                 "punctuated_word": "their"
               },
               {
-                "word": "captivating",
-                "start": 61.51,
-                "end": 62.01,
-                "confidence": 0.9999516,
-                "punctuated_word": "captivating"
+                "word": "swirling",
+                "start": 33.235,
+                "end": 33.735,
+                "confidence": 0.9996234,
+                "punctuated_word": "swirling"
               },
               {
-                "word": "allure",
-                "start": 62.79,
-                "end": 63.29,
-                "confidence": 0.9972508,
-                "punctuated_word": "allure."
+                "word": "embrace",
+                "start": 34.035,
+                "end": 34.535,
+                "confidence": 0.9968376,
+                "punctuated_word": "embrace."
+              },
+              {
+                "word": "at",
+                "start": 35.235,
+                "end": 35.475,
+                "confidence": 0.99831307,
+                "punctuated_word": "At"
+              },
+              {
+                "word": "dawn",
+                "start": 35.475,
+                "end": 35.975,
+                "confidence": 0.96352065,
+                "punctuated_word": "dawn,"
+              },
+              {
+                "word": "the",
+                "start": 36.68,
+                "end": 36.920002,
+                "confidence": 0.9993699,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "road",
+                "start": 36.920002,
+                "end": 37.32,
+                "confidence": 0.99915767,
+                "punctuated_word": "road"
+              },
+              {
+                "word": "emerged",
+                "start": 37.32,
+                "end": 37.82,
+                "confidence": 0.99799,
+                "punctuated_word": "emerged"
+              },
+              {
+                "word": "from",
+                "start": 37.88,
+                "end": 38.2,
+                "confidence": 0.99979883,
+                "punctuated_word": "from"
+              },
+              {
+                "word": "the",
+                "start": 38.2,
+                "end": 38.36,
+                "confidence": 0.99427783,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "horizon",
+                "start": 38.36,
+                "end": 38.86,
+                "confidence": 0.99944323,
+                "punctuated_word": "horizon"
+              },
+              {
+                "word": "like",
+                "start": 39.4,
+                "end": 39.64,
+                "confidence": 0.95149463,
+                "punctuated_word": "like"
+              },
+              {
+                "word": "a",
+                "start": 39.64,
+                "end": 39.88,
+                "confidence": 0.99986017,
+                "punctuated_word": "a"
+              },
+              {
+                "word": "promise",
+                "start": 39.88,
+                "end": 40.38,
+                "confidence": 0.94597936,
+                "punctuated_word": "promise,"
+              },
+              {
+                "word": "beckoning",
+                "start": 41.48,
+                "end": 41.98,
+                "confidence": 0.99457896,
+                "punctuated_word": "beckoning"
+              },
+              {
+                "word": "wanderers",
+                "start": 42.2,
+                "end": 42.7,
+                "confidence": 0.99733937,
+                "punctuated_word": "wanderers"
+              },
+              {
+                "word": "to",
+                "start": 43.08,
+                "end": 43.32,
+                "confidence": 0.99869686,
+                "punctuated_word": "to"
+              },
+              {
+                "word": "traverse",
+                "start": 43.32,
+                "end": 43.82,
+                "confidence": 0.9928328,
+                "punctuated_word": "traverse"
+              },
+              {
+                "word": "its",
+                "start": 44.04,
+                "end": 44.44,
+                "confidence": 0.9981177,
+                "punctuated_word": "its"
+              },
+              {
+                "word": "endless",
+                "start": 44.44,
+                "end": 44.94,
+                "confidence": 0.9997445,
+                "punctuated_word": "endless"
+              },
+              {
+                "word": "path",
+                "start": 45.16,
+                "end": 45.66,
+                "confidence": 0.99517596,
+                "punctuated_word": "path."
               }
             ],
             "paragraphs": {
-              "transcript": "\nIn the ethereal glow of a yellow tiled chamber, lime crystals sprout from the walls like nature's delicate artwork. Each crystal gleams with an otherworldly luminescence, casting dancing shadows across the room. The air is filled with a faint sweet fragrance, as if the crystals themselves exhale the essence of a distant verdant forest. Soft whispers seem to echo through the space as if the very walls hold secrets of forgotten ages. In this surreal sanctuary, time feels suspended, and one can't help but be drawn into the mesmerizing beauty of the lime crystals, losing oneself in their captivating allure.",
+              "transcript": "\nAmidst the golden desert expanse, a solitary road stretched like a lifeline. Its cracked asphalt whispered tales of journeys past, of dreams chased under relentless sunsets. Each tire tread left an imprint, a mark of transient existence in the timeless sands. Dust devils dance their silent waltz, veiling memories in their swirling embrace. At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless path.",
               "paragraphs": [
                 {
                   "sentences": [
                     {
-                      "text": "In the ethereal glow of a yellow tiled chamber, lime crystals sprout from the walls like nature's delicate artwork.",
-                      "start": 0.39999998,
-                      "end": 11.455
+                      "text": "Amidst the golden desert expanse, a solitary road stretched like a lifeline.",
+                      "start": 0.71999997,
+                      "end": 6.8999996
                     },
                     {
-                      "text": "Each crystal gleams with an otherworldly luminescence, casting dancing shadows across the room.",
-                      "start": 12.155001,
-                      "end": 21.44
+                      "text": "Its cracked asphalt whispered tales of journeys past, of dreams chased under relentless sunsets.",
+                      "start": 7.695,
+                      "end": 16.994999
                     },
                     {
-                      "text": "The air is filled with a faint sweet fragrance, as if the crystals themselves exhale the essence of a distant verdant forest.",
-                      "start": 21.82,
-                      "end": 34.335
+                      "text": "Each tire tread left an imprint, a mark of transient existence in the timeless sands.",
+                      "start": 17.8,
+                      "end": 26.38
                     },
                     {
-                      "text": "Soft whispers seem to echo through the space as if the very walls hold secrets of forgotten ages.",
-                      "start": 35.04,
-                      "end": 44.420002
+                      "text": "Dust devils dance their silent waltz, veiling memories in their swirling embrace.",
+                      "start": 27.074999,
+                      "end": 34.535
                     },
                     {
-                      "text": "In this surreal sanctuary, time feels suspended, and one can't help but be drawn into the mesmerizing beauty of the lime crystals, losing oneself in their captivating allure.",
-                      "start": 45.075,
-                      "end": 63.29
+                      "text": "At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless path.",
+                      "start": 35.235,
+                      "end": 45.66
                     }
                   ],
-                  "num_words": 100,
-                  "start": 0.39999998,
-                  "end": 63.29
+                  "num_words": 71,
+                  "start": 0.71999997,
+                  "end": 45.66
                 }
               ]
             }
           }
         ],
         "detected_language": "en",
-        "language_confidence": 0.96727675
+        "language_confidence": 0.9834704
       }
     ]
   }

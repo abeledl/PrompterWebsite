@@ -6,9 +6,9 @@ import math
 globalYCameraBG12Clips = -0.6
 
 
-positions_spanish_array = [[442.54, 77.50], [532.03, 77.50], [474.99, 310.00], [407.41, 542.50], [530.10, 542.50], [475.00, 775.00], [474.99, 1007.50], [475.00, 1162.50], [263.30, 1317.50], [380.55, 1317.50], [592.25, 1317.50], [475.00, 1472.50], [474.99, 1705.00], [360.08, 1937.50], [580.14, 1937.50], [475.00, 2092.50], [407.41, 2247.50], [551.96, 2247.50], [474.99, 2480.00], [475.00, 2712.50], [475.00, 2867.50], [230.08, 3022.50], [343.80, 3022.50], [588.71, 3022.50], [404.77, 3177.50], [519.55, 3177.50], [387.08, 3332.50], [562.54, 3332.50], [407.41, 3487.50], [551.96, 3487.50], [475.00, 3720.00], [444.50, 3952.50], [585.13, 3952.50], [475.00, 4107.50], [475.00, 4340.00], [475.00, 4572.50], [332.72, 4727.50], [516.82, 4727.50], [429.70, 4882.50], [530.10, 4882.50], [475.00, 5115.00], [474.99, 5347.50], [475.00, 5502.50], [475.00, 5657.50], [474.99, 5812.50], [321.25, 5967.50], [540.26, 5967.50], [382.36, 6122.50], [532.37, 6122.50], [625.01, 6122.50], [325.45, 6277.50], [623.83, 6277.50], [316.07, 6432.50], [674.34, 6432.50], [474.99, 6587.50], [474.99, 6742.50], [396.82, 6897.50], [532.03, 6897.50], [474.99, 7130.00], [475.00, 7362.50], [253.32, 7517.50], [612.44, 7517.50], [407.05, 7672.50], [504.70, 7672.50], [371.16, 7827.50], [653.14, 7827.50], [474.99, 7982.50], [346.34, 8137.50], [543.41, 8137.50], [442.54, 8292.50], [506.66, 8292.50], [474.99, 8525.00], [421.85, 8757.50], [530.09, 8757.50], [474.99, 8912.50], [475.00, 9067.50], [475.00, 9222.50], [432.02, 9377.50], [529.30, 9377.50], [474.99, 9532.50], [475.00, 9687.50]]
+positions_spanish_array = [[474.99, 76.80], [474.99, 231.79], [474.98, 464.27], [474.98, 696.75], [474.98, 929.23], [474.98, 1161.71], [429.68, 1316.70], [585.14, 1316.70], [474.98, 1471.69], [474.99, 1626.67], [474.98, 1781.66], [474.98, 1936.65], [474.98, 2091.64], [309.94, 2246.62], [589.91, 2246.62], [344.11, 2401.61], [530.09, 2401.61], [474.99, 2556.60], [474.98, 2711.59], [474.98, 2944.07], [474.98, 3176.55], [474.98, 3409.03], [474.98, 3641.51], [474.99, 3796.50], [359.50, 3951.49], [551.95, 3951.49], [474.98, 4106.47], [474.98, 4338.96], [422.22, 4571.44], [529.30, 4571.44], [474.98, 4803.92], [474.99, 5113.89], [474.98, 5346.37], [474.99, 5501.36], [474.99, 5656.35], [474.99, 5811.34], [474.99, 5966.32], [432.01, 6121.31], [529.29, 6121.31], [474.98, 6353.79], [283.81, 6586.27], [521.50, 6586.27], [303.38, 6741.26], [516.82, 6741.26], [474.98, 6896.25], [442.55, 7051.24], [530.09, 7051.24], [474.98, 7206.22], [407.41, 7361.21], [585.14, 7361.21], [474.98, 7516.20], [474.98, 7671.19], [474.99, 7826.17], [322.15, 7981.16], [506.65, 7981.16], [474.99, 8136.15], [474.99, 8368.63]]
 
-start_times_array = [0.40, 0.64, 0.96, 2.24, 2.40, 2.64, 5.28, 6.56, 7.04, 7.28, 7.52, 8.96, 9.20, 12.16, 12.55, 13.28, 13.91, 14.16, 14.55, 17.82, 18.46, 20.14, 20.62, 20.94, 21.82, 22.06, 22.38, 22.70, 23.10, 23.34, 23.50, 26.95, 27.11, 27.36, 27.60, 29.76, 30.48, 30.71, 31.52, 31.68, 31.91, 35.04, 36.48, 36.96, 37.52, 37.84, 38.08, 39.76, 40.00, 40.24, 40.40, 40.88, 41.52, 41.92, 42.80, 43.12, 45.08, 45.23, 45.63, 48.27, 48.67, 49.31, 50.91, 51.16, 51.55, 51.95, 52.43, 52.67, 52.91, 54.07, 54.39, 54.55, 56.71, 56.95, 57.19, 59.43, 59.91, 60.79, 61.11, 61.51, 62.79]
+start_times_array = [0.72, 1.20, 1.36, 3.92, 4.16, 5.52, 6.00, 6.24, 6.40, 7.70, 7.86, 9.62, 10.81, 11.05, 11.70, 13.38, 13.70, 14.41, 15.21, 15.62, 17.80, 18.28, 19.40, 19.72, 21.80, 21.96, 22.36, 22.76, 24.76, 25.00, 25.16, 27.07, 28.20, 28.68, 28.99, 31.07, 31.55, 32.59, 32.84, 33.23, 35.23, 35.48, 36.68, 36.92, 37.32, 37.88, 38.20, 38.36, 39.40, 39.64, 39.88, 41.48, 42.20, 43.08, 43.32, 44.04, 44.44]
 #end times of the end of line
 
 
@@ -19,7 +19,7 @@ spanish_words_scaled_coordinates = [(x * scale_factor, y * scale_factor) for x, 
 spanish_words_scaled_coordinates = [(x, y + 10.5 ) for x, y in spanish_words_scaled_coordinates]
 
 
-spanish_paragraph = "En el resplandor#etéreo de una cámara#de_azulejos_amarillos, cristales_lima brotan de las paredes como delicada_obra_de_arte#de_la_naturaleza. Cada cristal brilla con una luminiscencia#de_otro_mundo, arrojando sombras_danzantes por la habitación. El aire está lleno con una fragancia#suave_y_dulce, como si los propios#cristales exhalasen la esencia de un bosque_verde#distante. Susurros_suaves parecen resonar a_través del espacio, como si las mismas paredes guardaran secretos de eras_olvidadas. En este santuario#surrealista, el_tiempo parece suspendido, y uno no_puede evitar mas_que ser atraído a la belleza#fascinante de los cristales_de_lima, perdiéndose a_si_mismo en su cautivadora atracción."
+spanish_paragraph = "En_medio de_la expansión#del_desierto_dorado, una carretera#solitaria extendida como un cuerda_salvavidas. Su asfalto_agrietado susurraba_cuentos de viajes pasados, de sueños perseguidos bajo puestas_de_sol#implacables. Cada huella#de_neumático dejaba una_impresión, una marca de existencia#transitoria en las arenas#atemporales. Remolinos#de_polvo danzaban su vals_silencioso, velando recuerdos en su abrazo#giratorio. Al amanecer, la carretera emergía de el horizonte como una promesa, llamando viajeros a recorrer su camino#interminable."
 spanish_words = spanish_paragraph.split()
 
 
@@ -140,7 +140,7 @@ yellow_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
 yellow_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
 
 
-#blue material
+#green material
 green_material = bpy.data.materials.new(name="GreenMaterial")
 green_material.use_nodes = True
 green_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.00992801, 0.661224, 0, 1)
@@ -149,6 +149,17 @@ green_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
 green_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638 #roughness
 green_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
 green_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
+
+#blue material
+blue_material = bpy.data.materials.new(name="BlueMaterial")
+blue_material.use_nodes = True
+blue_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0, 0.125479, 1, 1)
+blue_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525 #metallic
+blue_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
+blue_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638 #roughness
+blue_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
+blue_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
+
 
 def createTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth):
   # Create a new text object for each word
@@ -198,9 +209,11 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
     text_object.data.materials.append(text_material)
     text_object.data.materials.append(yellow_material)
     text_object.data.materials.append(green_material)
+    text_object.data.materials.append(blue_material)
     text_object.data.resolution_u = 2
     bpy.ops.object.convert(target='MESH')
-    
+    bpy.ops.object.shade_smooth_by_angle()
+
 
     ########################outline text############################################
     #bpy.ops.object.text_add(enter_editmode=False, location=(position[0], -1 * position[1], -0.01))
@@ -267,6 +280,7 @@ def createPhoTextObject(words, positions, parent_obj, font_name, font_size, font
     text_object.data.materials.append(text_material)
     text_object.data.materials.append(yellow_material)
     text_object.data.materials.append(green_material)
+    text_object.data.materials.append(blue_material)
     text_object.data.resolution_u = font_resolution
     bpy.ops.object.convert(target='MESH')
     
@@ -391,10 +405,15 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   # Make the object the active one
   bpy.context.view_layer.objects.active = obj
   # Add a Geometry Nodes modifier to the cube
-  bpy.ops.node.new_geometry_nodes_modifier()
+  #bpy.ops.node.new_geometry_nodes_modifier()
+  obj.modifiers.new(name="NodesModifier", type='NODES')
+  obj.modifiers[-1].name = "geo2"
+  node_modifier = obj.modifiers.get("geo2")
+  bpy.ops.node.new_geometry_node_group_assign()
+
   #obj.node.new_geometry_node_group_assign()
   # Get the node group of the Geometry Nodes modifier
-  node_group = bpy.data.node_groups['Geometry Nodes']
+  node_group = node_modifier.node_group
   # Clear existing nodes
   for node in node_group.nodes:
     node_group.nodes.remove(node)
@@ -452,7 +471,7 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   bpy.context.object.modifiers["Bevel"].width = 0.1
   bpy.context.object.modifiers["Bevel"].segments = 4
   bpy.ops.object.shade_smooth()
-  bpy.data.objects["highlighter_obj"].select_set(False)
+  bpy.data.objects["highlighter_obj_spanish"].select_set(False)
     
 def addOffsetToXAxisDoubleArrayCoordinates(arr, offset_x_percentage, words):
   new_pair_list = []

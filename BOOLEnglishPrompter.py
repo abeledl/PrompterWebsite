@@ -6,9 +6,9 @@ import math
 globalYCameraBG12Clips = -0.6
 
 
-positions_english_array = [[393.49, 77.50], [536.27, 77.50], [475.00, 310.00], [443.79, 542.50], [543.19, 542.50], [475.00, 775.00], [474.99, 1007.50], [474.99, 1162.50], [250.27, 1317.50], [474.66, 1317.50], [699.38, 1317.50], [475.00, 1472.50], [475.00, 1705.00], [300.57, 1937.50], [615.94, 1937.50], [474.99, 2092.50], [412.09, 2247.50], [595.34, 2247.50], [474.99, 2480.00], [475.00, 2712.50], [474.99, 2867.50], [233.06, 3022.50], [512.83, 3022.50], [754.76, 3022.50], [406.58, 3177.50], [583.16, 3177.50], [350.17, 3332.50], [530.80, 3332.50], [443.79, 3487.50], [595.33, 3487.50], [475.00, 3720.00], [443.28, 3952.50], [547.77, 3952.50], [475.00, 4107.50], [474.99, 4340.00], [474.99, 4572.50], [261.58, 4727.50], [569.62, 4727.50], [443.79, 4882.50], [543.19, 4882.50], [475.00, 5115.00], [474.99, 5347.50], [474.99, 5502.50], [475.00, 5657.50], [475.00, 5812.50], [305.70, 5967.50], [569.63, 5967.50], [342.78, 6122.50], [466.27, 6122.50], [598.48, 6122.50], [344.90, 6277.50], [598.54, 6277.50], [284.21, 6432.50], [598.58, 6432.50], [474.99, 6587.50], [475.00, 6742.50], [382.01, 6897.50], [536.27, 6897.50], [474.99, 7130.00], [474.99, 7362.50], [177.39, 7517.50], [609.99, 7517.50], [380.37, 7672.50], [583.84, 7672.50], [365.04, 7827.50], [613.42, 7827.50], [475.00, 7982.50], [316.20, 8137.50], [552.13, 8137.50], [393.50, 8292.50], [584.36, 8292.50], [475.00, 8525.00], [393.49, 8757.50], [543.19, 8757.50], [474.99, 8912.50], [474.99, 9067.50], [475.00, 9222.50], [356.28, 9377.50], [534.06, 9377.50], [474.99, 9532.50], [474.99, 9687.50]]
+positions_english_array = [[474.99, 77.40], [474.98, 232.39], [474.98, 464.87], [474.99, 697.35], [474.98, 929.83], [474.99, 1162.31], [443.79, 1317.30], [575.87, 1317.30], [474.99, 1472.29], [474.98, 1627.27], [474.98, 1782.26], [474.99, 1937.25], [474.99, 2092.24], [347.50, 2247.22], [706.53, 2247.22], [283.18, 2402.21], [543.18, 2402.21], [474.99, 2557.20], [474.99, 2712.19], [474.98, 2944.67], [474.99, 3177.15], [474.99, 3409.63], [474.98, 3642.11], [474.98, 3797.10], [345.56, 3952.09], [519.32, 3952.09], [474.99, 4107.07], [474.98, 4339.56], [393.49, 4572.04], [534.05, 4572.04], [474.98, 4804.52], [474.99, 5114.49], [474.99, 5346.97], [474.98, 5501.96], [474.99, 5656.95], [474.98, 5811.94], [474.98, 5966.92], [356.27, 6121.91], [534.05, 6121.91], [474.98, 6354.39], [321.46, 6586.87], [544.47, 6586.87], [358.27, 6741.86], [569.61, 6741.86], [474.99, 6896.85], [393.49, 7051.84], [604.75, 7051.84], [474.99, 7206.82], [443.79, 7361.81], [575.87, 7361.81], [474.98, 7516.80], [474.99, 7671.79], [474.98, 7826.77], [264.52, 7981.76], [538.41, 7981.76], [474.99, 8136.75], [474.99, 8369.23]]
 
-start_times_array = [0.40, 0.64, 0.96, 2.24, 2.40, 2.64, 5.28, 6.56, 7.04, 7.28, 7.52, 8.96, 9.20, 12.16, 12.55, 13.28, 13.91, 14.16, 14.55, 17.82, 18.46, 20.14, 20.62, 20.94, 21.82, 22.06, 22.38, 22.70, 23.10, 23.34, 23.50, 26.95, 27.11, 27.36, 27.60, 29.76, 30.48, 30.71, 31.52, 31.68, 31.91, 35.04, 36.48, 36.96, 37.52, 37.84, 38.08, 39.76, 40.00, 40.24, 40.40, 40.88, 41.52, 41.92, 42.80, 43.12, 45.08, 45.23, 45.63, 48.27, 48.67, 49.31, 50.91, 51.16, 51.55, 51.95, 52.43, 52.67, 52.91, 54.07, 54.39, 54.55, 56.71, 56.95, 57.19, 59.43, 59.91, 60.79, 61.11, 61.51, 62.79]
+start_times_array = [0.72, 1.20, 1.36, 3.92, 4.16, 5.52, 6.00, 6.24, 6.40, 7.70, 7.86, 9.62, 10.81, 11.05, 11.70, 13.38, 13.70, 14.41, 15.21, 15.62, 17.80, 18.28, 19.40, 19.72, 21.80, 21.96, 22.36, 22.76, 24.76, 25.00, 25.16, 27.07, 28.20, 28.68, 28.99, 31.07, 31.55, 32.59, 32.84, 33.23, 35.23, 35.48, 36.68, 36.92, 37.32, 37.88, 38.20, 38.36, 39.40, 39.64, 39.88, 41.48, 42.20, 43.08, 43.32, 44.04, 44.44]
 #end times of the end of line
 
 start_new_rows_seconds_with_new_row_flags = []
@@ -18,11 +18,11 @@ english_words_scaled_coordinates = [(x * scale_factor, y * scale_factor) for x, 
 english_words_scaled_coordinates = [(x, y + 2.6) for x, y in english_words_scaled_coordinates]
 
 
-english_paragraph = "In the ethereal#glow of a yellow-tiled#chamber, lime_crystals sprout from the walls like nature's#delicate_artwork. Each crystal gleams with an otherworldly#luminescence, casting dancing_shadows across the room. The air is filled with a faint,_sweet#fragrance, as if the crystals#themselves exhale the essence of a distant#verdant_forest. Soft_whispers seem_to echo through the space, as if the very walls hold secrets of forgotten_ages. In this surreal#sanctuary, time feels suspended, and one can't help but be drawn into the mesmerizing#beauty of the lime_crystals, losing oneself in their captivating allure."
+english_paragraph = "Amidst the golden_desert#expanse, a solitary#road stretched like a lifeline. Its cracked_asphalt whispered_tales of journeys past, of dreams chased under relentless#sunsets. Each tire#tread left an_imprint, a mark of transient#existence in the timeless#sands. Dust#devils danced their silent_waltz, veiling memories in their swirling#embrace. At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless#path."
 english_words = english_paragraph.split()
 
 
-phonetic_string = 'ɪn ðə ɪˈθɪərɪəl#ɡloʊ ʌv ə ˈjɛloʊ_taɪld#ˈtʃæmbər, laɪm_ˈkrɪstəlz spraʊt frʌm ðə wɔlz laɪk ˈneɪʧərz#ˈdɛlɪkət_ˈɑrtwɜrk. iʧ ˈkrɪstəl ɡliːmz wɪð ən ˌʌðərˈwɜrldli#luːməˈnɛsəns, ˈkæstɪŋ ˈdænsɪŋ_ˈʃædoʊz əˈkrɒs ðə ruːm. ði ɛr ɪz fɪld wɪð ə feɪnt,_swit#ˈfreɪɡrəns, æz ɪf ðə ˈkrɪstəlz#ðəmˈsɛlvz ɛksˈheɪl ði ˈɛsəns ʌv ə ˈdɪstənt,#ˈvɜrdnt_ˈfɔrɪst. sɔft_ˈwɪspərz sim_tuː ˈɛkoʊ θruː ðə speɪs, æz ɪf ði ˈvɛri wɔlz hoʊld ˈsikrɪts ʌv fɚˈɡɑtn̩_ˈeɪʤɪz. ɪn ðɪs səˈriəl#ˈsæŋkʧuˌɛri, taɪm fiːlz səˈspɛndɪd, ænd wʌn kænt ˈhɛlp bət biː drɔn ˈɪntuː ðə mɛzˈmɛrɑɪzɪŋ#ˈbjuti ʌv ðə laɪm_ˈkrɪstəlz, ˈluzɪŋ wʌnsɛlf ɪn ðer ˈkæptɪˌveɪtɪŋ əˈlʊr.'
+phonetic_string = 'əˈmɪdst ðə ˈɡoʊldən_ˈdɛzɚt#ɪkˈspæns, ə ˈsɑlɪtɛri#roʊd strɛtʃt laɪk ə ˈlaɪflaɪn. ɪts krækt_ˈæsfɔlt ˈwɪspɚd_teɪlz əv ˈʤɜrni pæst, ʌv drimz ʧeɪst ˈʌndɚ rɪˈlɛntlɪs_ˈsʌnˌsɛts. ˈitʃ taɪɚ#trɛd lɛft ən_ˈɪmprɪnt, ə mɑrk ʌv ˈtrænzɪtɔri#ɪɡˈzɪstəns ɪn ðə ˈtaɪmlɪs#sændz. dʌst#ˈdɛvəlz dænst ðɛɚ ˈsaɪlənt_wɔlts, ˈvelɪŋ ˈmɛməriz ɪn ðɛɚ ˈswɜrlɪŋ#ɪmˈbreɪs. ˈæt dɔn, ðə roʊd ɪˈmɜrdʒd frəm ðə ˈhaɪrəˌzɑn laɪk ə ˈprɑmɪs, ˈbɛkənɪŋ ˈwɑndərɚz tuː trəˈvɜrs ɪts ˈɛndləs#pæθ.'
 phonetic_words= phonetic_string.split()
 
 
@@ -216,6 +216,16 @@ green_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.51
 green_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
 green_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
 
+#blue material
+blue_material = bpy.data.materials.new(name="BlueMaterial")
+blue_material.use_nodes = True
+blue_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0, 0.125479, 1, 1)
+blue_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525 #metallic
+blue_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
+blue_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638 #roughness
+blue_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
+blue_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
+
 
 def createTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth):
   # Create a new text object for each word
@@ -264,10 +274,12 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
     text_object.data.materials.append(text_material)
     text_object.data.materials.append(yellow_material)
     text_object.data.materials.append(green_material)
+    text_object.data.materials.append(blue_material)
     text_object.data.resolution_u = 2
 
     bpy.ops.object.convert(target='MESH')
-    
+    bpy.ops.object.shade_smooth_by_angle()
+
 
     ########################outline text############################################
     #bpy.ops.object.text_add(enter_editmode=False, location=(position[0], -1 * position[1], -0.01))
@@ -334,6 +346,7 @@ def createPhoTextObject(words, positions, parent_obj, font_name, font_size, font
     text_object.data.materials.append(text_material)
     text_object.data.materials.append(yellow_material)
     text_object.data.materials.append(green_material)
+    text_object.data.materials.append(blue_material)
     text_object.data.resolution_u = font_resolution
     bpy.ops.object.convert(target='MESH')
     
@@ -458,10 +471,14 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   # Make the object the active one
   bpy.context.view_layer.objects.active = obj
   # Add a Geometry Nodes modifier to the cube
-  bpy.ops.node.new_geometry_nodes_modifier()
+  obj.modifiers.new(name="NodesModifier", type='NODES')
+  obj.modifiers[-1].name = "geo1"
+  node_modifier = obj.modifiers.get("geo1")
+  bpy.ops.node.new_geometry_node_group_assign()
+
   #obj.node.new_geometry_node_group_assign()
   # Get the node group of the Geometry Nodes modifier
-  node_group = bpy.data.node_groups['Geometry Nodes']
+  node_group = node_modifier.node_group
   # Clear existing nodes
   for node in node_group.nodes:
     node_group.nodes.remove(node)
@@ -492,11 +509,11 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
     transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
     print("index ", word_obj_idx)
     width_height_data = getWidthAndHeight(words[word_obj_idx])
-    new_width = width_height_data["width"] + 0.34
+    new_width = width_height_data["width"] + 0.36
     if width_height_data["height"] > 4:
-      new_height = width_height_data["height"] + 1.2
+      new_height = width_height_data["height"] + 1.27
     else:
-      new_height = width_height_data_first_word["height"] + 1.3
+      new_height = width_height_data_first_word["height"] + 1.5
     # Set the scale on the X-axis of the Transform node to 4
     transform_node.inputs['Scale'].default_value[0] = new_width/2
     transform_node.inputs['Scale'].default_value[1] = new_height/2

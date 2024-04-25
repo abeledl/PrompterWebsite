@@ -46,8 +46,8 @@ def createGroupGeoTop1GeoTop2Switch(currentIndex):
       switchNext.location = (-135 + (currentIndex * 7.8), 200 + (currentIndex * 5.5))
     else:
       switchNext.location = (-135 + (currentIndex * 7.8), -200 + (currentIndex * 5.5))
-
-    node_group.links.new(switchNext.outputs[0], switchNext.inputs[1])
+    node_group.links.new(geometryNodeObjectInfo1.outputs[3], switchNext.inputs[1])
+    #node_group.links.new(switchNext.outputs[0], switchNext.inputs[1])
 
 for i in range(0, len(namesOfObjectsNumbered)):
   createGroupGeoTop1GeoTop2Switch(i)

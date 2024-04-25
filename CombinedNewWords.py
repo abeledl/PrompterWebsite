@@ -25,129 +25,118 @@ morphing_obj = bpy.data.objects["morph"]
 node_modifier = morphing_obj.modifiers.get("morphgeo")
 node_group = node_modifier.node_group
 
-def createGroupGeoTop1GeoTop2Switch(currentIndex):
-  geometryNodeObjectInfo1 = node_group.nodes.new("GeometryNodeObjectInfo")    
-  geometryNodeObjectInfo1.name = "ObjectInfo {currentIndex}"
-  geometryNodeObjectInfo1.label = "ObjectInfo {currentIndex}"
-  geometryNodeObjectInfo1.inputs[0].default_value = bpy.data.objects[namesOfObjectsNumbered[currentIndex][1]]
-  geometryNodeObjectInfo1.transform_space = 'RELATIVE'
+class Repeats:
+  top_repeats = False
+  bot_repeats = False
 
+def createGroupGeoTop1GeoTop2Switch(currentIndex, currentPosition, repeats):
+  geometryNodeObjectInfo = node_group.nodes.new("GeometryNodeObjectInfo")
+  nameOfObjInfo = 'ObjectInfo'
+  geometryNodeObjectInfo.name = f'{nameOfObjInfo}{currentIndex}'  
+  geometryNodeObjectInfo.label = f'{nameOfObjInfo}{currentIndex}'
+  geometryNodeObjectInfo.inputs[0].default_value = bpy.data.objects[namesOfObjectsNumbered[currentIndex][1]]
+  geometryNodeObjectInfo.transform_space = 'RELATIVE'
+  if currentIndex > 4:
+      repeats.top_repeats = True
+      repeats.bot_repeats = True
   if currentIndex % 2 == 0:
-    geometryNodeObjectInfo1.location = (-135 * (currentIndex + 9) , 200 * (currentIndex + 6))
-  else:
-    geometryNodeObjectInfo1.location = (-135 * (currentIndex + 9) , -200 * (currentIndex + 6))
-
-  if(currentIndex > 1):
-    node_group.links.new(geometryNodeObjectInfo1.outputs[3], switchNext.inputs[1])
-    switchNext = node_group.nodes.new("GeometryNodeSwitch")
-    switchNext.name = "Switch {currentIndex}"
-    
-    if currentIndex % 2 == 0:
-      switchNext.location = (-135 + (currentIndex * 7.8), 200 + (currentIndex * 5.5))
+    if repeats.top_repeats:
+      geometryNodeObjectInfo.location = (-150 * (currentPosition + 9) , 200 *  4)
     else:
-      switchNext.location = (-135 + (currentIndex * 7.8), -200 + (currentIndex * 5.5))
-    node_group.links.new(geometryNodeObjectInfo1.outputs[3], switchNext.inputs[1])
-    #node_group.links.new(switchNext.outputs[0], switchNext.inputs[1])
+      geometryNodeObjectInfo.location = (-150 * (currentPosition + 9) , 200 *  6)
+      repeats.top_repeats = True
+    
+  else:
+    if repeats.bot_repeats:
+      geometryNodeObjectInfo.location = (-150 * (currentPosition + 9) , -200 *  6)
+    else:
+      geometryNodeObjectInfo.location = (-150 * (currentPosition + 9) , -200 *  4)
+      repeats.bot_repeats = True
 
+
+  if (currentIndex > 1 and currentIndex < 5 ): # two obj info haave been created
+    if currentIndex % 2 == 0:
+        switchNext = node_group.nodes.new("GeometryNodeSwitch")
+        switchNext.location = (-150 * (currentPosition + 7.8) -10, 200 * (5.5))
+        nameOfSwitch = 'Switch'
+        switchNext.name = f'{nameOfSwitch}{currentIndex}'
+        previousObjInfo = node_group.nodes.get(f"ObjectInfo{currentIndex - 2}")
+        node_group.links.new(previousObjInfo.outputs[3], switchNext.inputs[1])
+        node_group.links.new(geometryNodeObjectInfo.outputs[3], switchNext.inputs[2])
+    else:
+        switchNext = node_group.nodes.new("GeometryNodeSwitch")
+        switchNext.location = (-150 * (currentPosition + 7.8) -10, -200 * (4.5))
+        nameOfSwitch = 'Switch'
+        switchNext.name = f'{nameOfSwitch}{currentIndex}'
+        previousObjInfo = node_group.nodes.get(f"ObjectInfo{currentIndex - 2}")
+        node_group.links.new(previousObjInfo.outputs[3], switchNext.inputs[1])
+        node_group.links.new(geometryNodeObjectInfo.outputs[3], switchNext.inputs[2])
+  if (currentIndex > 4):
+    if currentIndex % 2 == 0:
+        switchNext = node_group.nodes.new("GeometryNodeSwitch")
+        switchNext.location = (-150 * (currentPosition + 7.8)-10, 200 * (5.5))
+        nameOfSwitch = 'Switch'
+        switchNext.name = f'{nameOfSwitch}{currentIndex}'
+        previousSwitchInfo = node_group.nodes.get(f"Switch{currentIndex - 2}")
+        node_group.links.new(previousSwitchInfo.outputs[0], switchNext.inputs[1])
+        node_group.links.new(geometryNodeObjectInfo.outputs[3], switchNext.inputs[2])
+    else:
+        switchNext = node_group.nodes.new("GeometryNodeSwitch")
+        switchNext.location = (-150 * (currentPosition + 7.8) -10, -200 * (4.5))
+        nameOfSwitch = 'Switch'
+        switchNext.name = f'{nameOfSwitch}{currentIndex}'
+        previousSwitchInfo = node_group.nodes.get(f"Switch{currentIndex - 2}")
+        node_group.links.new(previousSwitchInfo.outputs[0], switchNext.inputs[1])
+        node_group.links.new(geometryNodeObjectInfo.outputs[3], switchNext.inputs[2])
+
+
+
+
+lengthOfObjects = len(namesOfObjectsNumbered)
+def isEven(number):
+  return number % 2 == 0
+
+def isOdd(number):
+  return number % 2 != 0
+
+def create_pattern(length):
+    pattern = []
+    twoZero = True
+    firstPosition = 0
+    if isEven(length):
+        firstPosition = int(length / 2) - 2
+    else:
+        firstPosition = int((length + 1) / 2) - 2
+        twoZero = False 
+    if length == 1:
+        pattern.append(firstPosition)   
+    if length == 2:
+        for _ in range(2):
+            pattern.append(firstPosition)   
+    if length == 3:
+        for _ in range(3):
+            pattern.append(firstPosition)   
+    if length > 3:
+        for _ in range(4):
+            pattern.append(firstPosition)   
+    if length > 4:
+        # Pattern for even numbers
+        if twoZero:
+            for i in range(int(firstPosition) - 1, 0, -1):
+                pattern.append(i)
+                pattern.append(i)
+            pattern.append(0)
+            pattern.append(0)
+        else: 
+            for i in range(int(firstPosition) -1, 0, -1):
+                pattern.append(i)
+                pattern.append(i)
+            pattern.append(0)
+    return pattern
+
+
+objInfoPositionArray = create_pattern(lengthOfObjects)
+print (objInfoPositionArray) 
+repeats = Repeats()
 for i in range(0, len(namesOfObjectsNumbered)):
-  createGroupGeoTop1GeoTop2Switch(i)
-#second  ###############
-def createGroupGeoBottom1GeoBottom2Switch():
-  geometryNodeObjectInfo3 = node_group.nodes.new("GeometryNodeObjectInfo")
-  geometryNodeObjectInfo3.location = (-135 * 9, 200 * -7)
-  geometryNodeObjectInfo3.name = "Object Info.006"
-  geometryNodeObjectInfo3.label = "Object Info.006"
-  geometryNodeObjectInfo3.inputs[0].default_value = bpy.data.objects["Cube"]
-  geometryNodeObjectInfo3.transform_space = 'RELATIVE'
-
-
-  geometryNodeObjectInfo4 = node_group.nodes.new("GeometryNodeObjectInfo")
-  geometryNodeObjectInfo4.location = (-135 * 9, 200 * -8)
-  geometryNodeObjectInfo4.name = "Object Info.007"
-  geometryNodeObjectInfo4.label = "Object Info.007"
-  geometryNodeObjectInfo4.inputs[0].default_value = bpy.data.objects["Cone"]
-  geometryNodeObjectInfo4.transform_space = 'RELATIVE'
-
-
-  switchNodeBottomFinal = node_group.nodes.new("GeometryNodeSwitch")
-  switchNodeBottomFinal.location = (-135 * 7.8, 200 * -7.5)
-
-
-  node_group.links.new(geometryNodeObjectInfo3.outputs[3], switchNodeBottomFinal.inputs[1])
-  node_group.links.new(geometryNodeObjectInfo4.outputs[3], switchNodeBottomFinal.inputs[2])
-
-
-  correctsdf2 = node_group.nodes.get('correctsdf2')
-  growth2 = node_group.nodes.get('growth2')
-  joinGeometry = node_group.nodes.get('Join Geometry')
-
-  node_group.links.new(switchNodeBottomFinal.outputs[0], correctsdf2.inputs[0])
-  node_group.links.new(switchNodeBottomFinal.outputs[0], growth2.inputs[0])
-  node_group.links.new(switchNodeBottomFinal.outputs[0], joinGeometry.inputs[0])
-
-def createGroupGeoTop1GeoTop2SwitchFinal():
-  geometryNodeObjectInfo1 = node_group.nodes.new("GeometryNodeObjectInfo")
-  geometryNodeObjectInfo1.location = (-135 * 9, 200 * 6)
-  geometryNodeObjectInfo1.name = "Object Info.004"
-  geometryNodeObjectInfo1.label = "Object Info.004"
-  geometryNodeObjectInfo1.inputs[0].default_value = bpy.data.objects["Cube"]
-  geometryNodeObjectInfo1.transform_space = 'RELATIVE'
-
-
-  geometryNodeObjectInfo2 = node_group.nodes.new("GeometryNodeObjectInfo")
-  geometryNodeObjectInfo2.location = (-135 * 9, 200 * 5)
-  geometryNodeObjectInfo2.name = "Object Info.005"
-  geometryNodeObjectInfo2.label = "Object Info.005"
-  geometryNodeObjectInfo2.inputs[0].default_value = bpy.data.objects["Cone"]
-  geometryNodeObjectInfo2.transform_space = 'RELATIVE'
-
-
-  switchNodeTopFinal = node_group.nodes.new("GeometryNodeSwitch")
-  switchNodeTopFinal.location = (-135 * 7.8, 200 * 5.5)
-
-
-  node_group.links.new(geometryNodeObjectInfo1.outputs[3], switchNodeTopFinal.inputs[1])
-  node_group.links.new(geometryNodeObjectInfo2.outputs[3], switchNodeTopFinal.inputs[2])
-
-
-  correctsdf1 = node_group.nodes.get('correctsdf1')
-  growth1 = node_group.nodes.get('growth1')
-  joinGeometry = node_group.nodes.get('Join Geometry')
-
-  node_group.links.new(switchNodeTopFinal.outputs[0], correctsdf1.inputs[0])
-  node_group.links.new(switchNodeTopFinal.outputs[0], growth1.inputs[0])
-  node_group.links.new(switchNodeTopFinal.outputs[0], joinGeometry.inputs[0])
-
-def createGroupGeoBottom1GeoBottom2Switch():
-  geometryNodeObjectInfo3 = node_group.nodes.new("GeometryNodeObjectInfo")
-  geometryNodeObjectInfo3.location = (-135 * 9, 200 * -7)
-  geometryNodeObjectInfo3.name = "Object Info.006"
-  geometryNodeObjectInfo3.label = "Object Info.006"
-  geometryNodeObjectInfo3.inputs[0].default_value = bpy.data.objects["Cube"]
-  geometryNodeObjectInfo3.transform_space = 'RELATIVE'
-
-
-  geometryNodeObjectInfo4 = node_group.nodes.new("GeometryNodeObjectInfo")
-  geometryNodeObjectInfo4.location = (-135 * 9, 200 * -8)
-  geometryNodeObjectInfo4.name = "Object Info.007"
-  geometryNodeObjectInfo4.label = "Object Info.007"
-  geometryNodeObjectInfo4.inputs[0].default_value = bpy.data.objects["Cone"]
-  geometryNodeObjectInfo4.transform_space = 'RELATIVE'
-
-
-  switchNodeBottomFinal = node_group.nodes.new("GeometryNodeSwitch")
-  switchNodeBottomFinal.location = (-135 * 7.8, 200 * -7.5)
-
-
-  node_group.links.new(geometryNodeObjectInfo3.outputs[3], switchNodeBottomFinal.inputs[1])
-  node_group.links.new(geometryNodeObjectInfo4.outputs[3], switchNodeBottomFinal.inputs[2])
-
-
-  correctsdf2 = node_group.nodes.get('correctsdf2')
-  growth2 = node_group.nodes.get('growth2')
-  joinGeometry = node_group.nodes.get('Join Geometry')
-
-  node_group.links.new(switchNodeBottomFinal.outputs[0], correctsdf2.inputs[0])
-  node_group.links.new(switchNodeBottomFinal.outputs[0], growth2.inputs[0])
-  node_group.links.new(switchNodeBottomFinal.outputs[0], joinGeometry.inputs[0])
-
+  createGroupGeoTop1GeoTop2Switch(i, objInfoPositionArray[i], repeats)

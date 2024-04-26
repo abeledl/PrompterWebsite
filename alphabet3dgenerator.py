@@ -13,17 +13,24 @@ def create_text_object(letter, extrude_value, bevel_value, index):
     text_obj.data.bevel_resolution = 1
     
     # Align to the middle
-    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='BOUNDS')
-    text_obj.location.x = -text_obj.dimensions.x / 2
-    text_obj.location.y = -text_obj.dimensions.y / 2
-    
+    text_obj.data.align_x = 'CENTER'
+    text_obj.data.align_y = 'CENTER'
+    # Font size
+    text_obj.data.size = 3
     # Convert to mesh
     bpy.ops.object.convert(target='MESH')
-    
+    bpy.ops.object.mode_set(mode='EDIT')
+    # Merge vertices by distance
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles()
+    # Switch back to object mode
+    bpy.ops.object.mode_set(mode='OBJECT')
     # Rename the object
-    text_obj.name = f"{index}"
+    text_obj.name = f"{letter}_{index}"
+
+
 
 # Loop through the alphabet and create each letter
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 for i, char in enumerate(alphabet):
-    create_text_object(char, 0.05, 0.01, i + 1)
+    create_text_object(char, 0.1, 0.01, i + 1)

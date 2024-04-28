@@ -10,13 +10,13 @@ def create_text_object(letter, extrude_value, bevel_value, index):
     # Set extrude and bevel
     text_obj.data.extrude = extrude_value
     text_obj.data.bevel_depth = bevel_value
-    text_obj.data.bevel_resolution = 1
+    text_obj.data.bevel_resolution = 2
     
     # Align to the middle
     text_obj.data.align_x = 'CENTER'
     text_obj.data.align_y = 'CENTER'
     # Font size
-    text_obj.data.size = 3
+    text_obj.data.size = 2.8
     # Convert to mesh
     bpy.ops.object.convert(target='MESH')
     bpy.ops.object.mode_set(mode='EDIT')
@@ -25,6 +25,11 @@ def create_text_object(letter, extrude_value, bevel_value, index):
     bpy.ops.mesh.remove_doubles()
     # Switch back to object mode
     bpy.ops.object.mode_set(mode='OBJECT')
+    #rotate the object
+    #convert to radians
+    angle = 90
+    angle = angle * (3.14159 / 180)
+    text_obj.rotation_euler[0] = angle
     # Rename the object
     text_obj.name = f"{letter}_{index}"
 

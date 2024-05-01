@@ -1,39 +1,52 @@
 import numpy as np
 import bpy
 import math
-
+import nltk
+nltk.download('punkt')
 
 globalYCameraBG12Clips = -0.6
 
 
-#positions_english_array = [[474.99, 77.40], [474.98, 232.39], [474.98, 464.87], [474.99, 697.35], [474.98, 929.83], [474.99, 1162.31], [443.79, 1317.30], [575.87, 1317.30], [474.99, 1472.29], [474.98, 1627.27], [474.98, 1782.26], [474.99, 1937.25], [474.99, 2092.24], [347.50, 2247.22], [706.53, 2247.22], [283.18, 2402.21], [543.18, 2402.21], [474.99, 2557.20], [474.99, 2712.19], [474.98, 2944.67], [474.99, 3177.15], [474.99, 3409.63], [474.98, 3642.11], [474.98, 3797.10], [345.56, 3952.09], [519.32, 3952.09], [474.99, 4107.07], [474.98, 4339.56], [393.49, 4572.04], [534.05, 4572.04], [474.98, 4804.52], [474.99, 5114.49], [474.99, 5346.97], [474.98, 5501.96], [474.99, 5656.95], [474.98, 5811.94], [474.98, 5966.92], [356.27, 6121.91], [534.05, 6121.91], [474.98, 6354.39], [321.46, 6586.87], [544.47, 6586.87], [358.27, 6741.86], [569.61, 6741.86], [474.99, 6896.85], [393.49, 7051.84], [604.75, 7051.84], [474.99, 7206.82], [443.79, 7361.81], [575.87, 7361.81], [474.98, 7516.80], [474.99, 7671.79], [474.98, 7826.77], [264.52, 7981.76], [538.41, 7981.76], [474.99, 8136.75], [474.99, 8369.23]]
-positions_english_array = []
-start_times_array = [0.72, 1.20, 1.36, 3.92, 4.16, 5.52, 6.00, 6.24, 6.40, 7.70, 7.86, 9.62, 10.81, 11.05, 11.70, 13.38, 13.70, 14.41, 15.21, 15.62, 17.80, 18.28, 19.40, 19.72, 21.80, 21.96, 22.36, 22.76, 24.76, 25.00, 25.16, 27.07, 28.20, 28.68, 28.99, 31.07, 31.55, 32.59, 32.84, 33.23, 35.23, 35.48, 36.68, 36.92, 37.32, 37.88, 38.20, 38.36, 39.40, 39.64, 39.88, 41.48, 42.20, 43.08, 43.32, 44.04, 44.44]
+positions_english_array = [[198.64, 76.80], [272.88, 76.80], [389.10, 76.80], [492.74, 76.80], [570.28, 76.80], [697.93, 76.80], [272.54, 231.80], [399.31, 231.80], [526.47, 231.80], [683.86, 231.80], [223.85, 386.80], [326.21, 386.80], [440.82, 386.80], [646.90, 386.80], [408.56, 541.80], [477.88, 541.80], [544.32, 541.80], [216.34, 696.80], [352.93, 696.80], [508.87, 696.80], [663.42, 696.80], [330.90, 851.80], [483.18, 851.80], [627.27, 851.80], [350.90, 1006.80], [506.58, 1006.80], [630.67, 1006.80], [206.83, 1161.80], [320.21, 1161.80], [421.99, 1161.80], [536.99, 1161.80], [703.38, 1161.80], [255.62, 1316.80], [415.24, 1316.80], [528.46, 1316.80], [702.78, 1316.80], [372.83, 1471.80], [572.09, 1471.80], [273.62, 1626.80], [398.03, 1626.80], [464.97, 1626.80], [636.15, 1626.80], [235.91, 1781.80], [344.70, 1781.80], [492.91, 1781.80], [658.29, 1781.80], [231.28, 1936.80], [318.21, 1936.80], [427.01, 1936.80], [524.14, 1936.80], [659.05, 1936.80]]
+#positions_english_array = []
+#start_times_array = [0.72, 1.20, 1.36, 3.92, 4.16, 5.52, 6.00, 6.24, 6.40, 7.70, 7.86, 9.62, 10.81, 11.05, 11.70, 13.38, 13.70, 14.41, 15.21, 15.62, 17.80, 18.28, 19.40, 19.72, 21.80, 21.96, 22.36, 22.76, 24.76, 25.00, 25.16, 27.07, 28.20, 28.68, 28.99, 31.07, 31.55, 32.59, 32.84, 33.23, 35.23, 35.48, 36.68, 36.92, 37.32, 37.88, 38.20, 38.36, 39.40, 39.64, 39.88, 41.48, 42.20, 43.08, 43.32, 44.04, 44.44]
 #end times of the end of line
 
+start_times_array = []
+for i in range(len(positions_english_array)):
+  start_times_array.append(i * 0.5)
+#for i in range(len(start_times_array)):
+#  positions_english_array.append([474.99, i * 500])
+
+start_times_with_if_new_line = []
 for i in range(len(start_times_array)):
-  positions_english_array.append([474.99, i * 500])
+  start_times_with_if_new_line.append((start_times_array[i], False))
 
-start_new_rows_seconds_with_new_row_flags = []
+time_at_which_to_move_all_rows_with_flags_in_case_of_doulbe_row = []
 
-scale_factor = 0.01
-english_words_scaled_coordinates = [(x * scale_factor, y * scale_factor) for x, y in positions_english_array]
+new_row_positions = []
+
+scale_factor = 0.02
+english_words_scaled_coordinates = [(x * scale_factor, y * (scale_factor + 0.005)) for x, y in positions_english_array]
 english_words_scaled_coordinates = [(x, y + 2.6) for x, y in english_words_scaled_coordinates]
 
 
-english_paragraph = "Amidst the golden_desert#expanse, a solitary#road stretched like a lifeline. Its cracked_asphalt whispered_tales of journeys past, of dreams chased under relentless#sunsets. Each tire#tread left an_imprint, a mark of transient#existence in the timeless#sands. Dust#devils danced their silent_waltz, veiling memories in their swirling#embrace. At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless#path."
+english_paragraph = "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens, secrets whisper, waiting to be discovered by those brave enough to dive into the depths."
 english_words = english_paragraph.split()
 
 
-phonetic_string = 'əˈmɪdst ðə ˈɡoʊldən_ˈdɛzɚt#ɪkˈspæns, ə ˈsɑlɪtɛri#roʊd strɛtʃt laɪk ə ˈlaɪflaɪn. ɪts krækt_ˈæsfɔlt ˈwɪspɚd_teɪlz əv ˈʤɜrni pæst, ʌv drimz ʧeɪst ˈʌndɚ rɪˈlɛntlɪs_ˈsʌnˌsɛts. ˈitʃ taɪɚ#trɛd lɛft ən_ˈɪmprɪnt, ə mɑrk ʌv ˈtrænzɪtɔri#ɪɡˈzɪstəns ɪn ðə ˈtaɪmlɪs#sændz. dʌst#ˈdɛvəlz dænst ðɛɚ ˈsaɪlənt_wɔlts, ˈvelɪŋ ˈmɛməriz ɪn ðɛɚ ˈswɜrlɪŋ#ɪmˈbreɪs. ˈæt dɔn, ðə roʊd ɪˈmɜrdʒd frəm ðə ˈhaɪrəˌzɑn laɪk ə ˈprɑmɪs, ˈbɛkənɪŋ ˈwɑndərɚz tuː trəˈvɜrs ɪts ˈɛndləs#pæθ.'
+phonetic_string = "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens, secrets whisper, waiting to be discovered by those brave enough to dive into the depths."
 phonetic_words= phonetic_string.split()
 
+spanish_string = "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens, secrets whisper, waiting to be discovered by those brave enough to dive into the depths."
 
+spanish_words = spanish_string.split()
 
-
-
-
-
+tokens = nltk.word_tokenize(english_paragraph)
+full_tags = nltk.pos_tag(tokens)
+# Using list comprehension to filter out unwanted elements
+tags = [item for item in full_tags if item[0] not in {',', '.', "'", "'s"}]
+print(tags)
 last_frame = 3000
 
 
@@ -80,11 +93,11 @@ highlighter_obj = bpy.context.active_object
 highlighter_obj.name = "highlighter_obj"
 highlighter_obj.scale = (1, 1, 1)
 highlighter_material_english = bpy.data.materials.new(name="HighlighterMaterialEnglish")
-highlighter_obj.data.materials.append(highlighter_material_english)
-highlighter_obj.active_material.use_nodes = True
-highlighter_material_english.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.478878, 0, 0.106461, 1)
 
-
+hl_material = bpy.data.materials.get("hl_material")
+highlighter_obj.data.materials.append(hl_material)
+#highlighter_obj.active_material.use_nodes = True
+#highlighter_material_english.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.478878, 0, 0.106461, 1)
 #highlighter_material_english.node_tree.nodes["Principled BSDF"].inputs[26].default_value = (1, 0.0855381, 0.194721, 1)
 #highlighter_material_english.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 1
 
@@ -114,7 +127,6 @@ text_material = bpy.data.materials.new(name="TextMaterial")
 text_material.use_nodes = True
 text_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (1, 1,1, 1)
 text_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525 #metallic
-
 text_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
 text_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638 #roughness
 text_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
@@ -230,6 +242,14 @@ blue_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510
 blue_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
 blue_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
 
+verb_material = bpy.data.materials.get("verb_material")
+noun_material = bpy.data.materials.get("noun_material")
+adjective_material = bpy.data.materials.get("adjective_material")
+article_material = bpy.data.materials.get("article_material")
+adverb_material = bpy.data.materials.get("adverb_material")
+pronoun_material = bpy.data.materials.get("pronoun_material")
+preposition_material = bpy.data.materials.get("preposition_material")
+conjunction_material = bpy.data.materials.get("conjunction_material")
 
 def createTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth):
   # Create a new text object for each word
@@ -239,6 +259,7 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
   encounteredLongWord = False
   IndexWord = 0
   prevPositionY = -1 * positions[0][1]
+  numsOfRowsPast = 0
   for word, position in zip(words, positions):
     currentPosition = -1 * position[1]
     
@@ -256,11 +277,16 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
 
     text_object.data.body = word
     if currentPosition < prevPositionY:
-      if doubleRow:
-        start_new_rows_seconds_with_new_row_flags.append((start_times_array[IndexWord],True))
-      else:
-        start_new_rows_seconds_with_new_row_flags.append((start_times_array[IndexWord],False))
-
+      numsOfRowsPast += 1
+      new_row_positions.append(position)
+      #assuming this line of code changes the current time per index to true
+      start_times_with_if_new_line[IndexWord] = (start_times_with_if_new_line[IndexWord][0], True)
+      if(numsOfRowsPast == 2):
+        numsOfRowsPast = 0
+        if doubleRow:
+          time_at_which_to_move_all_rows_with_flags_in_case_of_doulbe_row.append((start_times_array[IndexWord],True))
+        else:
+          time_at_which_to_move_all_rows_with_flags_in_case_of_doulbe_row.append((start_times_array[IndexWord],False))
     if doubleRow:
       text_object.data.space_line = 1.6
 
@@ -275,10 +301,34 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
     #text_object.data.bevel_mode = 'ROUND'
     text_object.data.align_x = 'CENTER'  # Set horizontal alignment to center
     text_object.data.align_y = 'CENTER'  # Set vertical alignment to middle
-    text_object.data.materials.append(text_material)
-    text_object.data.materials.append(yellow_material)
-    text_object.data.materials.append(green_material)
-    text_object.data.materials.append(blue_material)
+
+
+    if (tags[IndexWord][1] == 'VB' or tags[IndexWord][1] == 'VBD' or tags[IndexWord][1] == 'VBG' or tags[IndexWord][1] == 'VBN' or tags[IndexWord][1] == 'VBP' or tags[IndexWord][1] == 'VBZ'):
+      text_object.data.materials.append(verb_material)
+    elif (tags[IndexWord][1] == 'NN' or tags[IndexWord][1] == 'NNS' or tags[IndexWord][1] == 'NNP' or tags[IndexWord][1] == 'NNPS'):
+      text_object.data.materials.append(noun_material)
+    elif (tags[IndexWord][1] == 'JJ' or tags[IndexWord][1] == 'JJR' or tags[IndexWord][1] == 'JJS'):
+      text_object.data.materials.append(adjective_material)
+    elif (tags[IndexWord][1] == 'DT' or tags[IndexWord][1] == 'PDT' or tags[IndexWord][1] == 'WDT'):
+      text_object.data.materials.append(article_material)
+    elif (tags[IndexWord][1] == 'RB' or tags[IndexWord][1] == 'RBR' or tags[IndexWord][1] == 'RBS' or tags[IndexWord][1] == 'WRB'):
+      text_object.data.materials.append(adverb_material)
+    elif (tags[IndexWord][1] == 'PRP' or tags[IndexWord][1] == 'PRP$' or tags[IndexWord][1] == 'WP' or tags[IndexWord][1] == 'WP$'):
+      text_object.data.materials.append(pronoun_material)
+    elif (tags[IndexWord][1] == 'IN'):
+      text_object.data.materials.append(preposition_material)
+    elif (tags[IndexWord][1] == 'CC'):
+      text_object.data.materials.append(conjunction_material)
+    #if to is followed by a verb, then it is infinitive
+    if (tags[IndexWord][0] == 'to' and (tags[IndexWord + 1][1] == 'VB' or tags[IndexWord + 1][1] == 'VBD' or tags[IndexWord + 1][1] == 'VBG' or tags[IndexWord + 1][1] == 'VBN' or tags[IndexWord + 1][1] == 'VBP' or tags[IndexWord + 1][1] == 'VBZ')):
+      text_object.data.materials.append(verb_material)
+    #if to is not followed by a verb, then it is a preposition
+    if (tags[IndexWord][0] == 'to' and (tags[IndexWord + 1][1] != 'VB' or tags[IndexWord + 1][1] != 'VBD' or tags[IndexWord + 1][1] != 'VBG' or tags[IndexWord + 1][1] != 'VBN' or tags[IndexWord + 1][1] != 'VBP' or tags[IndexWord + 1][1] != 'VBZ')):
+      text_object.data.materials.append(preposition_material)
+    #text_object.data.materials.append(text_material)
+    #text_object.data.materials.append(yellow_material)
+    #text_object.data.materials.append(green_material)
+    #text_object.data.materials.append(blue_material)
     text_object.data.resolution_u = 2
 
     bpy.ops.object.convert(target='MESH')
@@ -320,12 +370,12 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
   # Select all created text objects
   bpy.ops.object.select_all(action='SELECT')
 
-def createPhoTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth):
+def createChildrenTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth, extrution, verticalOffset,  outline):
   # Create a new text object for each word
   ft = font_size
   for word, position in zip(words, positions):
     # Create a new text object-
-    bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - 0.7, 0))
+    bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - verticalOffset, 0))
     text_object = bpy.context.active_object
     word = word.replace("_", "  ")
     doubleRow = False
@@ -343,7 +393,7 @@ def createPhoTextObject(words, positions, parent_obj, font_name, font_size, font
     text_object.data.size = font_size
     text_object.data.align_x = 'CENTER'  # Set horizontal alignment to center
     text_object.data.align_y = 'CENTER'  # Set vertical alignment to middle
-    #text_object.data.extrude = 0.01
+    text_object.data.extrude = extrution
     #text_object.data.bevel_depth = 0.01
     #text_object.data.bevel_resolution = 1
     #text_object.data.bevel_mode = 'ROUND'
@@ -354,39 +404,39 @@ def createPhoTextObject(words, positions, parent_obj, font_name, font_size, font
     text_object.data.resolution_u = font_resolution
     bpy.ops.object.convert(target='MESH')
     
+    if outline:
+      bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - 0.7, -0.01))
+      text_object2 = bpy.context.active_object
+      text_object2.name = "zoutline"
+      text_object2.data.body = word
+      if doubleRow:
+        text_object2.data.space_line = 2.3
+      font_path2 = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
+      font_data2 = bpy.data.fonts.load(font_path2)
+      text_object2.data.font = font_data2
+      text_object2.data.size = font_size
+      text_object2.data.resolution_u = font_resolution
+      text_object2.data.fill_mode = 'NONE'
+      #text_object2.data.offset = 0.02
+      text_object2.data.align_x = 'CENTER'  # Set horizontal alignment to center
+      text_object2.data.align_y = 'CENTER'  # Set vertical alignment to middle
+      text_object2.data.bevel_depth = bevel_depth
+      text_object2.data.bevel_resolution = 0
+
+      text_object2.data.materials.append(outline_material)
+      #text_object2.active_material.use_nodes = True
+      text_object2.active_material.use_screen_refraction = True
+      text_object2.active_material.refraction_depth = 1.5
 
 
-    bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - 0.7, -0.01))
-    text_object2 = bpy.context.active_object
-    text_object2.name = "zoutline"
-    text_object2.data.body = word
-    if doubleRow:
-      text_object2.data.space_line = 2.3
-    font_path2 = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
-    font_data2 = bpy.data.fonts.load(font_path2)
-    text_object2.data.font = font_data2
-    text_object2.data.size = font_size
-    text_object2.data.resolution_u = font_resolution
-    text_object2.data.fill_mode = 'NONE'
-    #text_object2.data.offset = 0.02
-    text_object2.data.align_x = 'CENTER'  # Set horizontal alignment to center
-    text_object2.data.align_y = 'CENTER'  # Set vertical alignment to middle
-    text_object2.data.bevel_depth = bevel_depth
-    text_object2.data.bevel_resolution = 0
 
-    text_object2.data.materials.append(outline_material)
-    #text_object2.active_material.use_nodes = True
-    text_object2.active_material.use_screen_refraction = True
-    text_object2.active_material.refraction_depth = 1.5
-
-
-
-    bpy.ops.object.convert(target='MESH')
+      bpy.ops.object.convert(target='MESH')
+      text_object2.parent = parent_obj 
     #bpy.ops.object.shade_smooth()
     
     # Set the text object as a child of the parent cube
     text_object.parent = parent_obj
-    text_object2.parent = parent_obj 
+
 
 
 
@@ -419,9 +469,9 @@ def applyKeyFrameToWords(obj):
   frame = 0
   transition_frame_rate = 10
   direction = [0, 0, 1]
-  distance = 10
+  distance = 15.5 # amount to move everything by
   #for second in end_times_array:
-  for second, bool_val in start_new_rows_seconds_with_new_row_flags:
+  for second, bool_val in time_at_which_to_move_all_rows_with_flags_in_case_of_doulbe_row:
     frame = calculateFrame(second, fps)
     addKeyFrame(obj, frame, "location")
 
@@ -452,8 +502,8 @@ def getAllChildrenObjects(obj):
   children = obj.children_recursive
   return children
 
-def changeWidthAndHeight(obj, width, height, depth):
-  obj.dimensions = (width, height, depth) 
+def findVerticalPositionOfRow(coordiantes, row_number):
+  return coordiantes[row_number][1]
 
 def setupHighlighterKeyFrames(obj, word_coordinates, words):
   fps = 60
@@ -464,9 +514,13 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   height_percentage_offset = 1
   width_percentage_offset = 1
   width_height_data_first_word = getWidthAndHeight(words[word_obj_idx])
-  new_pos_y = -word_coordinates[word_obj_idx][1] - 0.2
-  double_row_y_position  = -word_coordinates[word_obj_idx][1] + 0.5
+  new_pos_y = 0
+  print (new_row_positions)
+  first_row_pos_y = -word_coordinates[word_obj_idx][1] - 0.52
+  second_row_pos_y = -new_row_positions[0][1] -0.5
+  double_row_y_position  = -word_coordinates[word_obj_idx][1] + 0.52
   new_height = width_height_data_first_word["height"] + 1.1
+  inSecondRow = False
 
   ############GEO NODES SET UP ############################
   bpy.data.objects["highlighter_obj"].select_set(True)
@@ -505,19 +559,18 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   ################# Nodes Setup End####################################
 
   #for second in end_times_words_array:
-  for second in start_times_array:
+  for second, isNewLine in start_times_with_if_new_line:
     frameT = calculateFrame(second, fps)
     addKeyFrame(obj, frameT, "location")
     #addKeyFrame(obj, frame, "scale")
     # Add a keyframe for the scale at frame 10
     transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
-    print("index ", word_obj_idx)
     width_height_data = getWidthAndHeight(words[word_obj_idx])
-    new_width = width_height_data["width"] + 0.36
+    new_width = width_height_data["width"] + 0.7
     if width_height_data["height"] > 4:
       new_height = width_height_data["height"] + 1.27
     else:
-      new_height = width_height_data_first_word["height"] + 1.5
+      new_height = width_height_data_first_word["height"] + 3.5
     # Set the scale on the X-axis of the Transform node to 4
     transform_node.inputs['Scale'].default_value[0] = new_width/2
     transform_node.inputs['Scale'].default_value[1] = 1.04/2
@@ -527,8 +580,13 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
     coordinate = word_coordinates[word_obj_idx]
 
     new_pos_x = coordinate[0]
-    print (width_height_data["height"])
 
+    if isNewLine:
+      inSecondRow = not inSecondRow #toggle
+    if inSecondRow:
+      new_pos_y = second_row_pos_y
+    else:
+      new_pos_y = first_row_pos_y
     setObjPosition(new_pos_x * 2, 2.8,  (new_pos_y * 2) + 2.12562, obj)
     transition_frames = frameT + transition_frame_rate
     addKeyFrame(obj, transition_frames, "location")
@@ -537,7 +595,7 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
     word_obj_idx += 1
   #add bevel modifier
   bpy.ops.object.modifier_add(type='BEVEL')
-  bpy.context.object.modifiers["Bevel"].width = 0.1
+  bpy.context.object.modifiers["Bevel"].width = 0.2
   bpy.context.object.modifiers["Bevel"].segments = 4
   bpy.ops.object.shade_smooth()
   bpy.data.objects["highlighter_obj"].select_set(False)
@@ -645,8 +703,8 @@ createTextObject(english_words, english_words_scaled_coordinates, parent_cube, "
 english_word_objects = getAllChildrenObjects(parent_cube)
 
 phonetic_array_position = addOffsetToXAxisDoubleArrayCoordinates(english_words_scaled_coordinates, 0.20, english_word_objects)
-createPhoTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02)
-
+createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0, 0.7, True)
+createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0.05, 1.4, False)
 applyKeyFrameToWords(parent_cube)
 setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects) 
 

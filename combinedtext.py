@@ -262,7 +262,7 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
   numsOfRowsPast = 0
   for word, position in zip(words, positions):
     currentPosition = -1 * position[1]
-    
+
 
 
     bpy.ops.object.text_add(enter_editmode=False, location=(position[0], -1 * position[1], 0))
@@ -290,7 +290,7 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
     if doubleRow:
       text_object.data.space_line = 1.6
 
-    font_path = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
+    font_path = "/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/" + font_name + ".ttf"
     font_data = bpy.data.fonts.load(font_path)
     text_object.data.font = font_data
     text_object.data.size = font_size
@@ -357,8 +357,8 @@ def createTextObject(words, positions, parent_obj, font_name, font_size, font_re
     #text_object2.active_material.use_screen_refraction = True
     #text_object2.active_material.refraction_depth = 1.5
     #bpy.ops.object.convert(target='MESH')
-    #text_object2.parent = parent_obj 
-    
+    #text_object2.parent = parent_obj
+
     # Set the text object as a child of the parent cube
     text_object.parent = parent_obj
 
@@ -387,7 +387,7 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
     text_object.data.body = word
     if doubleRow:
       text_object.data.space_line = 2.3
-    font_path = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
+    font_path = "/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/" + font_name + ".ttf"
     font_data = bpy.data.fonts.load(font_path)
     text_object.data.font = font_data
     text_object.data.size = font_size
@@ -403,7 +403,7 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
     text_object.data.materials.append(blue_material)
     text_object.data.resolution_u = font_resolution
     bpy.ops.object.convert(target='MESH')
-    
+
     if outline:
       bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - 0.7, -0.01))
       text_object2 = bpy.context.active_object
@@ -411,7 +411,7 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
       text_object2.data.body = word
       if doubleRow:
         text_object2.data.space_line = 2.3
-      font_path2 = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
+      font_path2 = "/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/" + font_name + ".ttf"
       font_data2 = bpy.data.fonts.load(font_path2)
       text_object2.data.font = font_data2
       text_object2.data.size = font_size
@@ -431,9 +431,9 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
 
 
       bpy.ops.object.convert(target='MESH')
-      text_object2.parent = parent_obj 
+      text_object2.parent = parent_obj
     #bpy.ops.object.shade_smooth()
-    
+
     # Set the text object as a child of the parent cube
     text_object.parent = parent_obj
 
@@ -453,11 +453,11 @@ def addingBooleanModifierToAllChildrenObjects(word_objects, clip_cube_name_1, cl
 
 def moveObject(obj, direction, distance):
   # Get the object by its name
-  obj_name = obj.name 
+  obj_name = obj.name
 
   obj = bpy.context.scene.objects[obj_name]
-  obj.location.x += direction[0] * distance 
-  obj.location.y += direction[1] * distance 
+  obj.location.x += direction[0] * distance
+  obj.location.y += direction[1] * distance
   obj.location.z += direction[2] * distance
 
 def addKeyFrame(obj, frame_number, property_name):
@@ -479,7 +479,7 @@ def applyKeyFrameToWords(obj):
       moveObject(obj, direction, distance)
     else:
       moveObject(obj, direction, distance)
-      
+
     transition_frames = frame + transition_frame_rate
     addKeyFrame(obj, transition_frames, "location")
 
@@ -599,8 +599,8 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   bpy.context.object.modifiers["Bevel"].segments = 4
   bpy.ops.object.shade_smooth()
   bpy.data.objects["highlighter_obj"].select_set(False)
-    
-    
+
+
 def addOffsetToXAxisDoubleArrayCoordinates(arr, offset_x_percentage, words):
   new_pair_list = []
   new_list = []
@@ -613,7 +613,7 @@ def addOffsetToXAxisDoubleArrayCoordinates(arr, offset_x_percentage, words):
     new_list.append(new_pair_list)
     new_pair_list = []
     word_obj_idx += 1
-  
+
   return new_list
 
 
@@ -703,14 +703,10 @@ createTextObject(english_words, english_words_scaled_coordinates, parent_cube, "
 english_word_objects = getAllChildrenObjects(parent_cube)
 
 phonetic_array_position = addOffsetToXAxisDoubleArrayCoordinates(english_words_scaled_coordinates, 0.20, english_word_objects)
-createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0, 0.7, True)
-createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0.05, 1.4, False)
+createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0, 0.7, True)
+createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0.05, 1.4, False)
 applyKeyFrameToWords(parent_cube)
-setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects) 
+setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects)
 
 all_word_objects = getAllChildrenObjects(parent_cube)
 #addingBooleanModifierToAllChildrenObjects(all_word_objects, "clip_cube_english_1", "clip_cube_english_2")
-
-
-
-

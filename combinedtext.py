@@ -8,6 +8,48 @@ from abc import ABC, abstractmethod
 
 nltk.download('punkt')
 
+
+#to be deleted#####
+#create collection of alphabet letters
+
+def createAlphabetCollection():
+  # Create a new collection
+  alphabet_3d_letter_collection = bpy.data.collections.new('alphabet3dletters')
+  # Link the collection to the scene
+  bpy.context.scene.collection.children.link(alphabet_3d_letter_collection)
+  font_path = "C:\\WINDOWS\\Fonts\\" + "ARLRDBD" + ".ttf"
+  # Create a new text object for each letter and link it to the collection
+  for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.?':
+    # Create a new text object
+    bpy.ops.object.text_add(enter_editmode=False, location=(0, 0, 0))
+    text_object = bpy.context.active_object
+    text_object.data.body = letter
+    text_object.data.size = 1
+    text_object.data.extrude = 0.05
+    text_object.data.resolution_u = 3
+    text_object.data.bevel_depth = 0.03
+    text_object.name = letter + "_3d"
+    text_object.data.font = bpy.data.fonts.load(font_path)
+    # Convert the text to mesh
+    bpy.ops.object.convert(target='MESH')
+    
+    # Check if the object is already linked to a collection
+    if text_object.name not in alphabet_3d_letter_collection.objects:
+        # Link the text object to the new collection
+        alphabet_3d_letter_collection.objects.link(text_object)
+        # Remove the object from the scene collection
+        bpy.context.scene.collection.objects.unlink(text_object)
+
+  # Deselect all objects
+  bpy.ops.object.select_all(action='DESELECT')
+  return alphabet_3d_letter_collection
+
+# Call the function to create the collection and add the text objects
+createAlphabetCollection()
+#to be deleted#####
+################
+
+
 def addBooleanModifier(obj, clip_obj_name, modifier_name):
   obj.modifiers.new(name=modifier_name, type='BOOLEAN')
   obj.modifiers[modifier_name].object = bpy.data.objects[clip_obj_name]
@@ -22,6 +64,23 @@ def min_max_norm(data):
   min_val = np.min(data)
   max_val = np.max(data)
   return (data - min_val) / (max_val - min_val)
+
+class StickerLettersManager():
+  def __init__(self):
+    self.sticker_letters_collection = bpy.data.collections['alphabet3dletters']
+
+class ThreeDLettersManager():
+    def __init__(self):
+        self.three_d_letters_collection = bpy.data.collections['alphabet3dletters']
+    def giveModifierToAll(self, modifier, mod_name):
+        for obj in self.three_d_letters_collection.objects:
+            if  obj.type == 'MESH':
+                # Add a new Geometry Node modifier to the object
+                new_modifier = obj.modifiers.new(name=mod_name, type='NODES')
+                # Copy the node group (geometry node tree) from 'outline_geo'
+                if modifier:
+                    new_modifier.node_group = modifier.node_group
+
 
 class PartsOfSpeechEnum(Enum):
     VERB = "verb"
@@ -157,6 +216,30 @@ class MaterialAssigner():
         if word.part_of_speech:
             return self.part_of_speech_to_material_map.get(word.part_of_speech)
 
+class WordObject():
+    SPACE_LINE_AMOUNT = 1.6
+    def __init__(self, word_object, x_position: float, y_position: float, word: str, double_row: bool, parent_obj, material, modifier, mod_name):
+        word_object.location = (x_position, y_position, 0)
+        #rotate 
+        self.word_obj = word_object
+        #self.set_material(material)
+        self.set_parent_obj(parent_obj)
+        #self.apply_modifier(modifier, mod_name)
+
+    def set_material(self, material):
+        self.word_obj.data.materials.append(material)
+
+    def set_parent_obj(self, parent_obj):
+        self.word_obj.parent = parent_obj
+
+    def apply_modifier(self, modifier, mod_name):
+        if  self.word_obj.type == 'MESH':
+            # Add a new Geometry Node modifier to the object
+            new_modifier = self.word_obj.modifiers.new(name=mod_name, type='NODES')
+            # Copy the node group (geometry node tree) from 'outline_geo'
+            if modifier:
+                new_modifier.node_group = modifier.node_group
+
 class TextObject():
     SPACE_LINE_AMOUNT = 1.6
     EXTRUSION = 0.05
@@ -266,14 +349,93 @@ def convertListOfRowPositionToList(list: List[RowPosition]):
         clear_list.append((position.x, position.y))
     return clear_list
 
+class WordAssembler():
+  def __init__(self, letters_collection, words_collection_name, kind, material_assigner: MaterialAssigner):
+    self.letter_collection = letters_collection
+    self.empty_list = []
+    self.empty = None
+    self.kind = kind
+    self.material_assigner = material_assigner
+    # Ensure the 'words' collection exists or create it
+    if words_collection_name not in bpy.data.collections:
+        self.words_collection = bpy.data.collections.new(words_collection_name)
+        bpy.context.scene.collection.children.link(self.words_collection)
+    else:
+        self.words_collection = bpy.data.collections[words_collection_name]
+
+
+  # Function to create a linked duplicate
+  def create_linked_duplicate(self, name):
+      original = self.letter_collection.objects.get(name)
+      if original is not None:
+          new_obj = original.copy()
+          new_obj.data = original.data
+          self.words_collection.objects.link(new_obj)
+          return new_obj
+      else:
+          print(f"Object named {name} not found.")
+          return None
+
+  # Function to get the width of an object
+  def get_object_width(self, obj):
+      bbox = obj.bound_box
+      min_x, max_x = min(bbox, key=lambda p: p[0])[0], max(bbox, key=lambda p: p[0])[0]
+      return max_x - min_x
+
+  # Function to create a word using linked instances
+  def create_word(self, word: WordData):
+    self.empty = bpy.data.objects.new(word.word + "_Empty", None)
+    self.words_collection.objects.link(self.empty)
+    self.empty.location = (0, 0, 0)
+    self.empty_list.append(self.empty)
+    position = 0.0
+    total_width = 0.0
+    letter_objects = []
+
+    # First, create all letter objects and calculate the total width
+    for letter in word.word:
+        obj_name = letter.upper() + self.kind if letter.isupper() else letter + self.kind
+        obj = self.create_linked_duplicate(obj_name)
+        if obj:
+            material = self.material_assigner.get_material(word)
+            #create material slot
+            if len(obj.data.materials) == 0:
+                obj.data.materials.append(material)
+            obj.material_slots[0].link = 'OBJECT'
+            obj.material_slots[0].material = material
+            obj_width = self.get_object_width(obj)
+            letter_objects.append((obj, obj_width))
+            total_width += obj_width
+
+    # Calculate the starting position to center the word
+    start_position = -total_width / 2
+
+    # Position each letter object
+    for obj, obj_width in letter_objects:
+        obj.location.x = start_position
+        start_position += obj_width
+        obj.parent = self.empty
+
+    return self.empty
+
+
+  def get_word_width(self, obj):
+    width = 0
+    for letter in obj.children:
+      width += self.get_object_width(letter)
+
+    return {"width": width, "height" : 3}
+
+
 class TextObjectsCreator():
     text_objects_list = []
 
-    def __init__(self, words: List[WordData]):
+    def __init__(self, words: List[WordData], letter_manager: ThreeDLettersManager, word_assembler: WordAssembler):
         self.words = words
         self.materials = Materials()
         self.material_assigner = MaterialAssigner(self.materials)
-
+        self.letters_manager = letter_manager
+        self.word_assembler = word_assembler
 
 
     def get_modifier(self, container_obj, mod_name):
@@ -289,7 +451,8 @@ class TextObjectsCreator():
         outline_material = bpy.data.materials.new(name="OutlineMaterial_2")
         outline_material.use_nodes = True
         outline_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0, 0, 0, 1) #color
-
+        outline_material.use_backface_culling = True
+        outline_material.shadow_method = 'NONE'
         outline_obj = bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8), scale=(1, 1, 1))
         outline_obj = bpy.context.active_object
         outline_obj.name = "outline_obj"
@@ -299,11 +462,14 @@ class TextObjectsCreator():
         # Add a Geometry Nodes modifier to the cube
         outline_obj.modifiers.new(name="NodesModifier", type='NODES')
         outline_obj.modifiers[-1].name = "outline_geo"
+        outline_obj.modifiers[0].name = "outline_geo"
         node_modifier = outline_obj.modifiers.get("outline_geo")
         bpy.ops.node.new_geometry_node_group_assign()
 
         # Get the node group of the Geometry Nodes modifier
         node_group = node_modifier.node_group
+        node_group.name = "efai_sad"
+
         # Clear existing nodes
         for node in node_group.nodes:
             node_group.nodes.remove(node)
@@ -346,12 +512,14 @@ class TextObjectsCreator():
     def create_text_objects(self, parent_obj, font_path, font_size):
         outline_obj = self.create_geometry_node_outline()
         modifier = self.get_modifier(outline_obj, 'outline_geo')
+        self.letters_manager.giveModifierToAll(modifier, 'outline_geo')
+       
         for data in self.words:
             material = self.material_assigner.get_material(data)
-
+            word = self.word_assembler.create_word(data)
             if data.position:
-                self.text_objects_list.append(TextObject(data.position.x, data.position.y, data.word , data.is_double_row, parent_obj, font_path, font_size, material, modifier, 'outline_geo'))
-
+                #self.text_objects_list.append(TextObject(data.position.x, data.position.y, data.word , data.is_double_row, parent_obj, font_path, font_size, material, modifier, 'outline_geo'))
+                self.text_objects_list.append(WordObject(word, data.position.x, data.position.y, data.word, data.is_double_row, parent_obj, material, modifier, 'outline_geo'))
 class RowsCalculator():
     def __init__(self):
         self.rows_positions: List[RowPosition] = []
@@ -409,11 +577,12 @@ class TimeStampCreator():
 def createTextObjects(
     words_and_positions_and_part_of_speech_list, parent_obj,
     font_name, font_size, font_resolution,
-    bevel_depth, start_times_array,
+    bevel_depth, start_times_array, sticker_letters_manager, word_assembler
 ):
 
-    font_path = "/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/" + font_name + ".ttf"
-    text_objects_creator = TextObjectsCreator(words_and_positions_and_part_of_speech_list)
+    font_path = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
+    #/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/
+    text_objects_creator = TextObjectsCreator(words_and_positions_and_part_of_speech_list, sticker_letters_manager, word_assembler)
     text_objects_creator.create_text_objects(parent_obj, font_path, font_size)
     rows_position_calculator = RowsCalculator()
     rows_position = rows_position_calculator.get_rows(words_and_positions_and_part_of_speech_list)
@@ -432,6 +601,9 @@ def createTextObjects(
 ############################################################# REFACTORING #############################################################
 #######################################################################################################################################
 
+
+
+
 def createChildrenTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth, extrution, verticalOffset,  outline):
   # Create a new text object for each word
   ft = font_size
@@ -449,7 +621,7 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
     text_object.data.body = word
     if doubleRow:
       text_object.data.space_line = 2.3
-    font_path = "/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/" + font_name + ".ttf"
+    font_path = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
     font_data = bpy.data.fonts.load(font_path)
     text_object.data.font = font_data
     text_object.data.size = font_size
@@ -473,7 +645,7 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
       text_object2.data.body = word
       if doubleRow:
         text_object2.data.space_line = 2.3
-      font_path2 = "/Users/efaideleon/Documents/abeldl Github/PrompterWebsite/" + font_name + ".ttf"
+      font_path2 = "C:\\WINDOWS\\Fonts\\" + font_name + ".ttf"
       font_data2 = bpy.data.fonts.load(font_path2)
       text_object2.data.font = font_data2
       text_object2.data.size = font_size
@@ -498,8 +670,6 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
 
     # Set the text object as a child of the parent cube
     text_object.parent = parent_obj
-
-
 
 
   # Select all created text objects
@@ -567,7 +737,7 @@ def getAllChildrenObjects(obj):
 def findVerticalPositionOfRow(coordiantes, row_number):
   return coordiantes[row_number][1]
 
-def setupHighlighterKeyFrames(obj, word_coordinates, words):
+def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: WordAssembler):
   fps = 60
   frameT = 0
   transition_frame_rate = 10
@@ -575,7 +745,8 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   pivot_to_text_length = 0.030
   height_percentage_offset = 1
   width_percentage_offset = 1
-  width_height_data_first_word = getWidthAndHeight(words[word_obj_idx])
+  word_collection_object = word_assembler.empty_list
+  width_height_data_first_word = word_assembler.get_word_width(word_collection_object[0])
   new_pos_y = 0
   first_row_pos_y = -word_coordinates[word_obj_idx][1] - 0.52
   second_row_pos_y = -new_row_positions[0][1] -0.5
@@ -590,14 +761,15 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
   # Make the object the active one
   bpy.context.view_layer.objects.active = obj
   # Add a Geometry Nodes modifier to the cube
-  obj.modifiers.new(name="NodesModifier", type='NODES')
-  obj.modifiers[0].name = "geo1"
+  obj.modifiers.new(name="NodesModifier2", type='NODES')
+  obj.modifiers[-1].name = "geo1"
   node_modifier = obj.modifiers.get("geo1")
   bpy.ops.node.new_geometry_node_group_assign()
 
   #obj.node.new_geometry_node_group_assign()
   # Get the node group of the Geometry Nodes modifier
   node_group = node_modifier.node_group
+  node_group.name = "highlighter_geo"
   # Clear existing nodes
   for node in node_group.nodes:
     node_group.nodes.remove(node)
@@ -619,6 +791,17 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
 
   ################# Nodes Setup End####################################
 
+
+  #add bevel modifier
+  bpy.ops.object.modifier_add(type='BEVEL')
+  highlighter_obj.modifiers["Bevel"].width = 0.34
+  highlighter_obj.modifiers["Bevel"].segments = 7
+  highlighter_obj.modifiers["Bevel"].affect = 'VERTICES'
+  #add solidify modifier
+  bpy.ops.object.modifier_add(type='SOLIDIFY')
+  highlighter_obj.modifiers["Solidify"].thickness = 0.04
+  highlighter_obj.modifiers["Solidify"].offset = 0
+
   #for second in end_times_words_array:
   for second, isNewLine in start_times_with_if_new_line:
     frameT = calculateFrame(second, fps)
@@ -626,16 +809,18 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
     #addKeyFrame(obj, frame, "scale")
     # Add a keyframe for the scale at frame 10
     transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
-    width_height_data = getWidthAndHeight(words[word_obj_idx])
-    new_width = width_height_data["width"] + 0.7
+
+    width_height_data = word_assembler.get_word_width(word_collection_object[word_obj_idx])
+    new_width = width_height_data["width"] * 2 + 0.7
     if width_height_data["height"] > 4:
       new_height = width_height_data["height"] + 1.27
     else:
       new_height = width_height_data_first_word["height"] + 3.5
     # Set the scale on the X-axis of the Transform node to 4
     transform_node.inputs['Scale'].default_value[0] = new_width/2
-    transform_node.inputs['Scale'].default_value[1] = 1.04/2
-    transform_node.inputs['Scale'].default_value[2] = new_height/2
+    transform_node.inputs['Scale'].default_value[1] = new_height/2
+    #transform_node.inputs['Scale'].default_value[1] = 1.04/2
+    #transform_node.inputs['Scale'].default_value[2] = new_height/2
     #changeWidthAndHeight(obj, new_width, new_height, 1.04)
 
     coordinate = word_coordinates[word_obj_idx]
@@ -648,7 +833,7 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words):
       new_pos_y = second_row_pos_y
     else:
       new_pos_y = first_row_pos_y
-    setObjPosition(new_pos_x * 2, 2.8,  (new_pos_y * 2) + 2.12562, obj)
+    setObjPosition(new_pos_x * 2, 2.5288,  (new_pos_y * 2) + 2.12562, obj)
     transition_frames = frameT + transition_frame_rate
     addKeyFrame(obj, transition_frames, "location")
     transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=transition_frames)
@@ -771,12 +956,14 @@ parent_cube.scale = (2, 2, 2)
 parent_cube.location = (0, 2.25562, 2.41886)
 rotation_x_parentcube = math.radians(90)
 parent_cube.rotation_euler[0] = rotation_x_parentcube
-highlighter_obj = bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8), scale=(1, 1, 1))
+highlighter_obj = bpy.ops.mesh.primitive_plane_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8), scale=(1, 1, 1))
 highlighter_obj = bpy.context.active_object
 highlighter_obj.name = "highlighter_obj"
-highlighter_obj.scale = (1, 1, 1)
-highlighter_material_english = bpy.data.materials.new(name="HighlighterMaterialEnglish")
+#rotate
+rotation_x_highlighter = math.radians(90)
+highlighter_obj.rotation_euler[0] = rotation_x_highlighter
 
+highlighter_material_english = bpy.data.materials.new(name="HighlighterMaterialEnglish")
 hl_material = bpy.data.materials.get("hl_material")
 highlighter_obj.data.materials.append(hl_material)
 #highlighter_obj.active_material.use_nodes = True
@@ -987,14 +1174,18 @@ links.new(mix_shader_node.outputs['Shader'], output_node.inputs['Surface'])
 
 # Enable 'Transparent' in the Film section of the render settings
 bpy.context.scene.render.film_transparent = True
-
-
+sticker_letters_manager = StickerLettersManager()
+three_d_letters_manager = ThreeDLettersManager()
+materials = Materials()
+material_as = MaterialAssigner(materials)
+sticker_word_assembler = WordAssembler(sticker_letters_manager.sticker_letters_collection, 'english_sticker_words', 's', material_as)
+threed_word_assembler = WordAssembler(sticker_letters_manager.sticker_letters_collection, 'alphabet3dletters', '_3d', material_as )
 parent_cube.hide_render = True
 
 tag_cleaner = PartOfSpeechTagAssigner(tags)
 tags = tag_cleaner.get_words_and_tags_list()
 words_and_positions_and_part_of_speech_list = packageWordsPositionAndPartOfSpeech(english_words, english_words_scaled_coordinates, tags, start_times_array)
-rp, dt, tl = createTextObjects(words_and_positions_and_part_of_speech_list, parent_cube, "ARLRDBD", 1, 3, 0.015, start_times_array)
+rp, dt, tl = createTextObjects(words_and_positions_and_part_of_speech_list, parent_cube, "ARLRDBD", 1, 3, 0.015, start_times_array, three_d_letters_manager, threed_word_assembler)
 
 new_row_positions =  convertListOfRowPositionToList(rp)
 time_at_which_to_move_all_rows_with_flags_in_case_of_doulbe_row = convertTimestampFlagListToList(dt)
@@ -1002,10 +1193,10 @@ start_times_with_if_new_line = convertTimestampFlagListToList(tl)
 english_word_objects = getAllChildrenObjects(parent_cube)
 
 phonetic_array_position = addOffsetToXAxisDoubleArrayCoordinates(english_words_scaled_coordinates, 0.20, english_word_objects)
-createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0, 0.7, True)
+createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0, 0.7, True)
 createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0.05, 1.4, False)
 applyKeyFrameToWords(parent_cube)
-setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects)
+setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects, threed_word_assembler)
 
 all_word_objects = getAllChildrenObjects(parent_cube)
 #addingBooleanModifierToAllChildrenObjects(all_word_objects, "clip_cube_english_1", "clip_cube_english_2")

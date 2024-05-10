@@ -29,6 +29,8 @@ def createAlphabetCollection():
     text_object.data.resolution_u = 3
     text_object.data.bevel_depth = 0.03
     text_object.name = letter + "_3d"
+    #alighn text to center
+    text_object.data.align_x = 'CENTER'
     text_object.data.font = bpy.data.fonts.load(font_path)
     # Convert the text to mesh
     bpy.ops.object.convert(target='MESH')
@@ -412,7 +414,7 @@ class WordAssembler():
 
     # Position each letter object
     for obj, obj_width in letter_objects:
-        obj.location.x = start_position
+        obj.location.x = start_position + obj_width / 2
         start_position += obj_width
         obj.parent = self.empty
 
@@ -422,7 +424,7 @@ class WordAssembler():
   def get_word_width(self, obj):
     width = 0
     for letter in obj.children:
-      width += self.get_object_width(letter)
+      width += (self.get_object_width(letter) * 2)
 
     return {"width": width, "height" : 3}
 
@@ -811,7 +813,7 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
     transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
 
     width_height_data = word_assembler.get_word_width(word_collection_object[word_obj_idx])
-    new_width = width_height_data["width"] * 2 + 0.7
+    new_width = width_height_data["width"] + 0.7
     if width_height_data["height"] > 4:
       new_height = width_height_data["height"] + 1.27
     else:
@@ -877,7 +879,7 @@ def packageWordsPositionAndPartOfSpeech(words, position, words_and_part_of_speec
     part_of_speech_identifier = PartOfSpeechTagIdentifier()
     for word, position, word_and_part_of_speech_tag, start_time in zip(words, position, words_and_part_of_speech_tags, start_times_array):
         x_pos = position[0]
-        y_pos = -1 * position[1]
+        y_pos = -1 * position[1] - 0.25
         word = word.replace("_", " ")
         is_double_row = False
         if '#' in word:
@@ -1195,6 +1197,7 @@ english_word_objects = getAllChildrenObjects(parent_cube)
 phonetic_array_position = addOffsetToXAxisDoubleArrayCoordinates(english_words_scaled_coordinates, 0.20, english_word_objects)
 createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0, 0.7, True)
 createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0.05, 1.4, False)
+
 applyKeyFrameToWords(parent_cube)
 setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects, threed_word_assembler)
 

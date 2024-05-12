@@ -31,6 +31,7 @@ def createAlphabetCollection():
     text_object.name = letter + "_3d"
     #alighn text to center
     text_object.data.align_x = 'CENTER'
+
     text_object.data.font = bpy.data.fonts.load(font_path)
     # Convert the text to mesh
     bpy.ops.object.convert(target='MESH')
@@ -69,19 +70,22 @@ def min_max_norm(data):
 
 class StickerLettersManager():
   def __init__(self):
-    self.sticker_letters_collection = bpy.data.collections['alphabet3dletters']
+    self.sticker_letters_collection = bpy.data.collections['sticker_lowpoly_letters']
 
 class ThreeDLettersManager():
     def __init__(self):
-        self.three_d_letters_collection = bpy.data.collections['alphabet3dletters']
+        self.three_d_letters_collection = bpy.data.collections['alphabet3dlettersPremade']
     def giveModifierToAll(self, modifier, mod_name):
-        for obj in self.three_d_letters_collection.objects:
-            if  obj.type == 'MESH':
-                # Add a new Geometry Node modifier to the object
-                new_modifier = obj.modifiers.new(name=mod_name, type='NODES')
-                # Copy the node group (geometry node tree) from 'outline_geo'
-                if modifier:
-                    new_modifier.node_group = modifier.node_group
+       pass
+        #Do nothing :(
+        
+        #for obj in self.three_d_letters_collection.objects:
+        #    if  obj.type == 'MESH':
+        #        # Add a new Geometry Node modifier to the object
+        #        new_modifier = obj.modifiers.new(name=mod_name, type='NODES')
+        #        # Copy the node group (geometry node tree) from 'outline_geo'
+        #        if modifier:
+        #            new_modifier.node_group = modifier.node_group
 
 
 class PartsOfSpeechEnum(Enum):
@@ -401,10 +405,9 @@ class WordAssembler():
         if obj:
             material = self.material_assigner.get_material(word)
             #create material slot
-            if len(obj.data.materials) == 0:
-                obj.data.materials.append(material)
-            obj.material_slots[0].link = 'OBJECT'
-            obj.material_slots[0].material = material
+            #obj.material_slots[0].link = 'OBJECT'
+            if material:
+                obj.material_slots[0].material = material
             obj_width = self.get_object_width(obj)
             letter_objects.append((obj, obj_width))
             total_width += obj_width
@@ -417,6 +420,9 @@ class WordAssembler():
         obj.location.x = start_position + obj_width / 2
         start_position += obj_width
         obj.parent = self.empty
+
+    if self.kind == "s":
+        self.empty.scale = (0.5, 0.5, 0.5)
 
     return self.empty
 
@@ -603,7 +609,14 @@ def createTextObjects(
 ############################################################# REFACTORING #############################################################
 #######################################################################################################################################
 
-
+def createChildrenTextObjectsFromCollection(stringwordsarray, manager, assembler: WordAssembler, positions, parent_obj, verticalOffset):
+   #assmble words
+   for word, position in zip(stringwordsarray, positions):
+        wordData = WordData(word, position, None, False, TimestampNewline(0, False))
+        word_with_empty = assembler.create_word(wordData)
+        #not putting the wordObjects in a container dont know if it is necessary yet i think it is
+        WordObject(word_with_empty, position[0], -1 * position[1] - verticalOffset, word, False, parent_obj, None, None, None)       
+    
 
 
 def createChildrenTextObject(words, positions, parent_obj, font_name, font_size, font_resolution, bevel_depth, extrution, verticalOffset,  outline):
@@ -895,7 +908,7 @@ def packageWordsPositionAndPartOfSpeech(words, position, words_and_part_of_speec
 globalYCameraBG12Clips = -0.6
 
 
-positions_english_array = [[198.64, 76.80], [272.88, 76.80], [389.10, 76.80], [492.74, 76.80], [570.28, 76.80], [697.93, 76.80], [272.54, 231.80], [399.31, 231.80], [526.47, 231.80], [683.86, 231.80], [223.85, 386.80], [326.21, 386.80], [440.82, 386.80], [646.90, 386.80], [408.56, 541.80], [477.88, 541.80], [544.32, 541.80], [216.34, 696.80], [352.93, 696.80], [508.87, 696.80], [663.42, 696.80], [330.90, 851.80], [483.18, 851.80], [627.27, 851.80], [350.90, 1006.80], [506.58, 1006.80], [630.67, 1006.80], [206.83, 1161.80], [320.21, 1161.80], [421.99, 1161.80], [536.99, 1161.80], [703.38, 1161.80], [255.62, 1316.80], [415.24, 1316.80], [528.46, 1316.80], [702.78, 1316.80], [372.83, 1471.80], [572.09, 1471.80], [273.62, 1626.80], [398.03, 1626.80], [464.97, 1626.80], [636.15, 1626.80], [235.91, 1781.80], [344.70, 1781.80], [492.91, 1781.80], [658.29, 1781.80], [231.28, 1936.80], [318.21, 1936.80], [427.01, 1936.80], [524.14, 1936.80], [659.05, 1936.80]]
+positions_english_array = [[143.35, 76.80], [232.44, 76.80], [371.92, 76.80], [496.30, 76.80], [589.35, 76.80], [742.54, 76.80], [232.03, 231.79], [384.17, 231.79], [536.77, 231.79], [725.66, 231.79], [173.58, 386.78], [296.42, 386.77], [433.97, 386.77], [681.31, 386.77], [395.24, 541.76], [478.42, 541.76], [558.17, 541.76], [164.58, 696.75], [328.49, 696.75], [515.63, 696.75], [701.11, 696.75], [302.07, 851.74], [484.82, 851.74], [657.74, 851.74], [326.05, 1006.73], [512.88, 1006.72], [661.81, 1006.72], [153.15, 1161.71], [289.22, 1161.71], [411.37, 1161.71], [549.37, 1161.71], [749.06, 1161.71], [211.71, 1316.70], [403.27, 1316.70], [539.15, 1316.70], [748.35, 1316.70], [352.36, 1471.69], [591.51, 1471.69], [233.32, 1626.67], [382.63, 1626.67], [462.96, 1626.67], [668.39, 1626.67], [188.05, 1781.66], [318.63, 1781.66], [496.50, 1781.66], [694.98, 1781.66], [182.51, 1936.65], [286.83, 1936.65], [417.39, 1936.65], [533.96, 1936.65], [695.87, 1936.65]]
 
 start_times_array = []
 for i in range(len(positions_english_array)):
@@ -1176,13 +1189,14 @@ links.new(mix_shader_node.outputs['Shader'], output_node.inputs['Surface'])
 
 # Enable 'Transparent' in the Film section of the render settings
 bpy.context.scene.render.film_transparent = True
+parent_cube.hide_render = True
+
 sticker_letters_manager = StickerLettersManager()
 three_d_letters_manager = ThreeDLettersManager()
 materials = Materials()
 material_as = MaterialAssigner(materials)
-sticker_word_assembler = WordAssembler(sticker_letters_manager.sticker_letters_collection, 'english_sticker_words', 's', material_as)
-threed_word_assembler = WordAssembler(sticker_letters_manager.sticker_letters_collection, 'alphabet3dletters', '_3d', material_as )
-parent_cube.hide_render = True
+sticker_word_assembler = WordAssembler(sticker_letters_manager.sticker_letters_collection, 'spanish_sticker_words', 's', material_as)
+threed_word_assembler = WordAssembler(three_d_letters_manager.three_d_letters_collection, 'english_3d_words', '_3d_premade', material_as )
 
 tag_cleaner = PartOfSpeechTagAssigner(tags)
 tags = tag_cleaner.get_words_and_tags_list()
@@ -1196,7 +1210,8 @@ english_word_objects = getAllChildrenObjects(parent_cube)
 
 phonetic_array_position = addOffsetToXAxisDoubleArrayCoordinates(english_words_scaled_coordinates, 0.20, english_word_objects)
 createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0, 0.7, True)
-createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0.05, 1.4, False)
+#createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0.05, 1.4, False)
+createChildrenTextObjectsFromCollection(spanish_words, sticker_letters_manager, sticker_word_assembler, english_words_scaled_coordinates, parent_cube, 1.4)
 
 applyKeyFrameToWords(parent_cube)
 setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects, threed_word_assembler)

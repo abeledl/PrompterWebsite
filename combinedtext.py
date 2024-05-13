@@ -763,8 +763,8 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
   word_collection_object = word_assembler.empty_list
   width_height_data_first_word = word_assembler.get_word_width(word_collection_object[0])
   new_pos_y = 0
-  first_row_pos_y = -word_coordinates[word_obj_idx][1] - 0.52
-  second_row_pos_y = -new_row_positions[0][1] -0.5
+  first_row_pos_y = -word_coordinates[word_obj_idx][1] - 0.5
+  second_row_pos_y = -new_row_positions[0][1] - 0.3
   double_row_y_position  = -word_coordinates[word_obj_idx][1] + 0.52
   new_height = width_height_data_first_word["height"] + 1.1
   inSecondRow = False
@@ -830,7 +830,7 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
     if width_height_data["height"] > 4:
       new_height = width_height_data["height"] + 1.27
     else:
-      new_height = width_height_data_first_word["height"] + 3.5
+      new_height = width_height_data_first_word["height"] + 3
     # Set the scale on the X-axis of the Transform node to 4
     transform_node.inputs['Scale'].default_value[0] = new_width/2
     transform_node.inputs['Scale'].default_value[1] = new_height/2
@@ -858,7 +858,8 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
   bpy.ops.object.modifier_add(type='BEVEL')
   bpy.context.object.modifiers["Bevel"].width = 0.2
   bpy.context.object.modifiers["Bevel"].segments = 4
-  bpy.ops.object.shade_smooth()
+  #shade flat
+  bpy.ops.object.shade_flat()
   bpy.data.objects["highlighter_obj"].select_set(False)
 
 
@@ -908,7 +909,7 @@ def packageWordsPositionAndPartOfSpeech(words, position, words_and_part_of_speec
 globalYCameraBG12Clips = -0.6
 
 
-positions_english_array = [[143.35, 76.80], [232.44, 76.80], [371.92, 76.80], [496.30, 76.80], [589.35, 76.80], [742.54, 76.80], [232.03, 231.79], [384.17, 231.79], [536.77, 231.79], [725.66, 231.79], [173.58, 386.78], [296.42, 386.77], [433.97, 386.77], [681.31, 386.77], [395.24, 541.76], [478.42, 541.76], [558.17, 541.76], [164.58, 696.75], [328.49, 696.75], [515.63, 696.75], [701.11, 696.75], [302.07, 851.74], [484.82, 851.74], [657.74, 851.74], [326.05, 1006.73], [512.88, 1006.72], [661.81, 1006.72], [153.15, 1161.71], [289.22, 1161.71], [411.37, 1161.71], [549.37, 1161.71], [749.06, 1161.71], [211.71, 1316.70], [403.27, 1316.70], [539.15, 1316.70], [748.35, 1316.70], [352.36, 1471.69], [591.51, 1471.69], [233.32, 1626.67], [382.63, 1626.67], [462.96, 1626.67], [668.39, 1626.67], [188.05, 1781.66], [318.63, 1781.66], [496.50, 1781.66], [694.98, 1781.66], [182.51, 1936.65], [286.83, 1936.65], [417.39, 1936.65], [533.96, 1936.65], [695.87, 1936.65]]
+positions_english_array = [[165.52, 76.80], [248.64, 76.80], [378.80, 76.80], [494.86, 76.80], [581.68, 76.80], [724.63, 76.80], [248.26, 231.79], [390.22, 231.79], [532.63, 231.79], [708.90, 231.79], [193.72, 386.77], [308.34, 386.77], [436.70, 386.77], [667.51, 386.77], [400.57, 541.76], [478.20, 541.76], [552.62, 541.76], [185.30, 696.75], [338.26, 696.75], [512.91, 696.75], [686.00, 696.75], [313.62, 851.74], [484.16, 851.74], [645.52, 851.74], [336.01, 1006.72], [510.35, 1006.72], [649.32, 1006.72], [174.66, 1161.71], [301.63, 1161.71], [415.61, 1161.71], [544.41, 1161.71], [730.75, 1161.71], [229.29, 1316.70], [408.06, 1316.70], [534.85, 1316.70], [730.09, 1316.70], [360.56, 1471.69], [583.72, 1471.69], [249.45, 1626.67], [388.80, 1626.67], [463.76, 1626.67], [655.48, 1626.67], [207.22, 1781.66], [329.07, 1781.66], [495.07, 1781.66], [680.29, 1781.66], [202.05, 1936.65], [299.40, 1936.65], [421.25, 1936.65], [530.02, 1936.65], [681.11, 1936.65]]
 
 start_times_array = []
 for i in range(len(positions_english_array)):

@@ -7,6 +7,7 @@ import nltk
 from abc import ABC, abstractmethod
 
 nltk.download('punkt')
+import mathutils
 
 
 #to be deleted#####
@@ -224,7 +225,7 @@ class MaterialAssigner():
 
 class WordObject():
     SPACE_LINE_AMOUNT = 1.6
-    def __init__(self, word_object, x_position: float, y_position: float, word: str, double_row: bool, parent_obj, material, modifier, mod_name):
+    def __init__(self, word_object, x_position: float, y_position: float, word: str, double_row: bool, parent_obj, material, mod_name):
         word_object.location = (x_position, y_position, 0)
         #rotate 
         self.word_obj = word_object
@@ -368,8 +369,6 @@ class WordAssembler():
         bpy.context.scene.collection.children.link(self.words_collection)
     else:
         self.words_collection = bpy.data.collections[words_collection_name]
-
-
   # Function to create a linked duplicate
   def create_linked_duplicate(self, name):
       original = self.letter_collection.objects.get(name)
@@ -381,13 +380,28 @@ class WordAssembler():
       else:
           print(f"Object named {name} not found.")
           return None
-
   # Function to get the width of an object
+  #def get_object_width(self, obj):
+  #    bbox = obj.bound_box
+  #    min_x, max_x = min(bbox, key=lambda p: p[0])[0], max(bbox, key=lambda p: p[0])[0]
+  #    return max_x - min_x
   def get_object_width(self, obj):
-      bbox = obj.bound_box
-      min_x, max_x = min(bbox, key=lambda p: p[0])[0], max(bbox, key=lambda p: p[0])[0]
-      return max_x - min_x
-
+    # Ensure the object has a bounding box
+    if not obj or not hasattr(obj, 'bound_box'):
+        raise ValueError("Object does not have a valid bounding box.")
+    
+    # Calculate the bounding box in world coordinates
+    bbox_corners = [obj.matrix_world @ mathutils.Vector(corner) for corner in obj.bound_box]
+    
+    # Extract the x-coordinates
+    x_coords = [corner.x for corner in bbox_corners]
+    
+    # Calculate the width
+    min_x = min(x_coords)
+    max_x = max(x_coords)
+    width = max_x - min_x
+    
+    return width
   # Function to create a word using linked instances
   def create_word(self, word: WordData):
     self.empty = bpy.data.objects.new(word.word + "_Empty", None)
@@ -405,8 +419,27 @@ class WordAssembler():
         if obj:
             material = self.material_assigner.get_material(word)
             #create material slot
+            
             #obj.material_slots[0].link = 'OBJECT'
-            if material:
+            if material and self.kind == "_3d_premade":
+                obj.material_slots[0].material = material
+            if self.kind == "s":
+                if word.part_of_speech == 'VB' or word.part_of_speech == 'VBD' or word.part_of_speech == 'VBG' or word.part_of_speech == 'VBN' or word.part_of_speech == 'VBP' or word.part_of_speech == 'VBZ':
+                    material = bpy.data.materials.get("sverb")
+                elif word.part_of_speech == 'NN' or word.part_of_speech == 'NNS' or word.part_of_speech == 'NNP' or word.part_of_speech == 'NNPS':
+                    material = bpy.data.materials.get("snoun")
+                elif word.part_of_speech == 'JJ' or word.part_of_speech == 'JJR' or word.part_of_speech == 'JJS':
+                    material = bpy.data.materials.get("sadjective")
+                elif word.part_of_speech == 'DT' or word.part_of_speech == 'PDT' or word.part_of_speech == 'WDT':
+                    material = bpy.data.materials.get("sdeterminer")
+                elif word.part_of_speech == 'RB' or word.part_of_speech == 'RBR' or word.part_of_speech == 'RBS' or word.part_of_speech == 'WRB':
+                    material = bpy.data.materials.get("sadverb")
+                elif word.part_of_speech == 'PRP' or word.part_of_speech == 'PRP$' or word.part_of_speech == 'WP' or word.part_of_speech == 'WP$':
+                    material = bpy.data.materials.get("spronoun")
+                elif word.part_of_speech == 'IN':
+                    material = bpy.data.materials.get("spreposition")
+                elif word.part_of_speech == 'CC':
+                    material = bpy.data.materials.get("sconjunction")
                 obj.material_slots[0].material = material
             obj_width = self.get_object_width(obj)
             letter_objects.append((obj, obj_width))
@@ -420,9 +453,10 @@ class WordAssembler():
         obj.location.x = start_position + obj_width / 2
         start_position += obj_width
         obj.parent = self.empty
-
+    if self.kind == "_3d_premade":
+        self.empty.scale = (1.5, 1.5, 1.5)
     if self.kind == "s":
-        self.empty.scale = (0.5, 0.5, 0.5)
+        self.empty.scale = (1, 1, 1)
 
     return self.empty
 
@@ -430,7 +464,7 @@ class WordAssembler():
   def get_word_width(self, obj):
     width = 0
     for letter in obj.children:
-      width += (self.get_object_width(letter) * 2)
+      width += self.get_object_width(letter)
 
     return {"width": width, "height" : 3}
 
@@ -455,79 +489,15 @@ class TextObjectsCreator():
             gn_modifier = container_obj.modifiers[mod_name]
         return gn_modifier
 
-    def create_geometry_node_outline(self):
-        outline_material = bpy.data.materials.new(name="OutlineMaterial_2")
-        outline_material.use_nodes = True
-        outline_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0, 0, 0, 1) #color
-        outline_material.use_backface_culling = True
-        outline_material.shadow_method = 'NONE'
-        outline_obj = bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8), scale=(1, 1, 1))
-        outline_obj = bpy.context.active_object
-        outline_obj.name = "outline_obj"
-
-        # Make the object the active one
-        bpy.context.view_layer.objects.active = outline_obj
-        # Add a Geometry Nodes modifier to the cube
-        outline_obj.modifiers.new(name="NodesModifier", type='NODES')
-        outline_obj.modifiers[-1].name = "outline_geo"
-        outline_obj.modifiers[0].name = "outline_geo"
-        node_modifier = outline_obj.modifiers.get("outline_geo")
-        bpy.ops.node.new_geometry_node_group_assign()
-
-        # Get the node group of the Geometry Nodes modifier
-        node_group = node_modifier.node_group
-        node_group.name = "efai_sad"
-
-        # Clear existing nodes
-        for node in node_group.nodes:
-            node_group.nodes.remove(node)
-
-        # Create Group Input and Group Output nodes
-        group_input = node_group.nodes.new('NodeGroupInput')
-        group_input.location = (-200, 0)
-        group_output = node_group.nodes.new('NodeGroupOutput')
-        group_output.location = (200, 0)
-
-        join_geomtry_node = node_group.nodes.new('GeometryNodeJoinGeometry')
-        join_geomtry_node.location = (0, 0)
-        flip_faces_node = node_group.nodes.new('GeometryNodeFlipFaces')
-        flip_faces_node.location = (-100, -100)
-        set_position_node = node_group.nodes.new('GeometryNodeSetPosition')
-        set_position_node.location = (-200, -100)
-        vector_math = node_group.nodes.new('ShaderNodeVectorMath')
-        vector_math.location = (-300, -100)
-        normal_vector = node_group.nodes.new('GeometryNodeInputNormal')
-        normal_vector.location = (-400, -100)
-        set_material = node_group.nodes.new('GeometryNodeSetMaterial')
-        set_material.location = (100, -100)
-
-
-        vector_math.operation = 'SCALE'
-        vector_math.inputs[3].default_value = 0.04
-        set_material.inputs[2].default_value = bpy.data.materials["OutlineMaterial_2"]
-
-
-        node_group.links.new(group_input.outputs[0], join_geomtry_node.inputs[0])
-        node_group.links.new(group_input.outputs[0], set_position_node.inputs[0])
-        node_group.links.new(vector_math.outputs[0], set_position_node.inputs[3])
-        node_group.links.new(normal_vector.outputs[0], vector_math.inputs[0])
-        node_group.links.new(set_position_node.outputs[0], flip_faces_node.inputs[0])
-        node_group.links.new(join_geomtry_node.outputs[0], group_output.inputs[0])
-        node_group.links.new(flip_faces_node.outputs[0], set_material.inputs[0])
-        node_group.links.new(set_material.outputs[0], join_geomtry_node.inputs[0])
-        return outline_obj
 
     def create_text_objects(self, parent_obj, font_path, font_size):
-        outline_obj = self.create_geometry_node_outline()
-        modifier = self.get_modifier(outline_obj, 'outline_geo')
-        self.letters_manager.giveModifierToAll(modifier, 'outline_geo')
        
         for data in self.words:
             material = self.material_assigner.get_material(data)
             word = self.word_assembler.create_word(data)
             if data.position:
                 #self.text_objects_list.append(TextObject(data.position.x, data.position.y, data.word , data.is_double_row, parent_obj, font_path, font_size, material, modifier, 'outline_geo'))
-                self.text_objects_list.append(WordObject(word, data.position.x, data.position.y, data.word, data.is_double_row, parent_obj, material, modifier, 'outline_geo'))
+                self.text_objects_list.append(WordObject(word, data.position.x, data.position.y, data.word, data.is_double_row, parent_obj, material,'outline_geo'))
 class RowsCalculator():
     def __init__(self):
         self.rows_positions: List[RowPosition] = []
@@ -597,9 +567,9 @@ def createTextObjects(
     timestamp_creator = TimeStampCreator(start_times_array)
     timestamps = timestamp_creator.get_timestamps(words_and_positions_and_part_of_speech_list)
 
-    for timestamps_and_newline in timestamps:
-        print("time: ", timestamps_and_newline.timestamp, " flag: ", timestamps_and_newline.is_newline)
-    double_row_timestamps = timestamp_creator.get_double_row_timestamps(words_and_positions_and_part_of_speech_list, 2)
+    #for timestamps_and_newline in timestamps:
+        #print("time: ", timestamps_and_newline.timestamp, " flag: ", timestamps_and_newline.is_newline)
+    double_row_timestamps = timestamp_creator.get_double_row_timestamps(words_and_positions_and_part_of_speech_list, 6)
     bpy.ops.object.select_all(action='SELECT')
 
 
@@ -609,13 +579,13 @@ def createTextObjects(
 ############################################################# REFACTORING #############################################################
 #######################################################################################################################################
 
-def createChildrenTextObjectsFromCollection(stringwordsarray, manager, assembler: WordAssembler, positions, parent_obj, verticalOffset):
+def createChildrenTextObjectsFromCollection(stringwordsarray, manager, assembler: WordAssembler, positions, parent_obj,pofsOfAllEnglishWordsList, verticalOffset):
    #assmble words
-   for word, position in zip(stringwordsarray, positions):
-        wordData = WordData(word, position, None, False, TimestampNewline(0, False))
+   for word, position, partOfSpeech in zip(stringwordsarray, positions, pofsOfAllEnglishWordsList):
+        wordData = WordData(word, position, partOfSpeech, False, TimestampNewline(0, False))
         word_with_empty = assembler.create_word(wordData)
         #not putting the wordObjects in a container dont know if it is necessary yet i think it is
-        WordObject(word_with_empty, position[0], -1 * position[1] - verticalOffset, word, False, parent_obj, None, None, None)       
+        WordObject(word_with_empty, position[0], -1 * position[1] - verticalOffset, word, False, parent_obj, None, None)       
 
 
 
@@ -654,7 +624,7 @@ def createChildrenTextObject(words, positions, parent_obj, font_name, font_size,
     bpy.ops.object.convert(target='MESH')
 
     if outline:
-      bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - 0.7, -0.01))
+      bpy.ops.object.text_add(enter_editmode=False, location=(position[0], (-1 * position[1]) - verticalOffset, -0.01))
       text_object2 = bpy.context.active_object
       text_object2.name = "zoutline"
       text_object2.data.body = word
@@ -715,8 +685,8 @@ def applyKeyFrameToWords(obj):
   fps = 60
   frame = 0
   transition_frame_rate = 15
-  direction = [0, 0, 1]
-  distance = 15.5 # amount to move everything by
+  direction = [0, 1, 0]
+  distance = 24  # amount to move everything by
   #for second in end_times_array:
   for second, bool_val in time_at_which_to_move_all_rows_with_flags_in_case_of_doulbe_row:
     frame = calculateFrame(second, fps)
@@ -752,7 +722,7 @@ def getAllChildrenObjects(obj):
 def findVerticalPositionOfRow(coordiantes, row_number):
   return coordiantes[row_number][1]
 
-def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: WordAssembler):
+def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: WordAssembler, tags):
   fps = 60
   frameT = 0
   transition_frame_rate = 15
@@ -762,9 +732,15 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
   width_percentage_offset = 1
   word_collection_object = word_assembler.empty_list
   width_height_data_first_word = word_assembler.get_word_width(word_collection_object[0])
-  new_pos_y = 0
+ 
   first_row_pos_y = -word_coordinates[word_obj_idx][1] - 0.5
   second_row_pos_y = -new_row_positions[0][1] - 0.3
+  third_row_pos_y = -new_row_positions[1][1] - 0.3
+  fourth_row_pos_y = -new_row_positions[2][1] - 0.3
+  fifth_row_pos_y = -new_row_positions[3][1] - 0.3
+  sixth_row_pos_y = -new_row_positions[4][1] - 0.3
+  six_rows_positions_array = [first_row_pos_y, second_row_pos_y, third_row_pos_y, fourth_row_pos_y, fifth_row_pos_y, sixth_row_pos_y]
+  new_pos_y =  first_row_pos_y
   double_row_y_position  = -word_coordinates[word_obj_idx][1] + 0.52
   new_height = width_height_data_first_word["height"] + 1.1
   inSecondRow = False
@@ -796,14 +772,25 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
   group_output.location = (200, 0)
 
   # Create a Geometry Transform node
-  transform_node = node_group.nodes.new('GeometryNodeTransform')
-  transform_node.location = (0, 0)
+  transform_node2 = node_group.nodes.new('GeometryNodeTransform')
+  transform_node2.location = (100, 0)
+  
+  transform_node1 = node_group.nodes.new('GeometryNodeTransform')
+  transform_node1.location = (-100, 0)
 
+  #scale vector math
+  scale_node = node_group.nodes.new('ShaderNodeVectorMath')
+  scale_node.operation = 'SCALE'
+
+  scale_node.inputs[0].default_value[0] = 1
+  scale_node.inputs[0].default_value[1] = 1
+  scale_node.inputs[0].default_value[2] = 1
 
   # Link the Geometry Transform node to the Group Input and Group Output
-  node_group.links.new(group_input.outputs[0], transform_node.inputs[0])
-  node_group.links.new(transform_node.outputs[0], group_output.inputs[0])
-
+  node_group.links.new(transform_node1.outputs[0], transform_node2.inputs[0])
+  node_group.links.new(transform_node2.outputs[0], group_output.inputs[0])
+  node_group.links.new(group_input.outputs[0], transform_node1.inputs[0])
+  node_group.links.new(scale_node.outputs[0], transform_node1.inputs[3])
   ################# Nodes Setup End####################################
 
 
@@ -816,42 +803,118 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
   bpy.ops.object.modifier_add(type='SOLIDIFY')
   highlighter_obj.modifiers["Solidify"].thickness = 0.04
   highlighter_obj.modifiers["Solidify"].offset = 0
-
   #for second in end_times_words_array:
+  current_line = 0
+  setObjPosition(word_coordinates[word_obj_idx][0] * 1,(new_pos_y * 1) + 2.12562 ,  2.26, obj)
+  addKeyFrame(obj, 0, "location")
+  previous_mix_node = None
   for second, isNewLine in start_times_with_if_new_line:
+
+    tag = tags[word_obj_idx].part_of_speech
     frameT = calculateFrame(second, fps)
     addKeyFrame(obj, frameT, "location")
     #addKeyFrame(obj, frame, "scale")
     # Add a keyframe for the scale at frame 10
-    transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
+    transform_node2.inputs['Scale'].keyframe_insert(data_path='default_value', frame=frameT)
+    scale_node.inputs[3].default_value = 1
+    scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=frameT)
 
     width_height_data = word_assembler.get_word_width(word_collection_object[word_obj_idx])
-    new_width = width_height_data["width"] + 0.7
-    if width_height_data["height"] > 4:
-      new_height = width_height_data["height"] + 1.27
-    else:
-      new_height = width_height_data_first_word["height"] + 3
+    new_width = width_height_data["width"]
+    #if width_height_data["height"] > 4:
+      #new_height = width_height_data["height"] + 1.27
+    #else:
+    new_height = width_height_data_first_word["height"] + 1
     # Set the scale on the X-axis of the Transform node to 4
-    transform_node.inputs['Scale'].default_value[0] = new_width/2
-    transform_node.inputs['Scale'].default_value[1] = new_height/2
+    transform_node2.inputs['Scale'].default_value[0] = new_width/2 + 0.35
+    transform_node2.inputs['Scale'].default_value[1] = new_height/2
     #transform_node.inputs['Scale'].default_value[1] = 1.04/2
     #transform_node.inputs['Scale'].default_value[2] = new_height/2
     #changeWidthAndHeight(obj, new_width, new_height, 1.04)
 
     coordinate = word_coordinates[word_obj_idx]
+    transition_frames = frameT + transition_frame_rate
+    
+    if previous_mix_node:
 
-    new_pos_x = coordinate[0]
+        previous_mix_node.inputs[0].default_value = 0.8
+        previous_mix_node.inputs[0].keyframe_insert(data_path='default_value', frame=(frameT))
+        previous_mix_node.inputs[0].default_value = 1
+        previous_mix_node.inputs[0].keyframe_insert(data_path='default_value', frame=(frameT+ 2))
 
     if isNewLine:
-      inSecondRow = not inSecondRow #toggle
-    if inSecondRow:
-      new_pos_y = second_row_pos_y
-    else:
-      new_pos_y = first_row_pos_y
-    setObjPosition(new_pos_x * 2, 2.42917,  (new_pos_y * 2) + 2.12562, obj)
-    transition_frames = frameT + transition_frame_rate
+      setObjPosition(new_pos_x * 1, (new_pos_y * 1) + 2.12562 ,  2.316, obj)
+      addKeyFrame(obj, transition_frames - 11, "location")
+      scale_node.inputs[3].default_value = 0.0
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=(transition_frames - 11))
+
+      current_line += 1
+      new_pos_x = coordinate[0]
+      new_pos_y = six_rows_positions_array[current_line % 6]
+
+      setObjPosition(new_pos_x * 1,(new_pos_y * 1) + 2.12562 ,  2.316, obj)
+      addKeyFrame(obj, transition_frames - 10, "location")
+      setObjPosition(new_pos_x * 1,(new_pos_y * 1) + 2.12562 ,  2.316, obj)
+      addKeyFrame(obj, transition_frames, "location")
+      transform_node2.inputs['Scale'].keyframe_insert(data_path='default_value', frame=transition_frames - 10)
+      scale_node.inputs[3].default_value = 0.95
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=(transition_frames - 10))
+
+      #scale_node.inputs[3].default_value = 1
+      #scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=transition_frames-3)
+      scale_node.inputs[3].default_value = 1.02
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=transition_frames)
+      scale_node.inputs[3].default_value = 1
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=(transition_frames + 2))
+
+    new_pos_x = coordinate[0]
+    setObjPosition(new_pos_x * 1,(new_pos_y * 1) + 2.12562 ,  2.316, obj)
     addKeyFrame(obj, transition_frames, "location")
-    transform_node.inputs['Scale'].keyframe_insert(data_path='default_value', frame=transition_frames)
+    transform_node2.inputs['Scale'].keyframe_insert(data_path='default_value', frame=transition_frames)
+    
+
+    if tag == PartsOfSpeechEnum.NOUN:
+        material = bpy.data.materials.get("noun_tag")
+    elif tag == PartsOfSpeechEnum.VERB:
+        material = bpy.data.materials.get("verb_tag")
+    elif tag == PartsOfSpeechEnum.ADJECTIVE:
+        material = bpy.data.materials.get("adjective_tag")
+    elif tag == PartsOfSpeechEnum.ADVERB:
+        material = bpy.data.materials.get("adverb_tag")
+    elif tag == PartsOfSpeechEnum.PRONOUN:
+        material = bpy.data.materials.get("pronoun_tag")
+    elif tag == PartsOfSpeechEnum.PREPOSITION:
+        material = bpy.data.materials.get("preposition_tag")
+    elif tag == PartsOfSpeechEnum.CONJUCTION:
+        material = bpy.data.materials.get("conjunction_tag")
+    elif tag == PartsOfSpeechEnum.ARTICLE:
+        material = bpy.data.materials.get("determiner_tag")
+    if material:
+        if material.use_nodes:
+            nodes = material.node_tree.nodes
+            mixs_node = nodes.get('Mix Shader')
+            
+            if mixs_node:
+                mixs_node.inputs[0].default_value = 1
+                # Insert a keyframe for the emission strength at frame 10
+                mixs_node.inputs[0].keyframe_insert(data_path='default_value', frame=frameT +3)
+                mixs_node.inputs[0].default_value = 0.8
+                mixs_node.inputs[0].keyframe_insert(data_path='default_value', frame=frameT + 6)
+
+            previous_mix_node = mixs_node
+
+
+    if not isNewLine:
+      scale_node.inputs[3].default_value = 0.95
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=(transition_frames - math.ceil(transition_frame_rate/2)))
+      transform_node2.inputs['Scale'].keyframe_insert(data_path='default_value', frame=(transition_frames - math.ceil(transition_frame_rate/2)))
+      #scale_node.inputs[3].default_value = 1
+      #scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=transition_frames-3)
+      scale_node.inputs[3].default_value = 1.02
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=transition_frames)
+      scale_node.inputs[3].default_value = 1
+      scale_node.inputs[3].keyframe_insert(data_path='default_value', frame=(transition_frames + 2))
+
     #addKeyFrame(obj, transition_frames, "scale")
     word_obj_idx += 1
   #add bevel modifier
@@ -859,11 +922,12 @@ def setupHighlighterKeyFrames(obj, word_coordinates, words, word_assembler: Word
   bpy.context.object.modifiers["Bevel"].width = 0.2
   bpy.context.object.modifiers["Bevel"].segments = 4
   #shade flat
-  bpy.ops.object.shade_smooth()
+  #bpy.ops.object.shade_smooth()
     #deselect everything
   bpy.ops.object.select_all(action='DESELECT')
   #shade flat
   # bpy.ops.object.shade_flat()
+  
   bpy.data.objects["highlighter_obj"].select_set(False)
 
 
@@ -908,16 +972,68 @@ def packageWordsPositionAndPartOfSpeech(words, position, words_and_part_of_speec
     return list
 
 
+def createGeoWords():
+    #create plane
+    bpy.ops.mesh.primitive_plane_add(size=2, align='WORLD', location=(0, 0, 0))
+    plane = bpy.context.active_object
+    plane.name = "plane"
+    #give a geomtery node
+    bpy.ops.object.modifier_add(type='NODES')
+    plane.modifiers[-1].name = "words_geo"
+    node_modifier = plane.modifiers.get("words_geo")
+    bpy.ops.node.new_geometry_node_group_assign()
+    node_group = node_modifier.node_group
+    node_group.name = "words_geo"
+
+    # Clear existing nodes
+    for node in node_group.nodes:
+        node_group.nodes.remove(node)
+    # Create Group Input and Group Output nodes
+    group_input = node_group.nodes.new('NodeGroupInput')
+    group_input.location = (-200, 0)
+    group_output = node_group.nodes.new('NodeGroupOutput')
+    group_output.location = (200, 0)
+
+    #create Nodes
+    ObjectInfo = node_group.nodes.new('GeometryNodeObjectInfo')
+    ObjectInfo.location = (-1000, -1000)
+    ObjectInfo.object = bpy.data.objects["highlighter_obj"]
+    BoundingBox = node_group.nodes.new('GeometryNodeBoundingBox')
+    BoundingBox.location = (-800, -1000)
+    separateXYZ1 = node_group.nodes.new('GeometryNodeSeparateXYZ')
+    separateXYZ1.location = (-1000, -800)
+    separateXYZ2 = node_group.nodes.new('GeometryNodeSeparateXYZ')
+    separateXYZ2.location = (-1000, -1000)
+    combineXYZ1 = node_group.nodes.new('GeometryNodeCombineXYZ')
+    combineXYZ1.location = (-800, -800)
+    combineXYZ2 = node_group.nodes.new('GeometryNodeCombineXYZ')
+    combineXYZ2.location = (-800, -1000)
+    vectorAdd1 = node_group.nodes.new('ShaderNodeVectorMath')
+    vectorAdd1.location = (-600, -800)
+    vectorAdd1.operation = 'ADD'
+    vectorAdd2 = node_group.nodes.new('ShaderNodeVectorMath')
+    vectorAdd2.location = (-600, -1000)
+    vectorAdd2.operation = 'ADD'
+    vectorAdd3 = node_group.nodes.new('ShaderNodeVectorMath')
+    vectorAdd3.location = (-400, -400)
+    vectorAdd3.operation = 'ADD'
+    vectorAdd4 = node_group.nodes.new('ShaderNodeVectorMath')
+    vectorAdd4.location = (-400, -600)
+    vectorAdd4.operation = 'ADD'
+    meshLine = node_group.nodes.new('GeometryNodeMeshLine')
+    meshLine.location = (-200, -500)
+    geometryProximity = node_group.nodes.new('GeometryNodeProximity')
+
 #===================== MAIN =====================
 
 globalYCameraBG12Clips = -0.6
 
 
-positions_english_array = [[165.52, 76.80], [248.64, 76.80], [378.80, 76.80], [494.86, 76.80], [581.68, 76.80], [724.63, 76.80], [248.26, 231.79], [390.22, 231.79], [532.63, 231.79], [708.90, 231.79], [193.72, 386.77], [308.34, 386.77], [436.70, 386.77], [667.51, 386.77], [400.57, 541.76], [478.20, 541.76], [552.62, 541.76], [185.30, 696.75], [338.26, 696.75], [512.91, 696.75], [686.00, 696.75], [313.62, 851.74], [484.16, 851.74], [645.52, 851.74], [336.01, 1006.72], [510.35, 1006.72], [649.32, 1006.72], [174.66, 1161.71], [301.63, 1161.71], [415.61, 1161.71], [544.41, 1161.71], [730.75, 1161.71], [229.29, 1316.70], [408.06, 1316.70], [534.85, 1316.70], [730.09, 1316.70], [360.56, 1471.69], [583.72, 1471.69], [249.45, 1626.67], [388.80, 1626.67], [463.76, 1626.67], [655.48, 1626.67], [207.22, 1781.66], [329.07, 1781.66], [495.07, 1781.66], [680.29, 1781.66], [188.05, 1936.65], [313.41, 1936.65], [449.26, 1936.65], [558.04, 1936.65], [709.12, 1936.65]]
+positions_english_array = [[255.00, 78.40], [403.48, 78.40], [623.45, 78.40], [219.65, 238.40], [374.73, 238.40], [630.05, 238.40], [397.35, 398.40], [638.42, 398.40], [324.38, 558.40], [639.20, 558.40], [258.25, 718.40], [462.98, 718.40], [679.73, 718.40], [475.00, 878.40], [342.07, 1038.40], [480.73, 1038.40], [613.63, 1038.40], [279.25, 1198.40], [539.95, 1198.40], [269.53, 1358.40], [578.65, 1358.40], [397.38, 1518.40], [689.48, 1518.40], [474.97, 1678.40], [428.13, 1838.40], [721.42, 1838.40], [350.83, 1998.40], [670.75, 1998.40], [257.43, 2158.40], [461.03, 2158.40], [678.58, 2158.40], [475.00, 2318.40], [397.38, 2478.40], [704.17, 2478.40], [262.65, 2638.40], [611.35, 2638.40], [270.60, 2798.40], [669.17, 2798.40], [474.98, 2958.40], [132.58, 3118.40], [266.47, 3118.40], [608.88, 3118.40], [340.05, 3278.40], [545.18, 3278.40], [293.23, 3438.40], [624.03, 3438.40], [349.03, 3598.40], [560.43, 3598.40], [397.38, 3758.40], [579.17, 3758.40], [474.98, 3918.40]]
 
-start_times_array = []
-for i in range(len(positions_english_array)):
-  start_times_array.append(i * 0.5)
+start_times_array = [0.56, 0.80, 0.96, 1.20, 1.44, 1.68, 2.80, 3.12, 3.36, 3.84, 4.32, 4.64, 4.80, 5.20, 6.96, 7.28, 7.44, 7.92, 8.24, 9.12, 9.59, 11.59, 12.07, 12.31, 13.67, 14.23, 14.55, 15.04, 15.59, 15.83, 16.39, 17.04, 18.95, 19.43, 19.67, 20.07, 21.35, 22.07, 23.35, 23.83, 24.07, 24.39, 25.11, 25.35, 25.83, 26.15, 27.09, 27.33, 27.81, 28.13, 28.37]
+#for i in range(len(positions_english_array)):
+  #start_times_array.append(i * 0.5)
 
 start_times_with_if_new_line = []
 for i in range(len(start_times_array)):
@@ -932,7 +1048,7 @@ english_words_scaled_coordinates = [(x * scale_factor, y * (scale_factor + 0.005
 english_words_scaled_coordinates = [(x, y + 2.6) for x, y in english_words_scaled_coordinates]
 
 
-english_paragraph = "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens, secrets whisper, waiting to be discovered by those brave enough to dive into the depths."
+english_paragraph = "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens, secrets whisper, waiting to be discovered by those brave enough to dive into the __depths.__"
 english_words = english_paragraph.split()
 
 
@@ -972,16 +1088,16 @@ rotation_x = math.radians(-32.9472)
 parent_cube = bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
 parent_cube = bpy.context.active_object
 parent_cube.name = "parent_cube"
-parent_cube.scale = (2, 2, 2)
+parent_cube.scale = (1, 1, 1)
 parent_cube.location = (0, 2.25562, 2.41886)
-rotation_x_parentcube = math.radians(90)
-parent_cube.rotation_euler[0] = rotation_x_parentcube
+#rotation_x_parentcube = math.radians(90)
+#parent_cube.rotation_euler[0] = rotation_x_parentcube
 highlighter_obj = bpy.ops.mesh.primitive_plane_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8), scale=(1, 1, 1))
 highlighter_obj = bpy.context.active_object
 highlighter_obj.name = "highlighter_obj"
 #rotate
-rotation_x_highlighter = math.radians(90)
-highlighter_obj.rotation_euler[0] = rotation_x_highlighter
+#rotation_x_highlighter = math.radians(90)
+#highlighter_obj.rotation_euler[0] = rotation_x_highlighter
 
 highlighter_material_english = bpy.data.materials.new(name="HighlighterMaterialEnglish")
 hl_material = bpy.data.materials.get("hl_material")
@@ -994,25 +1110,25 @@ highlighter_obj.data.materials.append(hl_material)
 
 
 #outline material
-outline_material = bpy.data.materials.new(name="OutlineMaterial")
-outline_material.use_nodes = True
-outline_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value =  0.298182 #roughness
-#outline_material.node_tree.nodes["Principled BSDF"].inputs[17].default_value = 1 #transmission
-outline_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.001617, 0.0041617, 0.0041617, 1) #color
-outline_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 0.5 #Coat
-outline_material.node_tree.nodes["Principled BSDF"].inputs[19].default_value = 0.260769
+outline_material = bpy.data.materials.get("sbackoutline.001")
+#outline_material.use_nodes = True
+#outline_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value =  0.298182 #roughness
+##outline_material.node_tree.nodes["Principled BSDF"].inputs[17].default_value = 1 #transmission
+#outline_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.001617, 0.0041617, 0.0041617, 1) #color
+#outline_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 0.5 #Coat
+#outline_material.node_tree.nodes["Principled BSDF"].inputs[19].default_value = 0.260769
 
 
 
 #text material
-text_material = bpy.data.materials.new(name="TextMaterial")
-text_material.use_nodes = True
-text_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (1, 1,1, 1)
-text_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525 #metallic
-text_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
-text_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638 #roughness
-text_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
-text_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
+text_material = bpy.data.materials.get("souter")
+#text_material.use_nodes = True
+#text_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (1, 1,1, 1)
+#text_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525 #metallic
+#text_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
+#text_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638 #roughness
+#text_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
+##text_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0 #emission
 
 #text_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 1
 
@@ -1205,6 +1321,9 @@ threed_word_assembler = WordAssembler(three_d_letters_manager.three_d_letters_co
 
 tag_cleaner = PartOfSpeechTagAssigner(tags)
 tags = tag_cleaner.get_words_and_tags_list()
+posEnglishList = []
+for word, tag in  tags:
+	posEnglishList.append(tag)
 words_and_positions_and_part_of_speech_list = packageWordsPositionAndPartOfSpeech(english_words, english_words_scaled_coordinates, tags, start_times_array)
 rp, dt, tl = createTextObjects(words_and_positions_and_part_of_speech_list, parent_cube, "ARLRDBD", 1, 3, 0.015, start_times_array, three_d_letters_manager, threed_word_assembler)
 
@@ -1214,13 +1333,13 @@ start_times_with_if_new_line = convertTimestampFlagListToList(tl)
 english_word_objects = getAllChildrenObjects(parent_cube)
 
 phonetic_array_position = addOffsetToXAxisDoubleArrayCoordinates(english_words_scaled_coordinates, 0.20, english_word_objects)
-createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 0.68, 2, 0.02, 0, 0.7, True)
+createChildrenTextObject(phonetic_words, english_words_scaled_coordinates, parent_cube, "arialbd", 1.2, 2, 0.02, 0, 1, True)
 #createChildrenTextObject(spanish_words, english_words_scaled_coordinates, parent_cube, "ARLRDBD", 0.68, 2, 0.02, 0.05, 1.4, False)
-createChildrenTextObjectsFromCollection(spanish_words, sticker_letters_manager, sticker_word_assembler, english_words_scaled_coordinates, parent_cube, 1.4)
+createChildrenTextObjectsFromCollection(spanish_words, sticker_letters_manager, sticker_word_assembler, english_words_scaled_coordinates, parent_cube, posEnglishList, 1.9)
 
 applyKeyFrameToWords(parent_cube)
-setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects, threed_word_assembler)
+setupHighlighterKeyFrames(highlighter_obj, english_words_scaled_coordinates, english_word_objects, threed_word_assembler, words_and_positions_and_part_of_speech_list)
 
 all_word_objects = getAllChildrenObjects(parent_cube)
 #addingBooleanModifierToAllChildrenObjects(all_word_objects, "clip_cube_english_1", "clip_cube_english_2")
-
+#createGeoWords()

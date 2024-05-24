@@ -1,10 +1,10 @@
 {
   "metadata": {
     "transaction_key": "deprecated",
-    "request_id": "62a23ddc-a70d-486b-a3a7-286b5c785f91",
-    "sha256": "ad25e6f296a92414107ae00347f41a3c620003f5e7528dff27e512a9454774df",
-    "created": "2024-04-23T00:20:59.631Z",
-    "duration": 46.528,
+    "request_id": "d300ac38-e5f1-40d1-aa55-93ee365ab8c8",
+    "sha256": "f2607995f157311cde46dcc27dca44c4e7cbb647f7bc54e81ccd0c2971b91e11",
+    "created": "2024-05-21T22:56:57.444Z",
+    "duration": 29.653376,
     "channels": 1,
     "models": [
       "30089e05-99d1-4376-b32e-c263170674af"
@@ -22,450 +22,398 @@
       {
         "alternatives": [
           {
-            "transcript": "Amidst the golden desert expanse, a solitary road stretched like a lifeline. Its cracked asphalt whispered tales of journeys past, of dreams chased under relentless sunsets. Each tire tread left an imprint, a mark of transient existence in the timeless sands. Dust devils dance their silent waltz, veiling memories in their swirling embrace. At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless path.",
-            "confidence": 0.9975561,
+            "transcript": "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens secrets whisper waiting to be discovered by those brave enough to dive into the depths.",
+            "confidence": 0.9984205,
             "words": [
               {
-                "word": "amidst",
-                "start": 0.71999997,
-                "end": 1.1999999,
-                "confidence": 0.9220394,
-                "punctuated_word": "Amidst"
-              },
-              {
-                "word": "the",
-                "start": 1.1999999,
-                "end": 1.36,
-                "confidence": 0.9993376,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "golden",
-                "start": 1.36,
-                "end": 1.8399999,
-                "confidence": 0.77416784,
-                "punctuated_word": "golden"
-              },
-              {
-                "word": "a",
-                "start": 3.9199998,
-                "end": 4.16,
-                "confidence": 0.9965161,
-                "punctuated_word": "a"
-              },
-              {
-                "word": "solitary",
-                "start": 4.16,
-                "end": 4.66,
-                "confidence": 0.99911875,
-                "punctuated_word": "solitary"
-              },
-              {
-                "word": "stretched",
-                "start": 5.52,
-                "end": 6,
-                "confidence": 0.76815885,
-                "punctuated_word": "stretched"
-              },
-              {
-                "word": "like",
-                "start": 6,
-                "end": 6.24,
-                "confidence": 0.99922454,
-                "punctuated_word": "like"
-              },
-              {
-                "word": "a",
-                "start": 6.24,
-                "end": 6.3999996,
-                "confidence": 0.9995053,
-                "punctuated_word": "a"
-              },
-              {
-                "word": "lifeline",
-                "start": 6.3999996,
-                "end": 6.8999996,
-                "confidence": 0.96106243,
-                "punctuated_word": "lifeline."
-              },
-              {
-                "word": "its",
-                "start": 7.695,
-                "end": 7.855,
-                "confidence": 0.8354092,
-                "punctuated_word": "Its"
-              },
-              {
-                "word": "cracked",
-                "start": 7.855,
-                "end": 8.355,
-                "confidence": 0.9882781,
-                "punctuated_word": "cracked"
-              },
-              {
-                "word": "whispered",
-                "start": 9.615,
-                "end": 10.115,
-                "confidence": 0.8311665,
-                "punctuated_word": "whispered"
-              },
-              {
-                "word": "of",
-                "start": 10.815,
-                "end": 11.055,
-                "confidence": 0.99977833,
-                "punctuated_word": "of"
-              },
-              {
-                "word": "journeys",
-                "start": 11.055,
-                "end": 11.555,
-                "confidence": 0.99306774,
-                "punctuated_word": "journeys"
-              },
-              {
-                "word": "past",
-                "start": 11.695,
-                "end": 12.195,
-                "confidence": 0.9273522,
-                "punctuated_word": "past,"
-              },
-              {
-                "word": "of",
-                "start": 13.375,
-                "end": 13.695,
-                "confidence": 0.9991725,
-                "punctuated_word": "of"
-              },
-              {
-                "word": "dreams",
-                "start": 13.695,
-                "end": 14.195,
-                "confidence": 0.9984054,
-                "punctuated_word": "dreams"
-              },
-              {
-                "word": "chased",
-                "start": 14.415,
-                "end": 14.915,
-                "confidence": 0.99154776,
-                "punctuated_word": "chased"
-              },
-              {
-                "word": "under",
-                "start": 15.215,
-                "end": 15.615,
-                "confidence": 0.9980034,
-                "punctuated_word": "under"
-              },
-              {
-                "word": "relentless",
-                "start": 15.615,
-                "end": 16.115,
-                "confidence": 0.99704117,
-                "punctuated_word": "relentless"
-              },
-              {
-                "word": "each",
-                "start": 17.8,
-                "end": 18.279999,
-                "confidence": 0.9998628,
-                "punctuated_word": "Each"
-              },
-              {
-                "word": "tire",
-                "start": 18.279999,
-                "end": 18.68,
-                "confidence": 0.9975115,
-                "punctuated_word": "tire"
-              },
-              {
-                "word": "left",
-                "start": 19.4,
-                "end": 19.72,
-                "confidence": 0.9982924,
-                "punctuated_word": "left"
-              },
-              {
-                "word": "an",
-                "start": 19.72,
-                "end": 20.039999,
-                "confidence": 0.9989371,
-                "punctuated_word": "an"
-              },
-              {
-                "word": "a",
-                "start": 21.8,
-                "end": 21.96,
-                "confidence": 0.9996257,
-                "punctuated_word": "a"
-              },
-              {
-                "word": "mark",
-                "start": 21.96,
-                "end": 22.36,
-                "confidence": 0.9995859,
-                "punctuated_word": "mark"
-              },
-              {
-                "word": "of",
-                "start": 22.36,
-                "end": 22.76,
-                "confidence": 0.99992025,
-                "punctuated_word": "of"
-              },
-              {
-                "word": "transient",
-                "start": 22.76,
-                "end": 23.26,
-                "confidence": 0.9989467,
-                "punctuated_word": "transient"
-              },
-              {
                 "word": "in",
-                "start": 24.76,
-                "end": 25,
-                "confidence": 0.9974865,
-                "punctuated_word": "in"
+                "start": 0.56,
+                "end": 0.79999995,
+                "confidence": 0.5146859,
+                "punctuated_word": "In"
               },
               {
                 "word": "the",
-                "start": 25,
-                "end": 25.16,
-                "confidence": 0.9999218,
+                "start": 0.79999995,
+                "end": 0.96,
+                "confidence": 0.9998604,
                 "punctuated_word": "the"
               },
               {
-                "word": "timeless",
-                "start": 25.16,
-                "end": 25.66,
-                "confidence": 0.99968433,
-                "punctuated_word": "timeless"
+                "word": "heart",
+                "start": 0.96,
+                "end": 1.1999999,
+                "confidence": 0.99849105,
+                "punctuated_word": "heart"
               },
               {
-                "word": "dust",
-                "start": 27.074999,
-                "end": 27.314999,
-                "confidence": 0.9980514,
-                "punctuated_word": "Dust"
+                "word": "of",
+                "start": 1.1999999,
+                "end": 1.4399999,
+                "confidence": 0.99973124,
+                "punctuated_word": "of"
+              },
+              {
+                "word": "the",
+                "start": 1.4399999,
+                "end": 1.68,
+                "confidence": 0.99921834,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "ocean",
+                "start": 1.68,
+                "end": 2.1799998,
+                "confidence": 0.8719678,
+                "punctuated_word": "ocean,"
+              },
+              {
+                "word": "where",
+                "start": 2.8,
+                "end": 3.12,
+                "confidence": 0.9994784,
+                "punctuated_word": "where"
+              },
+              {
+                "word": "the",
+                "start": 3.12,
+                "end": 3.36,
+                "confidence": 0.9984205,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "waves",
+                "start": 3.36,
+                "end": 3.84,
+                "confidence": 0.9997706,
+                "punctuated_word": "waves"
               },
               {
                 "word": "dance",
-                "start": 28.195,
-                "end": 28.675,
-                "confidence": 0.85314494,
+                "start": 3.84,
+                "end": 4.3199997,
+                "confidence": 0.9970438,
                 "punctuated_word": "dance"
               },
               {
-                "word": "their",
-                "start": 28.675,
-                "end": 28.994999,
-                "confidence": 0.9972083,
-                "punctuated_word": "their"
-              },
-              {
-                "word": "silent",
-                "start": 28.994999,
-                "end": 29.494999,
-                "confidence": 0.9984397,
-                "punctuated_word": "silent"
-              },
-              {
-                "word": "veiling",
-                "start": 31.074999,
-                "end": 31.554998,
-                "confidence": 0.99775803,
-                "punctuated_word": "veiling"
-              },
-              {
-                "word": "memories",
-                "start": 31.554998,
-                "end": 32.055,
-                "confidence": 0.9987871,
-                "punctuated_word": "memories"
-              },
-              {
-                "word": "in",
-                "start": 32.594997,
-                "end": 32.835,
-                "confidence": 0.99005896,
-                "punctuated_word": "in"
-              },
-              {
-                "word": "their",
-                "start": 32.835,
-                "end": 33.235,
-                "confidence": 0.9993754,
-                "punctuated_word": "their"
-              },
-              {
-                "word": "swirling",
-                "start": 33.235,
-                "end": 33.735,
-                "confidence": 0.9996234,
-                "punctuated_word": "swirling"
-              },
-              {
-                "word": "at",
-                "start": 35.235,
-                "end": 35.475,
-                "confidence": 0.99831307,
-                "punctuated_word": "At"
-              },
-              {
-                "word": "dawn",
-                "start": 35.475,
-                "end": 35.975,
-                "confidence": 0.96352065,
-                "punctuated_word": "dawn,"
+                "word": "with",
+                "start": 4.3199997,
+                "end": 4.64,
+                "confidence": 0.99957556,
+                "punctuated_word": "with"
               },
               {
                 "word": "the",
-                "start": 36.68,
-                "end": 36.920002,
-                "confidence": 0.9993699,
+                "start": 4.64,
+                "end": 4.7999997,
+                "confidence": 0.998453,
                 "punctuated_word": "the"
               },
               {
-                "word": "road",
-                "start": 36.920002,
-                "end": 37.32,
-                "confidence": 0.99915767,
-                "punctuated_word": "road"
+                "word": "sun's",
+                "start": 4.7999997,
+                "end": 5.2,
+                "confidence": 0.95614266,
+                "punctuated_word": "sun's"
               },
               {
-                "word": "emerged",
-                "start": 37.32,
-                "end": 37.82,
-                "confidence": 0.99799,
-                "punctuated_word": "emerged"
+                "word": "reflections",
+                "start": 5.2,
+                "end": 5.7,
+                "confidence": 0.9150324,
+                "punctuated_word": "reflections,"
               },
               {
-                "word": "from",
-                "start": 37.88,
-                "end": 38.2,
-                "confidence": 0.99979883,
-                "punctuated_word": "from"
-              },
-              {
-                "word": "the",
-                "start": 38.2,
-                "end": 38.36,
-                "confidence": 0.99427783,
-                "punctuated_word": "the"
-              },
-              {
-                "word": "horizon",
-                "start": 38.36,
-                "end": 38.86,
-                "confidence": 0.99944323,
-                "punctuated_word": "horizon"
-              },
-              {
-                "word": "like",
-                "start": 39.4,
-                "end": 39.64,
-                "confidence": 0.95149463,
-                "punctuated_word": "like"
+                "word": "lies",
+                "start": 6.96,
+                "end": 7.2799997,
+                "confidence": 0.9975212,
+                "punctuated_word": "lies"
               },
               {
                 "word": "a",
-                "start": 39.64,
-                "end": 39.88,
-                "confidence": 0.99986017,
+                "start": 7.2799997,
+                "end": 7.44,
+                "confidence": 0.99884063,
                 "punctuated_word": "a"
               },
               {
-                "word": "promise",
-                "start": 39.88,
-                "end": 40.38,
-                "confidence": 0.94597936,
-                "punctuated_word": "promise,"
+                "word": "tale",
+                "start": 7.44,
+                "end": 7.9199996,
+                "confidence": 0.99536514,
+                "punctuated_word": "tale"
               },
               {
-                "word": "beckoning",
-                "start": 41.48,
-                "end": 41.98,
-                "confidence": 0.99457896,
-                "punctuated_word": "beckoning"
+                "word": "of",
+                "start": 7.9199996,
+                "end": 8.24,
+                "confidence": 0.9998758,
+                "punctuated_word": "of"
               },
               {
-                "word": "wanderers",
-                "start": 42.2,
-                "end": 42.7,
-                "confidence": 0.99733937,
-                "punctuated_word": "wanderers"
+                "word": "serenity",
+                "start": 8.24,
+                "end": 8.74,
+                "confidence": 0.99995214,
+                "punctuated_word": "serenity"
+              },
+              {
+                "word": "and",
+                "start": 9.115,
+                "end": 9.594999,
+                "confidence": 0.99970704,
+                "punctuated_word": "and"
+              },
+              {
+                "word": "mystery",
+                "start": 9.594999,
+                "end": 10.094999,
+                "confidence": 0.9758018,
+                "punctuated_word": "mystery."
+              },
+              {
+                "word": "beneath",
+                "start": 11.594999,
+                "end": 12.075,
+                "confidence": 0.9979691,
+                "punctuated_word": "Beneath"
+              },
+              {
+                "word": "the",
+                "start": 12.075,
+                "end": 12.315,
+                "confidence": 0.9988796,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "surface",
+                "start": 12.315,
+                "end": 12.815,
+                "confidence": 0.851845,
+                "punctuated_word": "surface,"
+              },
+              {
+                "word": "creatures",
+                "start": 13.674999,
+                "end": 14.174999,
+                "confidence": 0.99810684,
+                "punctuated_word": "creatures"
+              },
+              {
+                "word": "of",
+                "start": 14.235,
+                "end": 14.555,
+                "confidence": 0.99978155,
+                "punctuated_word": "of"
+              },
+              {
+                "word": "wonder",
+                "start": 14.555,
+                "end": 15.035,
+                "confidence": 0.9981305,
+                "punctuated_word": "wonder"
+              },
+              {
+                "word": "roam",
+                "start": 15.035,
+                "end": 15.535,
+                "confidence": 0.99614954,
+                "punctuated_word": "roam"
+              },
+              {
+                "word": "the",
+                "start": 15.594999,
+                "end": 15.834999,
+                "confidence": 0.9963265,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "vast",
+                "start": 15.834999,
+                "end": 16.335,
+                "confidence": 0.99952745,
+                "punctuated_word": "vast"
+              },
+              {
+                "word": "blue",
+                "start": 16.395,
+                "end": 16.895,
+                "confidence": 0.99541336,
+                "punctuated_word": "blue"
+              },
+              {
+                "word": "expanse",
+                "start": 17.035,
+                "end": 17.535,
+                "confidence": 0.87840676,
+                "punctuated_word": "expanse."
+              },
+              {
+                "word": "amongst",
+                "start": 18.949999,
+                "end": 19.43,
+                "confidence": 0.9938171,
+                "punctuated_word": "Amongst"
+              },
+              {
+                "word": "the",
+                "start": 19.43,
+                "end": 19.67,
+                "confidence": 0.9974376,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "coral",
+                "start": 19.67,
+                "end": 20.07,
+                "confidence": 0.97241783,
+                "punctuated_word": "coral"
+              },
+              {
+                "word": "gardens",
+                "start": 20.07,
+                "end": 20.57,
+                "confidence": 0.92711234,
+                "punctuated_word": "gardens"
+              },
+              {
+                "word": "secrets",
+                "start": 21.349998,
+                "end": 21.849998,
+                "confidence": 0.5447323,
+                "punctuated_word": "secrets"
+              },
+              {
+                "word": "whisper",
+                "start": 22.07,
+                "end": 22.57,
+                "confidence": 0.99824584,
+                "punctuated_word": "whisper"
+              },
+              {
+                "word": "waiting",
+                "start": 23.349998,
+                "end": 23.83,
+                "confidence": 0.68854105,
+                "punctuated_word": "waiting"
               },
               {
                 "word": "to",
-                "start": 43.08,
-                "end": 43.32,
-                "confidence": 0.99869686,
+                "start": 23.83,
+                "end": 24.07,
+                "confidence": 0.99825126,
                 "punctuated_word": "to"
               },
               {
-                "word": "traverse",
-                "start": 43.32,
-                "end": 43.82,
-                "confidence": 0.9928328,
-                "punctuated_word": "traverse"
+                "word": "be",
+                "start": 24.07,
+                "end": 24.39,
+                "confidence": 0.99945194,
+                "punctuated_word": "be"
               },
               {
-                "word": "its",
-                "start": 44.04,
-                "end": 44.44,
-                "confidence": 0.9981177,
-                "punctuated_word": "its"
+                "word": "discovered",
+                "start": 24.39,
+                "end": 24.89,
+                "confidence": 0.9994931,
+                "punctuated_word": "discovered"
               },
               {
-                "word": "endless",
-                "start": 44.44,
-                "end": 44.94,
-                "confidence": 0.9997445,
-                "punctuated_word": "endless"
+                "word": "by",
+                "start": 25.109999,
+                "end": 25.349998,
+                "confidence": 0.9992022,
+                "punctuated_word": "by"
+              },
+              {
+                "word": "those",
+                "start": 25.349998,
+                "end": 25.83,
+                "confidence": 0.9992914,
+                "punctuated_word": "those"
+              },
+              {
+                "word": "brave",
+                "start": 25.83,
+                "end": 26.15,
+                "confidence": 0.99926263,
+                "punctuated_word": "brave"
+              },
+              {
+                "word": "enough",
+                "start": 26.15,
+                "end": 26.65,
+                "confidence": 0.9996012,
+                "punctuated_word": "enough"
+              },
+              {
+                "word": "to",
+                "start": 27.088375,
+                "end": 27.328375,
+                "confidence": 0.9998173,
+                "punctuated_word": "to"
+              },
+              {
+                "word": "dive",
+                "start": 27.328375,
+                "end": 27.808374,
+                "confidence": 0.99982053,
+                "punctuated_word": "dive"
+              },
+              {
+                "word": "into",
+                "start": 27.808374,
+                "end": 28.128376,
+                "confidence": 0.9988405,
+                "punctuated_word": "into"
+              },
+              {
+                "word": "the",
+                "start": 28.128376,
+                "end": 28.368376,
+                "confidence": 0.9985306,
+                "punctuated_word": "the"
+              },
+              {
+                "word": "depths",
+                "start": 28.368376,
+                "end": 28.868376,
+                "confidence": 0.99021316,
+                "punctuated_word": "depths."
               }
             ],
             "paragraphs": {
-              "transcript": "\nAmidst the golden desert expanse, a solitary road stretched like a lifeline. Its cracked asphalt whispered tales of journeys past, of dreams chased under relentless sunsets. Each tire tread left an imprint, a mark of transient existence in the timeless sands. Dust devils dance their silent waltz, veiling memories in their swirling embrace. At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless path.",
+              "transcript": "\nIn the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery. Beneath the surface, creatures of wonder roam the vast blue expanse. Amongst the coral gardens secrets whisper waiting to be discovered by those brave enough to dive into the depths.",
               "paragraphs": [
                 {
                   "sentences": [
                     {
-                      "text": "Amidst the golden desert expanse, a solitary road stretched like a lifeline.",
-                      "start": 0.71999997,
-                      "end": 6.8999996
+                      "text": "In the heart of the ocean, where the waves dance with the sun's reflections, lies a tale of serenity and mystery.",
+                      "start": 0.56,
+                      "end": 10.094999
                     },
                     {
-                      "text": "Its cracked asphalt whispered tales of journeys past, of dreams chased under relentless sunsets.",
-                      "start": 7.695,
-                      "end": 16.994999
+                      "text": "Beneath the surface, creatures of wonder roam the vast blue expanse.",
+                      "start": 11.594999,
+                      "end": 17.535
                     },
                     {
-                      "text": "Each tire tread left an imprint, a mark of transient existence in the timeless sands.",
-                      "start": 17.8,
-                      "end": 26.38
-                    },
-                    {
-                      "text": "Dust devils dance their silent waltz, veiling memories in their swirling embrace.",
-                      "start": 27.074999,
-                      "end": 34.535
-                    },
-                    {
-                      "text": "At dawn, the road emerged from the horizon like a promise, beckoning wanderers to traverse its endless path.",
-                      "start": 35.235,
-                      "end": 45.66
+                      "text": "Amongst the coral gardens secrets whisper waiting to be discovered by those brave enough to dive into the depths.",
+                      "start": 18.949999,
+                      "end": 28.868376
                     }
                   ],
-                  "num_words": 71,
-                  "start": 0.71999997,
-                  "end": 45.66
+                  "num_words": 51,
+                  "start": 0.56,
+                  "end": 28.868376
                 }
               ]
             }
           }
         ],
         "detected_language": "en",
-        "language_confidence": 0.9834704
+        "language_confidence": 0.9767286
       }
     ]
   }

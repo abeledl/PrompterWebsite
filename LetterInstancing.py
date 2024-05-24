@@ -1,14 +1,14 @@
 import bpy
 
 # The collection containing the letter objects
-letter_collection = bpy.data.collections['sticker_lowpoly_letters']
+letter_collection = bpy.data.collections['GoogleLetters']
 
 # Ensure the 'words' collection exists or create it
-if 'sticker_words' not in bpy.data.collections:
-    words_collection = bpy.data.collections.new('sticker_words')
+if 'google_tag_words' not in bpy.data.collections:
+    words_collection = bpy.data.collections.new('google_tag_words2')
     bpy.context.scene.collection.children.link(words_collection)
 else:
-    words_collection = bpy.data.collections['sticker_words']
+    words_collection = bpy.data.collections['google_tag_words']
 
 # Function to create a linked duplicate
 def create_linked_duplicate(name):
@@ -36,7 +36,7 @@ def create_word(word):
 
     position = 0.0  # Starting position of the first letter
     for letter in word:
-        obj_name = letter.upper() + 's' if letter.isupper() else letter + 's'
+        obj_name = letter.upper() + 'g' if letter.isupper() else letter + 'g'
         obj = create_linked_duplicate(obj_name)
         if obj:
             obj_width = get_object_width(obj)
@@ -45,4 +45,12 @@ def create_word(word):
             obj.parent = empty
 
 # Example usage: Creating the word 'Hello'
-create_word("Infinitive")
+create_word("Adjective")
+create_word("Adverb")
+create_word("Conjunction")
+create_word("Determiner")
+create_word("Preposition")
+create_word("Pronoun")
+create_word("Verb")
+create_word("Noun")
+#create_word("Infinitive")

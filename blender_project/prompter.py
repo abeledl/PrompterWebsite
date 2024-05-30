@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import nltk
 import math
 import mathutils
+import nltk
 
 nltk.download('punkt')
 
@@ -67,6 +68,7 @@ class ObjectFactory(ABC):
 class Position:
     x: float
     y: float
+    z: float
 
 
 @dataclass
@@ -112,7 +114,7 @@ class BaseCollection(Collection):
             self.collection = bpy.data.collections.new(name)
             bpy.context.scene.collection.children.link(self.collection)
         else:
-            self.collection = bpy.data.collections(name)
+            self.collection = bpy.data.collections[name]
 
     def get_collection(self):
         """
@@ -156,10 +158,49 @@ class Alphabet3DCollection(BaseCollection):
         obj_name = name.upper() + '_3d' if name.isupper() else name + '_3d'
         return self.collection.objects.get(obj_name)
 
+class Alphabet3DPremadeCollection(BaseCollection):
+    """
+    Holds a collection for 3D alphabet letter objects
+    """
+    def __init__(self):
+        super().__init__(None)
+
+    def get_object(self, name: str):
+        """
+        Returns an object in the collection given its name
+
+        Args:
+            name: the name of the object in the collection
+
+        Returns: an object in the collection
+        """
+        obj_name = name.upper() + '_3d_premade.001' if name.isupper() else name + '_3d_premade.001'
+        return self.collection.objects.get(obj_name)
+
+class PhoneticAlphabetCollection(BaseCollection):
+    """
+    Holds a collection for phonetic alphabet letter objects
+    """
+
+    def __init__(self):
+        super().__init__(None)
+
+    def get_object(self, name: str):
+        """
+        Returns an object in the collection given its name
+
+        Args:
+            name: the name of the object in the collection
+
+        Returns: an object in the collection
+        """
+        obj_name = name.upper() + 'g' if name.isupper() else name + 'g'
+        return self.collection.objects.get(obj_name)
 
 class StickerLetterCollection(BaseCollection):
-    def __init__(self, letters_collection):
-        super().__init__(letters_collection)
+
+    def __init__(self):
+        super().__init__(None)
 
     def get_object(self, name):
         obj_name = name.upper() + 's' if name.isupper() else name + 's'
@@ -306,11 +347,192 @@ class PartOfSpeechMaterialIdentifier(MaterialIdentifier):
             "pronoun": bpy.data.materials.get("pronoun_material"),
             "preposition": bpy.data.materials.get("preposition_material"),
             "conjunction": bpy.data.materials.get("conjunction_material"),
-            "infinitive": bpy.data.materials.get("verb_material")
+            "infinitive": bpy.data.materials.get("infinitive_material")
         }
 
     def get_material_for(self, name):
         return self.part_of_speech_to_material_map[name]
+
+class StickerMaterialIdentifier(MaterialIdentifier):
+    def __init__(self):
+        self.part_of_speech_to_material_map = {
+            "verb": bpy.data.materials.get("sticker_verb_material"),
+            "noun": bpy.data.materials.get("sticker_noun_material"),
+            "adjective": bpy.data.materials.get("sticker_adjective_material"),
+            "article": bpy.data.materials.get("sticker_determiner_material"),
+            "adverb": bpy.data.materials.get("sticker_adverb_material"),
+            "pronoun": bpy.data.materials.get("sticker_pronoun_material"),
+            "preposition": bpy.data.materials.get("sticker_preposition_material"),
+            "conjunction": bpy.data.materials.get("sticker_conjunction_material"),
+            "infinitive": bpy.data.materials.get("sticker_infinitive_material")
+        }
+
+    def get_material_for(self, name):
+        return self.part_of_speech_to_material_map[name]
+
+
+# Prompter Layout
+class RowContent(ABC):
+    @property
+    @abstractmethod
+    def position(self) -> Position:
+        pass
+
+    @position.setter
+    @abstractmethod
+    def position(self, value: Position) -> None:
+        pass
+
+    @property
+    @abstractmethod
+    def width(self):
+        pass
+
+    @width.setter
+    @abstractmethod
+    def width(self, value: float) -> None:
+        pass
+
+    @property
+    @abstractmethod
+    def is_newline(self) -> bool:
+        pass
+
+    @is_newline.setter
+    @abstractmethod
+    def is_newline(self, value) -> None:
+        pass
+    
+    @property
+    @abstractmethod
+    def next_line(self) -> bool:
+        pass
+
+    @next_line.setter
+    @abstractmethod
+    def next_line(self, value) -> None:
+        pass
+
+class Row:
+
+    def __init__(self, width: float, spacing: float):
+        self._content_list: List[RowContent] = []
+        self._width: float = width
+        self._accumulated_width: float = 0
+        self._spacing = spacing
+        self._position: Position = Position(0, 0, 0)
+
+    @property
+    def content(self):
+        return self._content_list
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, position: Position):
+        self._position = position
+        self._update_content_position()
+
+    @property
+    def width(self):
+        return self._width
+
+    def _update_content_position(self):
+        for content in self._content_list:
+            content.position = Position(content.position.x, self.position.y, content.position.z)
+
+    def add_content(self, new_content) -> bool:
+        """
+        Adds content to the row.
+        Args:
+            new_content (RowContent): The content to be added to the row.
+
+        Returns:
+            (bool) : False if no more content can be added, otherwise true if the content
+                     was added successfully.
+        """
+        self._accumulated_width += new_content.width + self._spacing
+        if self._accumulated_width < self._width:
+            new_content.position = self._position
+            self._content_list.append(new_content)
+            return True
+        return False
+
+    def align_content(self):
+        total_width = 0.0
+        content_and_width = []
+
+        for content in self._content_list:
+            content_and_width.append((content, content.width))
+            total_width += content.width
+
+        start_position = -total_width / 2
+
+        for content, width in content_and_width:
+            content_x_pos = start_position + width / 2
+            content.position = Position(content_x_pos, content.position.y, content.position.z)
+            start_position += width
+
+    def change_content_width(self):
+        pass
+
+
+class PrompterLayout:
+    def __init__(
+            self,
+            height: float,
+            width: float,
+            center_position: Tuple[float, float, float],
+            row_content: List[RowContent]
+    ):
+        self._height = height    # Height of the prompter
+        self._width = width      # Width of the prompter.
+        self._center_position = center_position  # Center coordinate of the prompter
+        self._rows: List[Row] = []
+        self._row_content_list: List[RowContent] = row_content
+        self._rows_position: List[Position] = []
+
+    @property
+    def height(self):
+        return self._height
+
+    @property
+    def rows(self):
+        return self._rows
+
+    def assign_rows_content(self):
+        row = Row(self._width, 0)
+        count = 0
+        for content in self._row_content_list:
+            if not row.add_content(content):
+                row.align_content()
+                self._rows.append(row)
+                count += 1
+                if count % 5 == 0 and count != 0: # 2 for landscape 5 vertical
+                    content.is_newline =True
+                content.next_line = True
+                row = Row(self._width, 0)
+                row.add_content(content)
+
+        row.align_content()
+        self._rows.append(row)
+
+    def assign_rows_position(self):
+        for row, position in zip(self._rows, self._rows_position):
+            row.position = position
+
+    def distance_between_rows(self):
+        return self._height / 2
+
+    def calculate_rows_position(self):
+        first_row_position = (self._height / 2) / 2
+        space_in_between_rows = self._height / 2
+        current_row_position_y = first_row_position
+        for row in self._rows:
+            self._rows_position.append(Position(0, current_row_position_y, 0))
+            current_row_position_y -= space_in_between_rows
 
 
 # Assembling Words
@@ -372,19 +594,23 @@ class WordAssembler(Assembler):
         Returns:
             A list of the letter objects that make up the word
         """
+
         return [self.blender_object_factory.clone_obj(self.letter_pool.get_object(letter)) for letter in word]
 
 
-class WordObjectBuilder:
+class WordObjectBuilder(RowContent):
+
     def __init__(self, word_assembler: Assembler, material_identifier: MaterialIdentifier,
                  object_aligner: ObjectAligner, object_factory: ObjectFactory):
-
+        super().__init__()
         self.word_assembler = word_assembler
         self.material_identifier = material_identifier
         self.object_aligner = object_aligner
         self.blender_object_factory = object_factory
         self._letter_object_list = []
+        self._is_newline = False
         self.empty_word_object = None
+        self._next_line = False
 
     # Public
     def create_object(self, text: str) -> "WordObjectBuilder":
@@ -403,9 +629,49 @@ class WordObjectBuilder:
         self._link_objects_to_collection(collection)
         return self
 
-    def set_position(self, x, y) -> "WordObjectBuilder":
-        self.empty_word_object.location = (x, y, 0)
+    def set_position(self, position: Tuple[float, float, float]) -> "WordObjectBuilder":
+        self.empty_word_object.location = position
         return self
+
+    @property
+    def next_line(self):
+        return self._next_line
+    
+    @next_line.setter
+    def next_line(self, value):
+        self._next_line = value
+
+    @property
+    def position(self):
+        return Position(
+            self.empty_word_object.location.x,
+            self.empty_word_object.location.y,
+            self.empty_word_object.location.z
+        )
+
+    @position.setter
+    def position(self, position: Position):
+        self.empty_word_object.location.x = position.x
+        self.empty_word_object.location.y = position.y
+        self.empty_word_object.location.z = position.z
+
+    @property
+    def width(self):
+        padding = 0.6
+        return self._calculate_children_obj_total_width(self.empty_word_object) + padding
+
+    @width.setter
+    def width(self, scale):
+        self.empty_word_object.scale = (scale, scale, scale)
+        pass
+
+    @property
+    def is_newline(self) -> bool:
+        return self._is_newline
+
+    @is_newline.setter
+    def is_newline(self, value: bool):
+        self._is_newline = value
 
     def add_key_frame(self, property_name: str, frame_number: int):
         self.empty_word_object.keyframe_insert(data_path=property_name, frame=frame_number)
@@ -413,7 +679,48 @@ class WordObjectBuilder:
     def get_word_object(self):
         return self.empty_word_object
 
+    def set_scale(self, scale: float) -> "WordObjectBuilder":
+        self.empty_word_object.scale = (scale, scale, scale)
+        self.width = scale
+        return self
+
     # Private
+    @staticmethod
+    def _get_object_width(obj: bpy.types.Object) -> float:
+        """
+        Calculates the width of an object using the bounding box corners
+
+        Args:
+            obj (bpy.types.Object): The object whose width is going to be calculated
+
+        Returns:
+            float: The width of an object
+        """
+        # Ensure the object has a bounding box
+        if not obj or not hasattr(obj, 'bound_box'):
+            raise ValueError("Object does not have a valid bounding box.")
+
+        bbox_corners = [obj.matrix_world @ mathutils.Vector(corner) for corner in obj.bound_box]
+        x_coordinates = [corner.x for corner in bbox_corners]
+        _min_x = min(x_coordinates)
+        _max_x = max(x_coordinates)
+        width = _max_x - _min_x
+        return width
+
+    def _calculate_children_obj_total_width(self, obj: bpy.types.Object) -> float:
+        """
+        Calculates the width of objects using its bounding box corners
+        Args:
+            obj (bpy.types.Object): The blender object whose children widths needs to be calculated
+
+        Returns:
+            float: The total width of all the children objects
+        """
+        total_width: float = 0
+        for child_obj in obj.children:
+            total_width += (self._get_object_width(child_obj))
+        return total_width
+
     def _assemble_text(self, text: str) -> None:
         self._letter_object_list = self.word_assembler.assemble(text)
 
@@ -448,25 +755,32 @@ class WordsAssemblerManager:
         self.word_data_list = word_data_list
         self.object_aligner = HorizontalAligner()
         self.words_object_list = []
+        self.word_object_builder_list: List[WordObjectBuilder] = []
 
     def get_words_object_list(self):
         return self.words_object_list
 
-    def assemble_word(self, word_data: WordData):
+    def assemble_word(self, word_data: WordData, vertical_offset: float, scale: float, with_material: bool):
         builder = (WordObjectBuilder(self.word_assembler, self.material_identifier, self.object_aligner,
                                      self.blender_object_factory)
                    .create_object(word_data.text)
                    .link_to_collection(self.words_collection)
-                   .set_position(word_data.position.x, word_data.position.y)
-                   .apply_material(word_data.part_of_speech))
+                   .set_position((word_data.position.x, word_data.position.y + vertical_offset, 0))
+                   .set_scale(scale))
+        if with_material:
+            builder.apply_material(word_data.part_of_speech)
         self.words_object_list.append(builder.get_word_object())
+        self.word_object_builder_list.append(builder)
 
-    def assemble_words(self):
+    def assemble_words(self, vertical_offset: float, scale: float, with_material: bool):
         """
         Assembles empty word objects form the words list linking them to a words_collection
         """
         for word in self.word_data_list:
-            self.assemble_word(word)
+            self.assemble_word(word, vertical_offset, scale, with_material)
+
+    def get_word_object_builder_list(self) -> List[WordObjectBuilder]:
+        return self.word_object_builder_list
 
 
 # Tags and Part of Speech
@@ -496,6 +810,9 @@ class InfinitiveStrategy(POSTaggingStrategy):
             next_word_tag = words_and_tag_list[index + 1][1]
             # if to is followed by a verb, then it is infinitive
             if word == 'to' and TagToPartOfSpeech().get_part_of_speech(next_word_tag):
+                return 'IF'
+            # if it's a verb and the previous word is to, then it is infinitive
+            if tag in TagToPartOfSpeech().part_of_speech_tags_dictionary['verb'] and words_and_tag_list[index - 1][0] == 'to':
                 return 'IF'
         return tag
 
@@ -539,7 +856,7 @@ class WordDataListCreator:
         return [
             WordData(
                 text=word.replace("_", " ").replace("#", "\n"),
-                position=Position(x=position[0], y=-1 * position[1] - 0.25),
+                position=Position(x=position[0], y=-1 * position[1] - 0.25, z=0),
                 part_of_speech=self.tag_to_part_of_speech.get_part_of_speech(part_of_speech_tag),
                 is_double_row='#' in word,
                 timestamp_and_newline=TimestampNewline(timestamp=start_time, is_newline=False)
@@ -564,7 +881,7 @@ class RowsCalculator:
                 if word.position:
                     current_row_position_y = word.position.y
                     if current_row_position_y < prev_word_position_y:
-                        self.rows_positions.append(Position(word.position.x, -word.position.y))
+                        self.rows_positions.append(Position(word.position.x, -word.position.y, 0))
                         prev_word_position_y = current_row_position_y
         return self.rows_positions
 
@@ -608,43 +925,35 @@ class TimeStampCreator:
         return self.double_row_timestamps
 
 
+
+
 # Highlighter
 class GeometryModifier:
     def __init__(self, node_modifier):
         self.node_modifier = node_modifier
-        self.transform_node = None
+        self.scale_node = None
+        #self.transform_node = None
         self._create_geometry_node_group()
 
     # Public
+    #@property
+    #def geometry_transform_node(self):
+    #    return self.transform_node
+
     @property
-    def geometry_transform_node(self):
-        return self.transform_node
+    def geometry_scale_node_hl(self):
+        return self.scale_node
 
     # Private
     def _create_geometry_node_group(self):
-        bpy.ops.node.new_geometry_node_group_assign()
+        #bpy.ops.node.new_geometry_node_group_assign()
 
         # Get the node group of the Geometry Nodes modifier
         node_group = self.node_modifier.node_group
-        node_group.name = "highlighter_geo"
-
-        # Clear existing nodes
-        for _node in node_group.nodes:
-            node_group.nodes.remove(_node)
-
-        # Create Group Input and Group Output nodes
-        group_input = node_group.nodes.new('NodeGroupInput')
-        group_input.location = (-200, 0)
-        group_output = node_group.nodes.new('NodeGroupOutput')
-        group_output.location = (200, 0)
-
-        # Create a Geometry Transform node
-        self.transform_node = node_group.nodes.new('GeometryNodeTransform')
-        self.transform_node.location = (0, 0)
-
-        # Link the Geometry Transform node to the Group Input and Group Output
-        node_group.links.new(group_input.outputs[0], self.transform_node.inputs[0])
-        node_group.links.new(self.transform_node.outputs[0], group_output.inputs[0])
+        self.scale_node = node_group.nodes.get("Vector Scale HL")
+        if self.scale_node is None:
+            print("scale not found", self.scale_node)
+            raise RuntimeError("scale node not found")
 
 
 class Highlighter:
@@ -666,15 +975,15 @@ class Highlighter:
         raise RuntimeError("Geometry Modifier not set")
 
     def create(self, name: str):
-        bpy.ops.mesh.primitive_plane_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8),
-                                         scale=(1, 1, 1))
-        self._highlighter_obj = bpy.context.active_object
+        #bpy.ops.mesh.primitive_plane_add(enter_editmode=False, align='WORLD', location=(2.8, -1.5, 1.8),
+        #                                scale=(1, 1, 1))
+        self._highlighter_obj = bpy.data.objects.get("hl_object")
         self._highlighter_obj.name = name
         self._add_geometry_modifier()
-        self._add_bevel_modifier_before_solidify()
-        self._add_solidify_modifier()
-        self._add_bevel_modifier_after_solidify()
-        self._shade_flat()
+        #self._add_bevel_modifier_before_solidify()
+        #self._add_solidify_modifier()
+        #self._add_bevel_modifier_after_solidify()
+        #self._shade_flat()
 
     def rotate_on_x_axis(self, degrees: float):
         self._highlighter_obj.rotation_euler[0] = math.radians(degrees)
@@ -683,36 +992,28 @@ class Highlighter:
         material = bpy.data.materials.get(material_name)
         self._highlighter_obj.data.materials.append(material)
 
-    def add_key_frame(self, property_name, frame_number):
+    def add_position_key_frame(self, property_name, frame_number):
         self._highlighter_obj.keyframe_insert(data_path=property_name, frame=frame_number)
-        self.geometry_modifier.transform_node.inputs['Scale'].keyframe_insert(data_path='default_value',
-                                                                              frame=frame_number)
+
+    def add_scale_key_frame(self, frame_number):
+        self.geometry_modifier.scale_node.inputs[0].keyframe_insert(data_path='default_value', frame=frame_number)
 
     def set_position(self, x_pos, y_pos):
-        self._set_obj_position(x_pos * 2, 2.5288, (y_pos * 2) + 2.12562, self._highlighter_obj)
+        self._set_obj_position(x_pos, y_pos, -0.075, self._highlighter_obj)
+
+    def set_parent(self, parent):
+        self._highlighter_obj.parent = parent
 
     # Private
     def _add_geometry_modifier(self):
-        self._highlighter_obj.modifiers.new(name="NodesModifier2", type='NODES')
-        self._highlighter_obj.modifiers[-1].name = "geo1"
-        node_modifier = self._highlighter_obj.modifiers.get("geo1")
+        #self._highlighter_obj.modifiers.new(name="NodesModifier2", type='NODES')
+        #self._highlighter_obj.modifiers[-1].name = "geo1"
+
+        # Get geometry modifier from blender for highlighter
+        node_modifier = self._highlighter_obj.modifiers.get("hl_geo")
+        if node_modifier is None or node_modifier.type != 'NODES':
+            raise RuntimeError("Geometry Modifier not found")
         self._geometry_modifier = GeometryModifier(node_modifier)
-
-    def _add_bevel_modifier_before_solidify(self):
-        self._highlighter_obj.modifiers.new(name="Bevel", type='BEVEL')
-        self._highlighter_obj.modifiers["Bevel"].width = 0.34
-        self._highlighter_obj.modifiers["Bevel"].segments = 7
-        self._highlighter_obj.modifiers["Bevel"].affect = 'VERTICES'
-
-    def _add_solidify_modifier(self):
-        self._highlighter_obj.modifiers.new(name="Solidify", type='SOLIDIFY')
-        self._highlighter_obj.modifiers["Solidify"].thickness = 0.04
-        self._highlighter_obj.modifiers["Solidify"].offset = 0
-
-    def _add_bevel_modifier_after_solidify(self):
-        self._highlighter_obj.modifiers.new(name="Bevel", type='BEVEL')
-        self._highlighter_obj.modifiers["Bevel"].width = 0.2
-        self._highlighter_obj.modifiers["Bevel"].segments = 4
 
     def _shade_flat(self):
         mesh = self._highlighter_obj.data
@@ -732,9 +1033,9 @@ class HighlighterAnimator:
     The purpose of this class is to create a highlighter object from a plane, giving it right properties.
     And Giving the behaviour to follow the words by moving to their position while adjusting its size
     """
-    HIGHLIGHTER_ROW1_OFFSET = 0.5  # Units: Blender Units
+    HIGHLIGHTER_ROW1_OFFSET = -0.1  # Units: Blender Units
     HIGHLIGHTER_ROW2_OFFSET = 0.3  # Units: Blender Units
-    TARGET_HEIGHT = 4  # Units: Blender Units
+    TARGET_HEIGHT = 3  # Units: Blender Units
 
     def __init__(
             self,
@@ -742,7 +1043,8 @@ class HighlighterAnimator:
             target_coordinates: List[Tuple[float, float]],
             row_positions: List[Position],
             timestamps_and_newline_flag: List[TimestampNewline],
-            target_list: List[bpy.types.Object]
+            target_list: List[WordObjectBuilder],
+            layout: PrompterLayout
     ):
         self._highlighter = highlighter
 
@@ -757,6 +1059,8 @@ class HighlighterAnimator:
 
         self._validate_non_empty_list(target_list, "target_list")
         self._target_list = target_list
+
+        self._layout = layout
 
         self._target_widths_and_heights = self._generate_target_widths_and_heights()
         self._in_second_row = False
@@ -794,46 +1098,42 @@ class HighlighterAnimator:
         """
 
         target_width_and_height: Dict[str, float] = self._target_widths_and_heights[target_index]
-        coordinate: Tuple[float, float] = self._target_coordinates[target_index]
-
+        coordinate: Position = self._target_list[target_index].position
         start_frame: int = self._calculate_frame(current_timestamp, fps)
         end_frame: int = start_frame + animation_duration
 
-        self._highlighter.add_key_frame("location", start_frame)
+        self._highlighter.add_position_key_frame("location", start_frame)
+        self._highlighter.add_scale_key_frame(start_frame)
 
-        self._update_highlighter_dimensions(target_width_and_height)
-        if is_new_line:
-            self._toggle_in_second_row()
+        
+        if self._target_list[target_index].next_line:
+            print("New Line")
+            self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[0] = 0.5
+            self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[1] = 0.5
+            self._highlighter.add_scale_key_frame(end_frame - 5)
+            self._update_highlighter_dimensions(target_width_and_height)
+            self._highlighter.add_scale_key_frame(end_frame)
+        else:
+            self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[0] = target_width_and_height["width"] * 0.95
+            self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[1] = target_width_and_height["height"] * 0.95
+            self._highlighter.add_scale_key_frame(end_frame - 3)
+            self._update_highlighter_dimensions(target_width_and_height)
+            self._highlighter.add_scale_key_frame(end_frame)
+            self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[0] = target_width_and_height["width"] * 1.01
+            self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[1] = target_width_and_height["height"] * 1.01
+            self._highlighter.add_scale_key_frame(end_frame + 1)
+            self._update_highlighter_dimensions(target_width_and_height)
+            self._highlighter.add_scale_key_frame(end_frame + 2)
         self._update_highlighter_position(coordinate)
-
-        self._highlighter.add_key_frame("location", end_frame)
-
+        self._highlighter.add_position_key_frame("location", end_frame)
     def _toggle_in_second_row(self) -> None:
         """
         Toggles if the highlighter is in the second row
         """
         self._in_second_row = not self._in_second_row  # toggle
 
-    def _update_highlighter_position(self, coordinate: Tuple[float, float]) -> None:
-        """
-        Moves the highlighter objects to the indicated coordinate
-
-        Args:
-            coordinate (List[float, float)): The location to move the highlighter to
-        """
-
-        if not coordinate:
-            raise ValueError("coordinate is empty")
-
-        first_row_pos_y: float = -self._target_coordinates[0][1] - self.HIGHLIGHTER_ROW1_OFFSET
-        second_row_pos_y: float = -self._row_positions[0].y - self.HIGHLIGHTER_ROW2_OFFSET
-        new_pos_x = coordinate[0]
-
-        if self._in_second_row:
-            new_pos_y: float = second_row_pos_y
-        else:
-            new_pos_y: float = first_row_pos_y
-        self._highlighter.set_position(new_pos_x, new_pos_y)
+    def _update_highlighter_position(self, coordinate: Position) -> None:
+        self._highlighter.set_position(coordinate.x, coordinate.y)
 
     def _update_highlighter_dimensions(self, target_width_height: Dict[str, float]) -> None:
         """
@@ -849,8 +1149,10 @@ class HighlighterAnimator:
         width = target_width_height["width"]
         height = target_width_height["height"]
         # Set the scale on the X-axis of the Transform node to 4
-        self._highlighter.geometry_modifier.transform_node.inputs['Scale'].default_value[0] = width / 2
-        self._highlighter.geometry_modifier.transform_node.inputs['Scale'].default_value[1] = height / 2
+        #self._highlighter.geometry_modifier.transform_node.inputs['Scale'].default_value[0] = width / 2
+        #self._highlighter.geometry_modifier.transform_node.inputs['Scale'].default_value[1] = height / 2
+        self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[0] = width
+        self._highlighter.geometry_modifier.scale_node.inputs[0].default_value[1] = height
 
     @staticmethod
     def _calculate_frame(seconds: float, fps: int) -> int:
@@ -900,11 +1202,12 @@ class HighlighterAnimator:
             float: The total width of all the children objects
         """
         total_width: float = 0
+        padding = 0.5
         for child_obj in obj.children:
-            total_width += (self._get_object_width(child_obj) * 2)
-        return total_width
+            total_width += (self._get_object_width(child_obj))
+        return total_width + padding
 
-    def _generate_target_width_and_height(self, target_obj: bpy.types.Object) -> Dict[str, float]:
+    def _generate_target_width_and_height(self, target_obj: WordObjectBuilder) -> Dict[str, float]:
         """
         Creates a dictionary object that store the target obj width and height.
         The keys are "width" and "height"
@@ -914,7 +1217,7 @@ class HighlighterAnimator:
         Returns:
             Dict[str, float]: The dictionary that contains the objects with and height
         """
-        return {"width": self._calculate_children_obj_total_width(target_obj), "height": self.TARGET_HEIGHT}
+        return {"width": target_obj.width, "height": self.TARGET_HEIGHT}
 
     def _generate_target_widths_and_heights(self) -> List[Dict[str, float]]:
         """
@@ -934,9 +1237,10 @@ class HighlighterAnimator:
 
 # Parent Cube Animator
 class ParentCubeAnimator:
-    def __init__(self, parent_cub: bpy.types.Object, double_row_timestamps: List[TimestampNewline]):
+    def __init__(self, parent_cub: bpy.types.Object, double_row_timestamps: List[TimestampNewline], word_obj_list: List[WordObjectBuilder]):
         self._parent_cube = parent_cub
         self._double_row_timestamps = double_row_timestamps
+        self._word_obj_list = word_obj_list
 
     # Public
     def animate_parent_cube(
@@ -947,20 +1251,16 @@ class ParentCubeAnimator:
             distance: float
     ) -> None:
         # for second in end_times_array:
-        for timestamp_flag in self._double_row_timestamps:
+        for timestamp_flag, word_obj in zip(self._double_row_timestamps, self._word_obj_list):
             second = timestamp_flag.timestamp
-            bool_val = timestamp_flag.is_newline
-
-            frame = self._calculate_frame(second, fps)
-            self._add_key_frame(frame, "location")
+            bool_val = word_obj.is_newline
 
             if bool_val:
+                frame = self._calculate_frame(second, fps)
+                self._add_key_frame(frame, "location")
                 self._move_parent_cube(direction, distance)
-            else:
-                self._move_parent_cube(direction, distance)
-
-            transition_frames = frame + animation_duration
-            self._add_key_frame(transition_frames, "location")
+                transition_frames = frame + animation_duration
+                self._add_key_frame(transition_frames, "location")
 
     # Private
     @staticmethod
@@ -1137,154 +1437,29 @@ class TextObjectFactory:
 
 class MainProgram:
     def __init__(self):
-        self.efai_font_path = "/Users/efaideleon/Documents/abeldl GitHub/PrompterWebsite/ARLRDBD.ttf"
+        self.efai_font_path = "C:\\WINDOWS\\Fonts\\ARLRDBD.ttf"
+        self.phonetic_font_path = "C:\\WINDOWS\\Fonts\\arialbd.ttf"
 
     def run(self):
-        # Create TextObjects
-        font_3d_text_generator = Font3DTextGenerator(self.efai_font_path)
-        alphabet_letters_collection = Alphabet3DCollection(font_3d_text_generator.create_alphabet_3d_collection())
 
         # Create Parent Cube
+        parent_cube = bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
         parent_cube = bpy.context.active_object
         parent_cube.name = "parent_cube"
-        parent_cube.scale = (2, 2, 2)
-        parent_cube.location = (0, 2.25562, 2.41886)
+        parent_cube.scale = (1, 1, 1)
+        parent_cube.location = (0, 0, 0)
         rotation_x_parent_cube = math.radians(90)
         parent_cube.rotation_euler[0] = rotation_x_parent_cube
-
-        # Materials
-        # outline material
-        outline_material = bpy.data.materials.new(name="OutlineMaterial")
-        outline_material.use_nodes = True
-        outline_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.298182  # roughness
-        # outline_material.node_tree.nodes["Principled BSDF"].inputs[17].default_value = 1 #transmission
-        # color
-        outline_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (
-            0.001617, 0.0041617, 0.0041617, 1)
-        outline_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 0.5  # Coat
-        outline_material.node_tree.nodes["Principled BSDF"].inputs[19].default_value = 0.260769
-
-        # text material
-        text_material = bpy.data.materials.new(name="TextMaterial")
-        text_material.use_nodes = True
-        text_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (1, 1, 1, 1)
-        text_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525  # metallic
-        text_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
-        text_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638  # roughness
-        text_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
-        text_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0  # emission
-
-        # text_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 1
-
-        # ############cliping material english #########
-        clip_material_english = bpy.data.materials.new(name="clipMaterialEnglishWhite")
-        clip_material_english.use_nodes = True
-        nodes_english_white = clip_material_english.node_tree.nodes
-        clip_material_english.blend_method = 'CLIP'
-
-        # Clear default nodes
-        for node in nodes_english_white:
-            nodes_english_white.remove(node)
-
-        # Create necessary nodes
-        output_node = nodes_english_white.new(type='ShaderNodeOutputMaterial')
-        principal_node = nodes_english_white.new(type='ShaderNodeBsdfPrincipled')
-        principal_node2 = nodes_english_white.new(type='ShaderNodeBsdfPrincipled')
-        mapping_node = nodes_english_white.new(type='ShaderNodeMapping')
-        camera_data_node = nodes_english_white.new(type='ShaderNodeCameraData')
-        dot_product_node = nodes_english_white.new(type='ShaderNodeVectorMath')
-        mapping_node2 = nodes_english_white.new(type='ShaderNodeMapping')
-        camera_data_node2 = nodes_english_white.new(type='ShaderNodeCameraData')
-        dot_product_node2 = nodes_english_white.new(type='ShaderNodeVectorMath')
-        mix_shader_node = nodes_english_white.new(type='ShaderNodeMixShader')
-        math_greater_node = nodes_english_white.new(type='ShaderNodeMath')
-        math_greater_node2 = nodes_english_white.new(type='ShaderNodeMath')
-        math_add_node = nodes_english_white.new(type='ShaderNodeMath')
-        clamp_node = nodes_english_white.new(type='ShaderNodeClamp')
-
-        math_add_node.operation = 'ADD'
-        math_greater_node.operation = 'GREATER_THAN'
-        math_greater_node2.operation = 'GREATER_THAN'
-        principal_node2.inputs[4].default_value = 0
-        dot_product_node.operation = 'DOT_PRODUCT'
-        dot_product_node2.operation = 'DOT_PRODUCT'
-        mapping_node.inputs[0].default_value[1] = 1.7
-        mapping_node2.inputs[0].default_value[1] = -84.100
-        mapping_node2.inputs[2].default_value[0] = -0.0366519
-
-        # Link nodes
-        links = clip_material_english.node_tree.links
-        links.new(camera_data_node.outputs['View Vector'], dot_product_node.inputs[1])
-        links.new(mapping_node.outputs['Vector'], dot_product_node.inputs[0])
-        links.new(camera_data_node2.outputs['View Vector'], dot_product_node2.inputs[1])
-        links.new(mapping_node2.outputs['Vector'], dot_product_node2.inputs[0])
-        links.new(principal_node.outputs['BSDF'], mix_shader_node.inputs[1])
-        links.new(principal_node2.outputs['BSDF'], mix_shader_node.inputs[2])
-        links.new(dot_product_node.outputs['Value'], math_greater_node.inputs[0])
-        links.new(dot_product_node2.outputs['Value'], math_greater_node2.inputs[0])
-        links.new(math_greater_node.outputs['Value'], math_add_node.inputs[0])
-        links.new(math_greater_node2.outputs['Value'], math_add_node.inputs[1])
-        links.new(math_add_node.outputs['Value'], clamp_node.inputs[0])
-        links.new(clamp_node.outputs['Result'], mix_shader_node.inputs['Fac'])
-        links.new(mix_shader_node.outputs['Shader'], output_node.inputs['Surface'])
-
-        # refraction material
-        # Create a new material
-        material_name = "RefractionMaterial"
-        refra_material = bpy.data.materials.new(name=material_name)
-        refra_material.use_nodes = True
-        nodes = refra_material.node_tree.nodes
-
-        # Clear default nodes
-        for node in nodes:
-            nodes.remove(node)
-
-        # Add refraction shader nodes
-        shader_node = nodes.new(type='ShaderNodeBsdfRefraction')
-        output_node = nodes.new(type='ShaderNodeOutputMaterial')
-
-        # Link nodes
-        refra_material.node_tree.links.new(shader_node.outputs['BSDF'], output_node.inputs['Surface'])
-        refra_material.node_tree.nodes["Refraction BSDF"].inputs[1].default_value = 0.4
-        refra_material.node_tree.nodes["Refraction BSDF"].inputs[2].default_value = 0.3
-
-        # yellow material
-        yellow_material = bpy.data.materials.new(name="yellowMaterial")
-        yellow_material.use_nodes = True
-        yellow_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (1, 1, 0, 1)
-        yellow_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525  # metallic
-        yellow_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
-        yellow_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638  # roughness
-        yellow_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
-        yellow_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0  # emission
-
-        # green material
-        green_material = bpy.data.materials.new(name="GreenMaterial")
-        green_material.use_nodes = True
-        green_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.00992801, 0.661224, 0, 1)
-        green_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525  # metallic
-        green_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
-        green_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638  # roughness
-        green_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
-        green_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0  # emission
-
-        # blue material
-        blue_material = bpy.data.materials.new(name="BlueMaterial")
-        blue_material.use_nodes = True
-        blue_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0, 0.125479, 1, 1)
-        blue_material.node_tree.nodes["Principled BSDF"].inputs[1].default_value = 0.886525  # metallic
-        blue_material.node_tree.nodes["Principled BSDF"].inputs[18].default_value = 1
-        blue_material.node_tree.nodes["Principled BSDF"].inputs[2].default_value = 0.510638  # roughness
-        blue_material.node_tree.nodes["Principled BSDF"].inputs[12].default_value = 1
-        blue_material.node_tree.nodes["Principled BSDF"].inputs[27].default_value = 0.0  # emission
 
         # Data
         english_paragraph = ("In the heart of the ocean, where the waves dance with the sun's "
                              "reflections, lies a tale of serenity and mystery. Beneath the surface,"
                              " creatures of wonder roam the vast blue expanse. Amongst the coral gardens,"
-                             " secrets whisper, waiting to be discovered by those brave enough to dive into the depths."
+                             " secrets whisper, waiting to be discovered by those brave -enough- to -dive- into the -depths.-"
                              )
+        spanish_paragraph = ("En el corazon de el oceano donde las olas bailan con los sol reflejos yace un cuento de serenidad y misterio Debajo de-la superficie criaturas de maravilla vagan la vasta azul extension Entre los coral jardines secretos susurran esperando a ser descubiertos por aquellos valiente suficientemente para sumergirse en las profundidades")
 
+        phonetic_paragraph = ("In də hart əv də osin, wɛɹ də weɪvz dæns wɪð də sʌnz rɪfɛkʃənz, laɪz ə tel əv sɛrɪnəti ənd mɪstəri. bəniθ də sɜrfəs, kɹitʃəz əv wʌndəɹ ɹoʊm ðə væst blu ɪkˈspæns. əmʌŋst ðə kɔɹəl ɡɑɹdənz, sikɹɪts wɪspəɹ, weɪtɪŋ tə bi dɪˈskʌvəɹd baɪ ðoʊz breɪv ɪˈnʌf tə daɪv ɪntə ðə dɛps.")
         positions_english_array = [[165.52, 76.80], [248.64, 76.80], [378.80, 76.80], [494.86, 76.80], [581.68, 76.80],
                                    [724.63, 76.80], [248.26, 231.79], [390.22, 231.79], [532.63, 231.79],
                                    [708.90, 231.79],
@@ -1303,6 +1478,8 @@ class MainProgram:
                                    [530.02, 1936.65], [681.11, 1936.65]]
 
         english_words = english_paragraph.split()
+        spanish_words = spanish_paragraph.split()
+        phonetic_words = phonetic_paragraph.split()
 
         scale_factor = 0.02
         english_words_scaled_coordinates = [(x * scale_factor, y * (scale_factor + 0.005)) for x, y in
@@ -1313,9 +1490,10 @@ class MainProgram:
         full_tags = nltk.pos_tag(tokens)
         tags = [item for item in full_tags if item[0] not in {',', '.', "'", "'s"}]
 
-        start_times_array = []
-        for i in range(len(positions_english_array)):
-            start_times_array.append(i * 0.5)
+        start_times_array = [0.56, 0.80, 0.96, 1.20, 1.44, 1.68, 2.80, 3.12, 3.36, 3.84, 4.32, 4.64, 4.80, 5.20, 6.96, 7.28, 7.44, 7.92, 8.24, 9.12, 9.59, 11.59, 12.07, 12.31, 13.67, 14.23, 14.55, 15.04, 15.59, 15.83, 16.39, 17.04, 18.95, 19.43, 19.67, 20.07, 21.35, 22.07, 23.35, 23.83, 24.07, 24.39, 25.11, 25.35, 25.83, 26.15, 27.09, 27.33, 27.81, 28.13, 28.37]
+
+        #for i in range(len(positions_english_array)):
+        #    start_times_array.append(i * 0.5)
 
         # Loading WordData List
         tags_to_part_of_speech = TagToPartOfSpeech()
@@ -1330,21 +1508,77 @@ class MainProgram:
                                                      just_tags,
                                                      start_times_array)
         word_data_list = word_data_list_creator.build()
-
+        spanish_word_data_list_creator = WordDataListCreator(tags_to_part_of_speech, spanish_words,
+                                                     english_words_scaled_coordinates,
+                                                     just_tags,
+                                                     start_times_array)
+        spanish_word_data_list = spanish_word_data_list_creator.build()
+        phonetic_word_data_list_creator = WordDataListCreator(tags_to_part_of_speech, phonetic_words,
+                                                     english_words_scaled_coordinates,
+                                                     just_tags,
+                                                     start_times_array)
+        phonetic_word_data_list = phonetic_word_data_list_creator.build()
         # Collections
-        words_3d_collection = WordsCollection()
-        words_3d_collection.create_collection('english_3d_words')
+        alphabet_3d_letters_premade_collection = Alphabet3DPremadeCollection()
+        alphabet_3d_letters_premade_collection.create_collection('drawn_letters_premade')
+        phonetic_letters_premade_collection = PhoneticAlphabetCollection()
+        phonetic_letters_premade_collection.create_collection('phoneticLetters')
+        spanish_letters_premade_collection = StickerLetterCollection()
+        spanish_letters_premade_collection.create_collection('sticker_lowpoly_letters')
+        english_words_collection = WordsCollection()
+        english_words_collection.create_collection('english_words')
+        phonetic_words_collection = WordsCollection()
+        phonetic_words_collection.create_collection('phonetic_words')
+        spanish_words_collection = WordsCollection()
+        spanish_words_collection.create_collection('spanish_words')
 
         # Assembling Words
         material_identifier_g = PartOfSpeechMaterialIdentifier()
+        sticker_material_identifier = StickerMaterialIdentifier()
         blender_object_factory = BlenderObjectFactory()
-        word_assembler_g = WordAssembler(alphabet_letters_collection, blender_object_factory)
+        word_assembler_g = WordAssembler(alphabet_3d_letters_premade_collection, blender_object_factory)
         words_assembler_manager = WordsAssemblerManager(word_assembler_g, material_identifier_g, blender_object_factory,
-                                                        words_3d_collection, word_data_list)
+                                                        english_words_collection, word_data_list)
+        phonetic_assembler = WordAssembler(phonetic_letters_premade_collection, blender_object_factory)
+
+        phonetic_assembler_manager = WordsAssemblerManager(phonetic_assembler, material_identifier_g, blender_object_factory,
+                                                          phonetic_words_collection, phonetic_word_data_list)
+        spanish_assembler = WordAssembler(spanish_letters_premade_collection, blender_object_factory)
+        spanish_assembler_manager = WordsAssemblerManager(spanish_assembler, sticker_material_identifier, blender_object_factory,
+                                                            spanish_words_collection, spanish_word_data_list)
         # Assigning Word Objects to Parent Cube
-        words_assembler_manager.assemble_words()
+        words_assembler_manager.assemble_words(0, 1, True)
+        phonetic_assembler_manager.assemble_words(-3, 0.8, False)
+        spanish_assembler_manager.assemble_words(-4, 0.7, True)
+
+
+
+        # Prompter Layout Landscape
+        #prompter_layout = PrompterLayout(8, 15, (0, 0, 0),
+        #               words_assembler_manager.get_word_object_builder_list())
+
+        # Promper Layout Vertical
+        prompter_layout = PrompterLayout(6.5, 10, (0, 0, 0),
+                                            words_assembler_manager.get_word_object_builder_list())
+        prompter_layout.assign_rows_content()
+        prompter_layout.calculate_rows_position()
+        prompter_layout.assign_rows_position()
+
+
+        # Making phonetic and spanish children of english and matching their positions
+        for phonetic_obj, word_obj in zip(phonetic_assembler_manager.get_word_object_builder_list(), words_assembler_manager.get_word_object_builder_list()):
+            phonetic_obj.position = Position(0, -0.6, 0)
+
+        for spanish_obj, word_obj in zip(spanish_assembler_manager.get_word_object_builder_list(), spanish_assembler_manager.get_word_object_builder_list()):
+            spanish_obj.position = Position(0, -1.3, 0)
+
         for word_obj in words_assembler_manager.get_words_object_list():
             word_obj.parent = parent_cube
+        for phonetic_obj, word_obj in zip(phonetic_assembler_manager.get_words_object_list(), words_assembler_manager.get_words_object_list()):
+            phonetic_obj.parent = word_obj
+        for spanish_obj, word_obj in zip(spanish_assembler_manager.get_words_object_list(), words_assembler_manager.get_words_object_list()):
+            spanish_obj.parent = word_obj
+
 
         # Rows Position and TimeStampNewline
         rows_position_calculator = RowsCalculator()
@@ -1356,49 +1590,18 @@ class MainProgram:
         # Highlighter
         highlighter = Highlighter()
         highlighter.create("highlighter_obj")
-        highlighter.rotate_on_x_axis(90)
-
+        highlighter.rotate_on_x_axis(0)
+        highlighter.set_parent(parent_cube)
         highlighter.add_material("hl_material")
 
         word_obj_list = words_assembler_manager.get_words_object_list()
-        (HighlighterAnimator(highlighter, english_words_scaled_coordinates, rows_position, timestamps, word_obj_list)
+        (HighlighterAnimator(highlighter, english_words_scaled_coordinates, rows_position, timestamps, words_assembler_manager.get_word_object_builder_list(), prompter_layout)
          .setup_highlighter_animation(60, 10))
 
         # Parent Cube Animation
-        parent_cube_animator = ParentCubeAnimator(parent_cube, double_row_timestamps)
-        parent_cube_animator.animate_parent_cube(60, 10, [0, 0, 1], 15.5)
+        parent_cube_animator = ParentCubeAnimator(parent_cube, timestamps, words_assembler_manager.get_word_object_builder_list())
+        parent_cube_animator.animate_parent_cube(60, 10, [0, 0, 1], prompter_layout.height * 2.5)
 
-        materials = {
-            "text_material": text_material,
-            "yellow_material": yellow_material,
-            "green_material": green_material,
-            "blue_material": blue_material
-        }
-        # Children Text Objects
-        text_object_factory = TextObjectFactory()
-        text_object_factory.create_text_objects(
-            word_data_list,
-            0.7,
-            0.68,
-            self.efai_font_path,
-            materials,
-            0,
-            2,
-            2.3,
-            parent_cube
-        )
-
-        text_object_factory.create_outline_text_objects(
-            word_data_list,
-            0.01,
-            0.68,
-            self.efai_font_path,
-            outline_material,
-            2,
-            2.3,
-            0.02,
-            parent_cube
-        )
 
 
 main = MainProgram()

@@ -30,7 +30,8 @@ def createAlphabetCollection():
     
     # Other Symbols
     'ˈ', 'ˌ', 'ː', 'ˑ', '|', '‖', '.', # Suprasegmentals
-    '˥', '˦', '˧', '˨', '˩', ',' # Tones and Word Accents
+    '˥', '˦', '˧', '˨', '˩', ',', # Tones and Word Accents
+    'ʤ'
   ]
 
   for letter in ipaArray:
